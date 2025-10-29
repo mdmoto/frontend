@@ -17,11 +17,11 @@ var BASE = {
   /**
    * @description // 跳转买家端地址 pc端
    */
-  PC_URL: "https://pc-b2b2c.pickmall.cn",
+  PC_URL: "https://www.maollar.com",
   /**
    * @description  // 跳转买家端地址 wap端
    */
-  WAP_URL: "https://m-b2b2c.pickmall.cn",
+  WAP_URL: "https://m.maollar.com",
   /**
    *  @description api请求基础路径前缀
    */
