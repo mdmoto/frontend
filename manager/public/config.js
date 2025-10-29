@@ -3,16 +3,16 @@ var BASE = {
    * @description api请求基础路径
    */
   API_DEV: {
-    common: "http://54.255.179.211:8891",
-    buyer: "http://54.255.179.211:8888",
-    seller: "http://54.255.179.211:8889",
-    manager: "http://54.255.179.211:8890",
+    common: "https://common-api.maollar.com",
+    buyer: "https://api.maollar.com",
+    seller: "https://store-api.maollar.com",
+    manager: "https://admin-api.maollar.com",
   },
   API_PROD: {
-    common: "http://54.255.179.211:8891",
-    buyer: "http://54.255.179.211:8888",
-    seller: "http://54.255.179.211:8889",
-    manager: "http://54.255.179.211:8890"
+    common: "https://common-api.maollar.com",
+    buyer: "https://api.maollar.com",
+    seller: "https://store-api.maollar.com",
+    manager: "https://admin-api.maollar.com"
   },
   /**
    * @description // 跳转买家端地址 pc端
