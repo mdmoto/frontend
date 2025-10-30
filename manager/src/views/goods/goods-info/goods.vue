@@ -693,9 +693,9 @@ export default {
     // 提交审核
     submitAudit() {
       const auditForm = {
+        goodsIds: [this.currentAuditGoods.id], // 修复：改为 goodsIds 数组
         authFlag: this.goodsAuditForm.auth_flag === 1 ? 'PASS' : 'REFUSE',
-        reason: this.goodsAuditForm.reason || '',
-        goodsId:this.currentAuditGoods.id
+        reason: this.goodsAuditForm.reason || ''
       };
       
       authGoods(auditForm).then((res) => {
@@ -832,7 +832,7 @@ export default {
           // 提取所有选中商品的ID
           const goodsIds = this.selectedRows.map(item => item.id);
           const params = {
-            goodsId: goodsIds, // 传递ID数组
+            goodsIds: goodsIds, // 修复：改为 goodsIds（复数）
             authFlag: this.batchAuditForm.auth_flag === 1 ? 'PASS' : 'REFUSE',
             reason: this.batchAuditForm.reason || ''
           };

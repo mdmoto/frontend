@@ -276,7 +276,12 @@ export default {
         content: "您确认要审核" + examine + " " + v.goodsName + " ?",
         loading: true,
         onOk: () => {
-          authGoods(v.id, this.goodsAuditForm).then((res) => {
+          // 修复：使用正确的参数格式
+          const params = {
+            goodsIds: [v.id],
+            authFlag: this.goodsAuditForm.authFlag
+          };
+          authGoods(params).then((res) => {
             this.$Modal.remove();
             if (res.success) {
               this.$Message.success("审核成功");
