@@ -97,7 +97,7 @@
               <Checkbox v-model="form.couponFlag" disabled>送优惠券</Checkbox
               >&nbsp;
               <Checkbox v-model="form.giftFlag" disabled>送赠品</Checkbox>&nbsp;
-              <Checkbox v-model="form.pointFlag" disabled>送积分</Checkbox>
+              <Checkbox v-model="form.pointFlag" disabled>送喵币</Checkbox>
             </FormItem>
             <FormItem v-if="form.couponFlag" label="赠送优惠券" prop="couponId">
               <Select
@@ -135,7 +135,7 @@
                 >
               </Select>
             </FormItem>
-            <FormItem v-if="form.pointFlag" label="赠积分" prop="point">
+            <FormItem v-if="form.pointFlag" label="赠喵币" prop="point">
               <Input
                 v-model="form.point"
                 type="number"

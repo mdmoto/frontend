@@ -3,7 +3,7 @@
     <BaseHeader></BaseHeader>
     <Search></Search>
     <cateNav></cateNav>
-    <h3 class="promotion-decorate">积分商品</h3>
+    <h3 class="promotion-decorate">喵币商品</h3>
     <Select @on-select="selectCate" size="small" class="cate-select-con" v-model="cateId">
       <Option v-for="(cate, index) in cateList" :value="cate.id" :key="index">{{cate.name}}</Option>
     </Select>
@@ -22,7 +22,7 @@
         </div>
         <div class="goods-show-price">
           <span>
-            <span class="seckill-price text-danger">{{item.points}}积分</span>
+            <span class="seckill-price text-danger">{{item.points}}喵币</span>
           </span>
         </div>
         <div class="goods-show-detail">
@@ -53,11 +53,11 @@ import {pointGoods, pointGoodsCategory} from '@/api/promotion.js'
 export default {
   data () {
     return {
-      goodsList: [], // 积分商品列表
+      goodsList: [], // 喵币商品列表
       cateList: [{ // 商品分类
         name: '全部分类',
         id: 0
-      }], // 积分分类列表
+      }], // 喵币分类列表
       params: { // 商品列表请求参数
         pageNumber: 1,
         pageSize: 20,

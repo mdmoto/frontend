@@ -54,7 +54,7 @@
             <Option value="NORMAL">普通订单</Option>
             <Option value="PINTUAN">拼团订单</Option>
             <Option value="GIFT">赠品订单</Option>
-            <Option value="POINTS">积分订单</Option>
+            <Option value="POINTS">喵币订单</Option>
             <Option value="KANJIA">砍价订单</Option>
           </Select>
         </Form-item>
@@ -200,7 +200,7 @@ export default {
               ]);
             } else if (params.row.orderPromotionType == "POINTS") {
               return h("div", [
-                h("tag", { props: { color: "geekblue" } }, "积分订单"),
+                h("tag", { props: { color: "geekblue" } }, "喵币订单"),
               ]);
             } else if (params.row.orderPromotionType == "KANJIA") {
               return h("div", [

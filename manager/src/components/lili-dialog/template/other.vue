@@ -96,7 +96,7 @@ export default {
           ___type: "kanjia",
         },
         {
-          title: "积分商城",
+          title: "喵币商城",
           icon: "ios-basket",
           ___type: "point",
         },
@@ -126,7 +126,7 @@ export default {
         }
       })
       this.linkList.forEach((itemss,indexss)=>{
-        if(itemss.title == '积分商城'){
+        if(itemss.title == '喵币商城'){
           this.linkList.splice(indexss,1)
         }
       })

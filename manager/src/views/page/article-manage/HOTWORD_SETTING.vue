@@ -12,7 +12,7 @@
 
           <Button ghost type="error" @click="delSign(point,index)">删除</Button>
           <span class="ml_10">签到<span class="theme_color">{{ point.day }}</span>天，赠送<span
-            class="theme_color">{{ point.point }}</span>积分</span>
+            class="theme_color">{{ point.point }}</span>喵币</span>
         </div>
 
       </FormItem>

@@ -54,7 +54,7 @@
               <Checkbox :disabled="form.promotionStatus != 'NEW'" v-model="form.giftFlag">送赠品</Checkbox>
               <Checkbox :disabled="form.promotionStatus != 'NEW'" v-if="Cookies.get('userInfoSeller') &&
                 JSON.parse(Cookies.get('userInfoSeller')).selfOperated
-                " v-model="form.pointFlag">送积分</Checkbox>
+                " v-model="form.pointFlag">送喵币</Checkbox>
             </FormItem>
             <FormItem v-if="form.couponFlag" label="赠送优惠券" prop="couponId">
               <Select v-model="form.couponId" :disabled="form.promotionStatus != 'NEW'" filterable
@@ -70,7 +70,7 @@
                 </Option>
               </Select>
             </FormItem>
-            <FormItem v-if="form.pointFlag" label="赠积分" prop="point">
+            <FormItem v-if="form.pointFlag" label="赠喵币" prop="point">
               <InputNumber :min="0" :disabled="form.promotionStatus != 'NEW'" v-model="form.point" type="number"
                 style="width: 280px" />
             </FormItem>
@@ -185,7 +185,7 @@ export default {
         ],
         couponId: [{ required: true, message: "请选择优惠券" }],
         giftId: [{ required: true, message: "请选择赠品" }],
-        point: [{ required: true, message: "请填写积分" }],
+        point: [{ required: true, message: "请填写喵币" }],
       },
       couponList: [], // 店铺优惠券列表
       giftList: [], // 赠品列表

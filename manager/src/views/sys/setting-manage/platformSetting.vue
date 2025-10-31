@@ -33,7 +33,7 @@
             <Spin fix v-if="loading"></Spin>
           </div>
         </TabPane>
-        <TabPane label="积分设置" name="point">
+        <TabPane label="喵币设置" name="point">
           <div style="display:flex;position:relative">
             <Form
                     ref="pointForm"
@@ -43,15 +43,15 @@
                     :rules="pointValidate"
             >
               <FormItem label="注册" prop="register">
-                <Input type="text" v-model="point.register" placeholder="请输入注册赠送积分"
+                <Input type="text" v-model="point.register" placeholder="请输入注册赠送喵币"
                        style="width: 350px"/>
               </FormItem>
               <FormItem label="登陆" prop="login">
-                <Input type="text" v-model="point.login" placeholder="请输入登陆赠送积分"
+                <Input type="text" v-model="point.login" placeholder="请输入登陆赠送喵币"
                        style="width: 350px"/>
               </FormItem>
               <FormItem label="消费一元" prop="money">
-                <Input type="text" v-model="point.money" placeholder="请输入积分"
+                <Input type="text" v-model="point.money" placeholder="请输入喵币"
                        style="width: 350px"/>
               </FormItem>
               <FormItem>
@@ -172,7 +172,7 @@
           logo: "",
           sellerLogo: "",
         },
-        point: { // 积分设置
+        point: { // 喵币设置
           register: "",
           login: "",
           money: ""
@@ -364,7 +364,7 @@
           }
         });
       },
-      // 积分设置
+      // 喵币设置
       initPoint() {
         this.loading = true;
         getParams('point').then(res => {
@@ -462,7 +462,7 @@
           }
         });
       },
-      // 保存积分配置
+      // 保存喵币配置
       savePoint() {
         this.$refs.pointForm.validate(valid => {
           if (valid) {

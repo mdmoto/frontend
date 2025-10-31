@@ -150,21 +150,21 @@ export const otherRouter = {
     },
     {
       path: "promotions/add-points-goods",
-      title: "添加积分商品",
+      title: "添加喵币商品",
       name: "add-points-goods",
       component: () =>
         import("@/views/promotions/points-goods/points-goods-add.vue")
     },
     {
       path: "promotions/edit-points-goods",
-      title: "修改积分商品",
+      title: "修改喵币商品",
       name: "edit-points-goods",
       component: () =>
         import("@/views/promotions/points-goods/points-goods-edit.vue")
     },
     {
       path: "promotions/manager-points-goods-category",
-      title: "积分商品分类",
+      title: "喵币商品分类",
       name: "manager-points-goods-category",
       component: () =>
         import("@/views/promotions/points-goods-category/points-goods-category.vue")

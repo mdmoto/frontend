@@ -548,12 +548,12 @@ export const modelData = [
   //   notAdd: true,
   //   notImg: true,
   //   type: "integral",
-  //   name: "积分活动",
+  //   name: "喵币活动",
   //   img: "md-image",
   //   options: {
   //     list: [
   //       {
-  //         title: "测试积分"
+  //         title: "测试喵币"
   //       }
   //     ]
   //   }

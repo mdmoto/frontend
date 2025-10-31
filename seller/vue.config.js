@@ -128,6 +128,7 @@ module.exports = {
     config.resolve.alias.set("@", resolve("src"));
     config.plugin("html").tap(args => {
       args[0].cdn = cdn;
+      args[0].title = configs.title;
       return args;
     });
   },

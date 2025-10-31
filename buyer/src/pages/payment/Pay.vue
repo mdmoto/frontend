@@ -208,7 +208,7 @@
         </div>
 
         <div v-if="$route.query.way === 'POINTS'">
-          <span>应付积分：</span><span class="actrual-price">{{ priceDetailDTO.payPoint }}</span>
+          <span>应付喵币：</span><span class="actrual-price">{{ priceDetailDTO.payPoint }}</span>
         </div>
         <div v-else>
           <span>应付金额：</span><span class="actrual-price">{{
@@ -624,7 +624,7 @@ export default {
           this.$Spin.hide();
           if (res.success) {
             if (params.way === "POINTS") {
-              // 积分支付不需要跳转支付页面
+              // 喵币支付不需要跳转支付页面
               this.$router.push("/payDone");
             } else {
               this.$router.push({

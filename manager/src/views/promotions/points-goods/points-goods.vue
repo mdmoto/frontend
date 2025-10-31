@@ -18,7 +18,7 @@
               style="width: 240px"
             />
           </Form-item>
-          <Form-item label="积分区间">
+          <Form-item label="喵币区间">
             <Input
               type="text"
               v-model="searchForm.pointsS"
@@ -63,7 +63,7 @@
       </Card>
     <Card>
       <Row class="operation padding-row">
-        <Button @click="addPointsGoods" type="primary">添加积分商品</Button>
+        <Button @click="addPointsGoods" type="primary">添加喵币商品</Button>
       </Row>
       <Table :loading="loading" border :columns="columns" :data="data" ref="table">
         <template slot-scope="{ row }" slot="goodsName">
@@ -215,7 +215,7 @@ export default {
           width: 150,
         },
         {
-          title: "兑换积分",
+          title: "兑换喵币",
           key: "points",
           width: 100,
         },
@@ -301,7 +301,7 @@ export default {
     edit(id) {
       this.$router.push({ name: "edit-points-goods", query: { id: id } });
     },
-    // 启用 停用积分商品
+    // 启用 停用喵币商品
     statusChanged(id, status, startTime, endTime) {
       let text = "";
       let params = {};
@@ -316,7 +316,7 @@ export default {
       }
       this.$Modal.confirm({
         title: "确认" + text,
-        content: "您确认要" + text + "此积分商品?",
+        content: "您确认要" + text + "此喵币商品?",
         loading: true,
         onOk: () => {
           editPointsGoodsStatus(id, params).then((res) => {
@@ -329,11 +329,11 @@ export default {
         },
       });
     },
-    // 删除积分商品
+    // 删除喵币商品
     close(id) {
       this.$Modal.confirm({
         title: "确认删除",
-        content: "您确认要删除此积分商品?",
+        content: "您确认要删除此喵币商品?",
         loading: true,
         onOk: () => {
           // 删除

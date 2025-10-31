@@ -1,11 +1,11 @@
 <template>
   <div class="point">
-    <card _Title="我的积分"/>
+    <card _Title="我的喵币"/>
     <div class="point-content">
-      <span>剩余积分：<span>{{ pointObj.point || 0 }}</span></span>
+      <span>剩余喵币：<span>{{ pointObj.point || 0 }}</span></span>
       <span>累计获得：<span>{{ pointObj.totalPoint || 0 }}</span></span>
     </div>
-    <h3>积分日志</h3>
+    <h3>喵币日志</h3>
     <Table :columns="logColumns" :data="logData.records">
       <template slot-scope="{ row }" slot="point">
         <div :style="{color:row.pointType === 'INCREASE' ? 'green' : 'red'}">
@@ -35,10 +35,10 @@ export default {
   name: 'Point',
   data () {
     return {
-      logData: {}, // 积分日志
-      pointObj: {}, // 积分明细
+      logData: {}, // 喵币日志
+      pointObj: {}, // 喵币明细
       loading: false, // 请求接口加载框
-      params: { // 积分列表请求参数
+      params: { // 喵币列表请求参数
         pageNumber: 1,
         pageSize: 10
       },
@@ -54,7 +54,7 @@ export default {
           align: 'center'
         },
         {
-          title: '积分明细',
+          title: '喵币明细',
           slot: 'point',
           align: 'center'
         }
@@ -66,12 +66,12 @@ export default {
     this.getPoint()
   },
   methods: {
-    getHistory () { // 获取积分历史
+    getHistory () { // 获取喵币历史
       memberPointHistory(this.params).then(res => {
         this.logData = res.result;
       })
     },
-    getPoint () { // 获取积分详情
+    getPoint () { // 获取喵币详情
       memberPoint().then(res => {
         if (res.success) this.pointObj = res.result
       })

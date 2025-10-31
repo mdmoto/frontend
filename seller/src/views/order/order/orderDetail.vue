@@ -245,7 +245,7 @@
               <span class="txt"  v-if="typeList.length == 1 && index == 0" style="border-top: 1px dashed;border-bottom: 1px dashed;font-size:10px !important;">¥{{ item.discountPrice | unitPrice }}</span>
             </li> -->
           <li v-if="orderInfo.order.priceDetailDTO.payPoint != 0">
-            <span class="label">使用积分：</span>
+            <span class="label">使用喵币：</span>
             <span class="txt">{{
               orderInfo.order.priceDetailDTO.payPoint
             }}</span>
@@ -735,7 +735,7 @@ export default {
                 resultText += "满减 ";
               }
               if (type.indexOf("POINTS_GOODS") != -1) {
-                resultText += "积分商品 ";
+                resultText += "喵币商品 ";
               }
             }
             if (resultText === "") {

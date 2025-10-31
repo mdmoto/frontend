@@ -212,7 +212,7 @@ export default {
         },
 
         {
-          title: "积分数量",
+          title: "喵币数量",
           align: "left",
           width: 120,
           render: (h, params) => {

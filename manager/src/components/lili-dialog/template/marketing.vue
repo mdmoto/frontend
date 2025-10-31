@@ -343,7 +343,7 @@ export default {
         //   };
         case "POINTS_GOODS":
           return {
-            title: "积分商品",
+            title: "喵币商品",
             methodsed: () => {
               this.showPromotionList = [];
               this.activeColumns = this.pintuanColumns;

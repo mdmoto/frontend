@@ -36,8 +36,8 @@ export default {
           type: "ORDER_SETTING",
           name: "订单配置",
         },
-        //积分设置
-        {type: "POINT_SETTING", name: "积分设置"},
+        //喵币设置
+        {type: "POINT_SETTING", name: "喵币设置"},
         {
           type: "WITHDRAWAL_SETTING",
           name: "提现设置",

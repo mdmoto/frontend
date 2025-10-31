@@ -66,11 +66,11 @@
 
     <Card class="mt_10">
       <Tabs value="point" @on-click="memberInfoChange">
-        <TabPane label="TA的积分" name="point">
+        <TabPane label="TA的喵币" name="point">
           <div class="pointsTitle" style="justify-content: flex-start; text-align: left;">
             <div style="width: 120px;">
               <div class="points-top-title">
-                剩余积分
+                剩余喵币
               </div>
               <div class="points-top-text">
                 {{memberInfo.point?memberInfo.point:0}}
@@ -396,7 +396,7 @@
           consigneeAddressPath: [{required: true, message: "收货人地址不能为空"}],
           detail: [{required: true, message: "收货人详细地址不能为空"}],
         },//会员地址操作表单校验
-        //历史积分表格
+        //历史喵币表格
         pointsColumns: [
           {
             title: "操作内容",
@@ -410,12 +410,12 @@
             width: 200
           },
           {
-            title: "之前积分",
+            title: "之前喵币",
             key: "beforePoint",
             width: 150,
           },
           {
-            title: "变动积分",
+            title: "变动喵币",
             key: "variablePoint",
             width: 150,
             render: (h, params) => {
@@ -427,15 +427,15 @@
             }
           },
           {
-            title: "当前积分",
+            title: "当前喵币",
             key: "point",
             width: 150,
           },
 
         ],
-        pointData: [],//历史积分数据
-        pointTotal: 0,//历史积分总条数
-        //历史积分数据查询form
+        pointData: [],//历史喵币数据
+        pointTotal: 0,//历史喵币总条数
+        //历史喵币数据查询form
         pointSearchForm: {
           pageNumber: 1, // 当前页数
           pageSize: 10, // 页面大小
@@ -667,8 +667,8 @@
           },
 
         ],
-        addressData: [],//历史积分数据
-        addressTotal: 0,//历史积分总条数
+        addressData: [],//历史喵币数据
+        addressTotal: 0,//历史喵币总条数
         //TA的收货地址form
         addressSearchForm: {
           pageNumber: 1, // 当前页数
@@ -730,8 +730,8 @@
           sort: "createTime", // 默认排序字段
           order: "desc", // 默认排序方式
         },
-        walletData: [],//历史积分数据
-        walletTotal: 0,//历史积分总条数
+        walletData: [],//历史喵币数据
+        walletTotal: 0,//历史喵币总条数
         //TA的发票记录
         receiptRecordSearchForm: {
           pageNumber: 1, // 当前页数
@@ -785,7 +785,7 @@
       init() {
         //查询会员信息
         this.getMemberInfo();
-        //查询会员的历史积分数据
+        //查询会员的历史喵币数据
         this.getPointData();
       },
       //会员信息tab改变事件
@@ -885,7 +885,7 @@
           query: {sn: v},
         });
       },
-      //查询TA的历史积分数据
+      //查询TA的历史喵币数据
       getPointData() {
         this.loading = true;
         this.pointSearchForm.memberId = this.id
@@ -979,13 +979,13 @@
         this.loading = false;
       }
       ,
-      //积分记录页数变化
+      //喵币记录页数变化
       pointChangePage(v) {
         this.pointSearchForm.pageNumber = v;
         this.getPointData();
       }
       ,
-      //积分记录页数变化
+      //喵币记录页数变化
       pointChangePageSize(v) {
         this.pointSearchForm.pageNumber = 1;
         this.pointSearchForm.pageSize = v;

@@ -458,7 +458,7 @@ export function clearTracksById (ids) {
 }
 
 /**
- * 获取会员积分
+ * 获取会员喵币
  */
 export function memberPoint (params) {
   return request({
@@ -470,7 +470,7 @@ export function memberPoint (params) {
 }
 
 /**
- * 积分历史
+ * 喵币历史
  */
 export function memberPointHistory (params) {
   return request({

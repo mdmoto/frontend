@@ -62,7 +62,7 @@
             </div>
           </div>
           <div class="add-buy-car">
-            <Button type="error" :loading="loading" :disabled="goodsSku.quantity === 0" @click="pointBuy">积分购买</Button>
+            <Button type="error" :loading="loading" :disabled="goodsSku.quantity === 0" @click="pointBuy">喵币购买</Button>
           </div>
         </div>
       </div>
@@ -107,7 +107,7 @@ export default {
     };
   },
   methods: {
-    // 获取积分商品详情
+    // 获取喵币商品详情
     getGoodsDetail () {
       this.isLoading = true;
       pointGoodsDetail(this.$route.query.id).then((res) => {

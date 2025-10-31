@@ -43,7 +43,7 @@
               </dd>
             </dl>
             <dl v-if="afterSaleInfo.refundPoint">
-              <dt>退还积分</dt>
+              <dt>退还喵币</dt>
               <dd>{{ afterSaleInfo.refundPoint }}</dd>
             </dl>
             <dl>

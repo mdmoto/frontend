@@ -2,7 +2,7 @@
   <div>
     <Card>
       <div class="operation mb_10">
-        <Button @click="addParent" type="primary" icon="md-add">添加积分商品分类</Button>
+        <Button @click="addParent" type="primary" icon="md-add">添加喵币商品分类</Button>
         <Button icon="md-refresh" @click="init">刷新</Button>
       </div>
       <tree-table
@@ -123,7 +123,7 @@ export default {
     // 添加顶级分类
     addParent() {
       this.modalType = 0;
-      this.modalTitle = "添加积分商品分类";
+      this.modalTitle = "添加喵币商品分类";
       this.parentTitle = "顶级分类";
       this.showParent = true;
       this.$refs.form.resetFields();

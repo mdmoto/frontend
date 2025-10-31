@@ -157,7 +157,7 @@ export default new Router({
       path: "/pointGoodsDetail", // 商品详情
       name: "PointGoodsDetail",
       component: PointGoodsDetail,
-      meta: { title: "积分商品" },
+      meta: { title: "喵币商品" },
     },
     {
       path: "/shoppingCart", // 头部购物车
@@ -185,7 +185,7 @@ export default new Router({
       path: "/PointMall",
       name: "PointMall",
       component: PointMall,
-      meta: { title: "积分商城" },
+      meta: { title: "喵币商城" },
     },
     {
       path: "/qrpay", // 三方支付
@@ -324,7 +324,7 @@ export default new Router({
           path: "Point",
           name: "Point",
           component: Point,
-          meta: { title: "我的积分" },
+          meta: { title: "我的喵币" },
         },
         {
           path: "Profile",

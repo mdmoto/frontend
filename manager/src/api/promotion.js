@@ -220,59 +220,59 @@ export const updateFullDiscount = (id, promotionStatus) => {
   return putRequest(`/promotion/fullDiscount/status/${id}`)
 }
 
-// 积分商品列表
+// 喵币商品列表
 export const getPointsGoodsList = params => {
   return getRequest(`/promotion/pointsGoods`, params);
 };
 
-// 积分商品详情
+// 喵币商品详情
 export const getPointsGoodsById = id => {
   return getRequest(`/promotion/pointsGoods/${id}`);
 };
 
-// 添加积分商品
+// 添加喵币商品
 export const addPointsGoods = params => {
   return postRequest(`/promotion/pointsGoods`, params, {
     "Content-type": "application/json"
   });
 };
 
-// 修改积分商品
+// 修改喵币商品
 export const updatePointsGoods = params => {
   return putRequest(`/promotion/pointsGoods`, params, {
     "Content-type": "application/json"
   });
 };
-// 修改积分商品状态
+// 修改喵币商品状态
 export const editPointsGoodsStatus = (id, params) => {
   return putRequest(`/promotion/pointsGoods/status/${id}`, params);
 };
-// 删除积分商品
+// 删除喵币商品
 export const deletePointsGoodsStatus = id => {
   return deleteRequest(`/promotion/pointsGoods/${id}`);
 };
 
-// 积分商品分类列表
+// 喵币商品分类列表
 export const getPointsGoodsCategoryList = params => {
   return getRequest(`/promotion/pointsGoodsCategory`, params);
 };
 
-// 积分商品分类详情
+// 喵币商品分类详情
 export const getPointsGoodsCategoryById = id => {
   return getRequest(`/promotion/pointsGoodsCategory/${id}`);
 };
 
-// 添加积分商品分类
+// 添加喵币商品分类
 export const addPointsGoodsCategory = params => {
   return postRequest(`/promotion/pointsGoodsCategory`, params);
 };
 
-// 更新积分商品分类
+// 更新喵币商品分类
 export const updatePointsGoodsCategory = params => {
   return putRequest(`/promotion/pointsGoodsCategory`, params);
 };
 
-// 删除积分商品分类
+// 删除喵币商品分类
 export const deletePointsGoodsCategoryById = id => {
   return deleteRequest(`/promotion/pointsGoodsCategory/${id}`);
 };

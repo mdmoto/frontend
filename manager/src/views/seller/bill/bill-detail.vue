@@ -102,7 +102,7 @@ export default {
                 );
               },
             }, {
-              title: '积分商品补贴',
+              title: '喵币商品补贴',
               key: 'pointSettlementPrice',
               align: 'center',
               width: 200,
@@ -179,7 +179,7 @@ export default {
                 });
               },
             }, {
-              title: '退单返还积分商品补贴',
+              title: '退单返还喵币商品补贴',
               key: 'pointRefundSettlementPrice',
               align: 'center',
               width: 200,

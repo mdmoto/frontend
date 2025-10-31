@@ -1,15 +1,15 @@
 <template>
   <div class="layout">
     <Form ref="formValidate" :label-width="150" label-position="right" :model="formValidate" :rules="ruleValidate">
-      <FormItem label="消费1元赠送积分" prop="consumer">
+      <FormItem label="消费1元赠送喵币" prop="consumer">
         <Input type="number" v-model="formValidate.consumer">
-          <span slot="append">积分</span>
+          <span slot="append">喵币</span>
         </Input>
 
       </FormItem>
-      <!-- <FormItem label="积分抵扣付款" prop="money">
+      <!-- <FormItem label="喵币抵扣付款" prop="money">
         <Input type="number" v-model="formValidate.money">
-          <span slot="prepend">积分</span>
+          <span slot="prepend">喵币</span>
           <span slot="append"> = 1 人民币</span>
         </Input>
 
@@ -17,26 +17,26 @@
 
       <FormItem label="注册账号" prop="register">
         <Input type="number" v-model="formValidate.register">
-          <span slot="append">积分</span>
+          <span slot="append">喵币</span>
         </Input>
       </FormItem>
       <!-- <FormItem label="登录" class="label-item" prop="login">
         <Input type="number" v-model="formValidate.login">
 
-        <span slot="append">积分</span>
+        <span slot="append">喵币</span>
         </Input>
 
       </FormItem> -->
 
-      <FormItem label="每日签到积分" prop="signIn">
+      <FormItem label="每日签到喵币" prop="signIn">
         <Input type="number" v-model="formValidate.signIn">
-          <span slot="append">积分</span>
+          <span slot="append">喵币</span>
         </Input>
 
       </FormItem>
-      <FormItem label="订单评价赠送积分" prop="comment">
+      <FormItem label="订单评价赠送喵币" prop="comment">
         <Input type="number" v-model="formValidate.comment">
-          <span slot="append">积分</span>
+          <span slot="append">喵币</span>
         </Input>
 
       </FormItem>
@@ -51,7 +51,7 @@
 
           <Button ghost type="error" @click="delSign(point,index)">删除</Button>
           <span class="ml_10">签到<span class="theme_color">{{ point.day }}</span>天，赠送<span
-            class="theme_color">{{ point.point }}</span>积分</span>
+            class="theme_color">{{ point.point }}</span>喵币</span>
         </div>
 
       </FormItem>

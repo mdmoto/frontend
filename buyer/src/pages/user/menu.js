@@ -74,7 +74,7 @@ const member = [{
   },
   {
     icon: '',
-    title: '我的积分',
+    title: '我的喵币',
     path: 'Point'
   }
   ],

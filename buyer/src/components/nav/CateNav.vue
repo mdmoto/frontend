@@ -319,25 +319,25 @@ export default {
   width: 263.2px;
   color: #666;
   float: left;
-  overflow:hidden;
+  overflow-y: auto;  /* 改为可滚动 */
+  overflow-x: hidden;
 
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   background-color: #fff;
-  height: 340px;
-  ////自动移滚动条样式
-  //&::-webkit-scrollbar {
-  //  width: 1px;
-  //  height: 5px;
-  //}
-  //&::-webkit-scrollbar-thumb {
-  //  border-radius: 1em;
-  //  background-color: rgba(50, 50, 50, 0.3);
-  //}
-  //&::-webkit-scrollbar-track {
-  //  border-radius: 1em;
-  //  background-color: rgba(50, 50, 50, 0.1);
-  //}
+  height: 340px;  /* 保持原高度 */
+  // 滚动条样式
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: rgba(50, 50, 50, 0.3);
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background-color: rgba(50, 50, 50, 0.1);
+  }
 }
 .large-nav {
   height: 470px;
