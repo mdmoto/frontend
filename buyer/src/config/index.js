@@ -4,7 +4,7 @@ module.exports = {
   title:Cookie.get('siteName') || 'Maollar', //配置显示在浏览器标签的title、底部信息、部分信息展示的值
   icpCard: "", // icp证
   company: {
-    href: "https://www.maollar.com",
+    href: "https://shop.maollar.com",
     name: "Maollar",
   }, //公司信息
   icpMessage: "", //icp备案（海外服务器无需备案）
@@ -22,6 +22,6 @@ module.exports = {
   inputMaxLength:'140', //全局输入框默认最大输入长度字
 
 
-  PC_DOMAIN: "https://www.maollar.com", // PC端域名
+  PC_DOMAIN: "https://shop.maollar.com", // PC端域名
   WAP_DOMAIN: "https://m.maollar.com", // WAP端域名
 };

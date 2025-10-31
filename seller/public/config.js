@@ -17,7 +17,7 @@ var BASE = {
   /**
    * @description // 跳转买家端地址 pc端
    */
-  PC_URL: "https://www.maollar.com",
+  PC_URL: "https://shop.maollar.com",
   /**
    * @description  // 跳转买家端地址 wap端
    */
