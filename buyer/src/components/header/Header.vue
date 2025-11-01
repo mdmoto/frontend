@@ -8,9 +8,7 @@
         <ul class="flex">
           <li>Hi，欢迎来到{{ config.title }}</li>
           <li class="first" v-show="!userInfo.username">
-            <router-link :to="`/signUp`" class="nav-item">
-              <span>立即注册</span>
-            </router-link>
+            <span class="nav-item hover-pointer" @click="showRegisterNotice">立即注册</span>
           </li>
           <li v-show="!userInfo.username">
             <router-link class="nav-item" :to="`/login?rePath=${$route.path}&query=${JSON.stringify($route.query)}`">
@@ -183,6 +181,14 @@ export default {
           this.Cookies.setItem('cartNum', this.shoppingCart.length);
         });
       }
+    },
+    // 显示注册关闭提示
+    showRegisterNotice() {
+      this.$Modal.info({
+        title: '注册暂未开放',
+        content: '目前内测阶段，暂不支持注册，账户定向开放。<br/><br/>如有需求请联系：<a href="mailto:ss@maollar.com" style="color:#2d8cf0;">ss@maollar.com</a>',
+        okText: '知道了'
+      });
     }
   }
 };

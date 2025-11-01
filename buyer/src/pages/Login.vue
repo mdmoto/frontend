@@ -126,7 +126,7 @@
               </svg>
             </div>
             <div class="register">
-              <span style="color:red" @click="$router.push('signUp')">还没有账号？点击立即注册</span>
+              <span style="color:red" @click="showRegisterNotice">还没有账号？点击立即注册</span>
               <span @click="$router.push('forgetPassword')">忘记密码</span>
             </div>
           </div>
@@ -410,6 +410,14 @@ export default {
         }  else{
           this.clearQRLoginInfo();
         }
+      });
+    },
+    // 显示注册关闭提示
+    showRegisterNotice() {
+      this.$Modal.info({
+        title: '注册暂未开放',
+        content: '目前内测阶段，暂不支持注册，账户定向开放。<br/><br/>如有需求请联系：<a href="mailto:ss@maollar.com" style="color:#2d8cf0;">ss@maollar.com</a>',
+        okText: '知道了'
       });
     },
   },

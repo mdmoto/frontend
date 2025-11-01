@@ -206,11 +206,24 @@ export default {
       if (!this.verifyStatus) {
         this.$refs.verify.init();
       }
+    },
+    // 显示注册关闭提示
+    showRegisterNotice() {
+      this.$Modal.info({
+        title: '注册暂未开放',
+        content: '目前内测阶段，暂不支持注册，账户定向开放。<br/><br/>如有需求请联系：<a href="mailto:ss@maollar.com" style="color:#2d8cf0;">ss@maollar.com</a>',
+        okText: '知道了',
+        onOk: () => {
+          this.$router.push('/login');
+        }
+      });
     }
   },
   mounted () {
     this.$refs.formRegist.resetFields();
-    document.querySelector('.sign-up').style.height = window.innerHeight + 'px'
+    document.querySelector('.sign-up').style.height = window.innerHeight + 'px';
+    // 显示注册关闭提示
+    this.showRegisterNotice();
   }
 };
 </script>
