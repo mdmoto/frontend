@@ -110,23 +110,23 @@
           </Form>
         </div>
           <div class="other">
-            <div class="other-login">
-              <svg t="1631154795933" class="icon" @click="handleWebLogin('QQ')" viewBox="0 0 1024 1024" version="1.1"
-                  xmlns="http://www.w3.org/2000/svg" p-id="4969" width="32" height="32">
-                <path
-                  d="M824.8 613.2c-16-51.4-34.4-94.6-62.7-165.3C766.5 262.2 689.3 112 511.5 112 331.7 112 256.2 265.2 261 447.9c-28.4 70.8-46.7 113.7-62.7 165.3-34 109.5-23 154.8-14.6 155.8 18 2.2 70.1-82.4 70.1-82.4 0 49 25.2 112.9 79.8 159-26.4 8.1-85.7 29.9-71.6 53.8 11.4 19.3 196.2 12.3 249.5 6.3 53.3 6 238.1 13 249.5-6.3 14.1-23.8-45.3-45.7-71.6-53.8 54.6-46.2 79.8-110.1 79.8-159 0 0 52.1 84.6 70.1 82.4 8.5-1.1 19.5-46.4-14.5-155.8z"
-                  p-id="4970" fill="#1296db"></path>
-              </svg>
-              <svg t="1631154766336" class="icon" @click="handleWebLogin('WECHAT_PC')" viewBox="0 0 1024 1024"
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg" p-id="3844" width="32" height="32">
-                <path
-                  d="M683.058 364.695c11 0 22 1.016 32.943 1.976C686.564 230.064 538.896 128 370.681 128c-188.104 0.66-342.237 127.793-342.237 289.226 0 93.068 51.379 169.827 136.725 229.256L130.72 748.43l119.796-59.368c42.918 8.395 77.37 16.79 119.742 16.79 11 0 21.46-0.48 31.914-1.442a259.168 259.168 0 0 1-10.455-71.358c0.485-148.002 128.744-268.297 291.403-268.297l-0.06-0.06z m-184.113-91.992c25.99 0 42.913 16.79 42.913 42.575 0 25.188-16.923 42.579-42.913 42.579-25.45 0-51.38-16.85-51.38-42.58 0-25.784 25.93-42.574 51.38-42.574z m-239.544 85.154c-25.384 0-51.374-16.85-51.374-42.58 0-25.784 25.99-42.574 51.374-42.574 25.45 0 42.918 16.79 42.918 42.575 0 25.188-16.924 42.579-42.918 42.579z m736.155 271.655c0-135.647-136.725-246.527-290.983-246.527-162.655 0-290.918 110.88-290.918 246.527 0 136.128 128.263 246.587 290.918 246.587 33.972 0 68.423-8.395 102.818-16.85l93.809 50.973-25.93-84.677c68.907-51.93 120.286-119.815 120.286-196.033z m-385.275-42.58c-16.923 0-34.452-16.79-34.452-34.179 0-16.79 17.529-34.18 34.452-34.18 25.99 0 42.918 16.85 42.918 34.18 0 17.39-16.928 34.18-42.918 34.18z m188.165 0c-16.984 0-33.972-16.79-33.972-34.179 0-16.79 16.927-34.18 33.972-34.18 25.93 0 42.913 16.85 42.913 34.18 0 17.39-16.983 34.18-42.913 34.18z"
-                  fill="#09BB07" p-id="3845"></path>
-              </svg>
+            <div class="third-login">
+              <div class="third-login-item google" @click="handleWebLogin('GOOGLE')">
+                <svg viewBox="0 0 48 48" class="third-icon">
+                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.72 1.22 9.24 3.6l6.84-6.84C36.3 2.4 30.6 0 24 0 14.6 0 6.4 5.4 2.4 13.2l7.9 6.14C11.4 13.5 17 9.5 24 9.5z"/>
+                  <path fill="#4285F4" d="M46.5 24.5c0-1.64-.15-3.22-.43-4.74H24v9h12.7c-.55 2.96-2.23 5.47-4.74 7.16l7.66 5.94C43.58 37.8 46.5 31.88 46.5 24.5z"/>
+                  <path fill="#FBBC05" d="M11.7 28.14c-.68-2.02-1.07-4.17-1.07-6.39s.39-4.37 1.07-6.39l-7.9-6.14C1.4 12.71 0 18.16 0 23.5s1.4 10.79 3.8 14.28l7.9-6.14z"/>
+                  <path fill="#34A853" d="M24 47c6.6 0 12.2-2.17 16.26-5.88l-7.66-5.94c-2.13 1.44-4.87 2.27-8.6 2.27-6.99 0-12.9-4.74-15-11.07l-7.9 6.14C6.4 42.6 14.6 47 24 47z"/>
+                </svg>
+              </div>
+              <div class="third-login-item apple" @click="handleWebLogin('APPLE')">
+                <svg viewBox="0 0 48 48" class="third-icon">
+                  <path fill="#ffffff" d="M32.3 24.9c-.1 4 3.4 5.3 3.5 5.3-.4 1.3-2.2 4.5-4.4 4.5-1.3 0-2.2-.9-3.6-.9-1.5 0-2.5.9-3.7.9-1.9 0-4.7-3.4-4.7-7.7 0-3.6 2.4-5.5 4.6-5.5 1.4 0 2.6 1 3.5 1 1 0 2.4-1.2 4.1-1 .2.6.3 1.2.4 1.4zM28.7 16.5c.8-1 1.4-2.4 1.3-3.8-1.3.1-2.9.9-3.8 2-0.8.9-1.5 2.3-1.4 3.7 1.4.1 2.9-.8 3.9-1.9z"/>
+                </svg>
+              </div>
             </div>
             <div class="register">
-              <span style="color:red" @click="showRegisterNotice">还没有账号？点击立即注册</span>
+              <span class="register-link" @click="showRegisterNotice">还没有账号？点击立即注册</span>
               <span @click="$router.push('forgetPassword')">忘记密码</span>
             </div>
           </div>
@@ -415,8 +415,8 @@ export default {
     // 显示注册关闭提示
     showRegisterNotice() {
       this.$Modal.info({
-        title: '注册暂未开放',
-        content: '目前内测阶段，暂不支持注册，账户定向开放。<br/><br/>如有需求请联系：<a href="mailto:ss@maollar.com" style="color:#2d8cf0;">ss@maollar.com</a>',
+        title: '注册须知',
+        content: '平台当前采用邀请制注册，请输入正确的邀请码后继续。<br/><br/>如需获取邀请码，请联系：<a href="mailto:ss@maollar.com" style="color:#2d8cf0;">ss@maollar.com</a>',
         okText: '知道了'
       });
     },
@@ -472,6 +472,46 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.third-login {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.third-login-item {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+.third-login-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+}
+.third-login-item.google {
+  background: #ffffff;
+  border-color: #e0e0e0;
+}
+.third-login-item.apple {
+  background: #000000;
+  border-color: #000000;
+}
+.third-login-item .third-icon {
+  width: 28px;
+  height: 28px;
+}
+.register-link {
+  color: #ff5e00;
+  cursor: pointer;
+}
+.register-link:hover {
+  color: #ff8145;
 }
 .qr-container{
   text-align: center;
