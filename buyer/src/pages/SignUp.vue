@@ -17,6 +17,21 @@
           :rules="ruleInline"
           style="width:300px;"
         >
+          <!-- 邀请码输入（注册前必须验证） -->
+          <FormItem>
+            <i-input 
+              type="text" 
+              v-model="inviteCode" 
+              clearable 
+              placeholder="🔐 输入邀请码"
+              maxlength="20"
+              @on-input="checkInviteCode"
+              :class="{'invite-code-input': true, 'invite-code-valid': inviteCodeValid, 'invite-code-error': inviteCodeError}">
+              <Icon type="md-key" slot="prepend"></Icon>
+            </i-input>
+            <div v-if="inviteCodeError" class="invite-code-error-msg">{{ inviteCodeError }}</div>
+            <div v-if="inviteCodeValid" class="invite-code-success-msg">✓ 验证成功</div>
+          </FormItem>
           <FormItem prop="username">
             <i-input
               type="text"
@@ -37,14 +52,15 @@
               <Icon type="md-lock" slot="prepend"> </Icon>
             </i-input>
           </FormItem>
-          <FormItem prop="mobilePhone">
+          <!-- 邮箱注册 -->
+          <FormItem prop="email">
             <i-input
-              type="text"
-              v-model="formRegist.mobilePhone"
+              type="email"
+              v-model="formRegist.email"
               clearable
-              placeholder="手机号"
+              placeholder="邮箱地址"
             >
-              <Icon type="md-phone-portrait" slot="prepend"></Icon>
+              <Icon type="md-mail" slot="prepend"></Icon>
             </i-input>
           </FormItem>
           <FormItem prop="code">
@@ -52,21 +68,34 @@
               type="text"
               v-model="formRegist.code"
               clearable
-              placeholder="手机验证码"
+              placeholder="邮箱验证码"
             >
               <Icon
                 type="ios-text-outline"
                 style="font-weight: bold"
                 slot="prepend"
               />
-              <Button slot="append" @click="sendCode">{{ codeMsg }}</Button>
+              <Button slot="append" @click="sendCode" :disabled="!inviteCodeValid">{{ codeMsg }}</Button>
             </i-input>
+          </FormItem>
+          <!-- 手机号注册（稍后开放） -->
+          <FormItem>
+            <div class="mobile-register-disabled">
+              <i-input
+                type="text"
+                disabled
+                placeholder="手机号注册（稍后开放）"
+              >
+                <Icon type="md-phone-portrait" slot="prepend"></Icon>
+              </i-input>
+              <div class="disabled-hint">手机号注册功能即将开放，敬请期待</div>
+            </div>
           </FormItem>
           <FormItem>
             <Button @click="verifyBtnClick" long :type="verifyStatus?'success':'default'">{{verifyStatus?'验证通过':'点击完成安全验证'}}</Button>
           </FormItem>
           <FormItem>
-            <Button type="error" size="large" @click="handleRegist" long
+            <Button type="error" size="large" @click="handleRegist" long :disabled="!inviteCodeValid"
               >注册</Button
             >
           </FormItem>
@@ -101,7 +130,7 @@
 import * as RegExp from '@/plugins/RegExp.js';
 import { md5 } from '@/plugins/md5.js';
 import * as apiLogin from '@/api/login.js';
-import { sendSms } from '@/api/common.js';
+import { sendSms, sendEmail } from '@/api/common.js';
 import Verify from '@/components/verify';
 export default {
   name: 'SignUp',
@@ -112,7 +141,7 @@ export default {
       year: new Date().getFullYear(),
       formRegist: {
         // 注册表单
-        mobilePhone: '',
+        email: '',
         code: '',
         username: '',
         password: ''
@@ -124,30 +153,47 @@ export default {
           { required: true, message: '请输入密码' },
           { type: 'string', min: 6, message: '密码不能少于6位' }
         ],
-        mobilePhone: [
-          { required: true, message: '请输入手机号码' },
+        email: [
+          { required: true, message: '请输入邮箱地址' },
           {
-            pattern: RegExp.mobile,
+            type: 'email',
             trigger: 'blur',
-            message: '请输入正确的手机号'
+            message: '请输入正确的邮箱地址'
           }
         ],
-        code: [{ required: true, message: '请输入手机验证码' }]
+        code: [{ required: true, message: '请输入邮箱验证码' }]
       },
       verifyStatus: false, // 是否验证通过
       verifyType: 'REGISTER', // 验证状态
       codeMsg: '发送验证码', // 提示文字
       interval: '', // 定时器
-      time: 60 // 倒计时
+      time: 60, // 倒计时
+      // 邀请码相关
+      inviteCode: "",
+      inviteCodeValid: false,
+      inviteCodeError: "",
+      // 可用邀请码列表（与登录页面保持一致）
+      validInviteCodes: [
+        "OK4MOTO",  // 之前的邀请码
+        "LJVLP9", "2Z2RWY", "L96HWH", "FGHVKE", "PKZTYN",
+        "GV3AXJ", "6PBY6L", "BSA6ND", "B4E7YT", "FHWC3X"
+      ],
     };
   },
   methods: {
     // 注册
     handleRegist () {
+      // 检查邀请码
+      if (!this.inviteCodeValid) {
+        this.$Message.warning('请先输入正确的邀请码');
+        return;
+      }
       this.$refs.formRegist.validate((valid) => {
         if (valid) {
           let data = JSON.parse(JSON.stringify(this.formRegist));
           data.password = md5(data.password);
+          // 使用email而不是mobilePhone（后端接口需要修改以支持邮箱注册）
+          data.email = this.formRegist.email;
           apiLogin.regist(data).then((res) => {
             if (res.success) {
               this.$Message.success('注册成功!');
@@ -155,15 +201,36 @@ export default {
             } else {
               this.$Message.warning(res.message);
             }
+          }).catch(err => {
+            this.$Message.error('注册失败，请稍后重试');
           });
         } else {}
       });
     },
-    // 发送短信验证码
+    // 检查邀请码
+    checkInviteCode() {
+      const code = this.inviteCode.trim().toUpperCase();
+      if (this.validInviteCodes.includes(code)) {
+        this.inviteCodeValid = true;
+        this.inviteCodeError = "";
+      } else if (code.length > 0) {
+        this.inviteCodeValid = false;
+        this.inviteCodeError = "邀请码错误，请重新输入";
+      } else {
+        this.inviteCodeValid = false;
+        this.inviteCodeError = "";
+      }
+    },
+    // 发送邮箱验证码
     sendCode () {
       if (this.time === 60) {
-        if (this.formRegist.mobilePhone === '') {
-          this.$Message.warning('请先填写手机号');
+        // 检查邀请码
+        if (!this.inviteCodeValid) {
+          this.$Message.warning('请先输入正确的邀请码');
+          return;
+        }
+        if (this.formRegist.email === '') {
+          this.$Message.warning('请先填写邮箱地址');
           return;
         }
         if (!this.verifyStatus) {
@@ -171,12 +238,12 @@ export default {
           return;
         }
         let params = {
-          mobile: this.formRegist.mobilePhone,
+          email: this.formRegist.email,
           verificationEnums: 'REGISTER'
         };
-        sendSms(params).then(res => {
+        sendEmail(params).then(res => {
           if (res.success) {
-            this.$Message.success('验证码发送成功');
+            this.$Message.success('验证码发送成功，请查收邮箱');
             let that = this;
             this.interval = setInterval(() => {
               that.time--;
@@ -192,6 +259,8 @@ export default {
           } else {
             this.$Message.warning(res.message);
           }
+        }).catch(err => {
+          this.$Message.error('验证码发送失败，请稍后重试');
         });
       }
     },
@@ -207,23 +276,11 @@ export default {
         this.$refs.verify.init();
       }
     },
-    // 显示注册关闭提示
-    showRegisterNotice() {
-      this.$Modal.info({
-        title: '注册暂未开放',
-        content: '目前内测阶段，暂不支持注册，账户定向开放。<br/><br/>如有需求请联系：<a href="mailto:ss@maollar.com" style="color:#2d8cf0;">ss@maollar.com</a>',
-        okText: '知道了',
-        onOk: () => {
-          this.$router.push('/login');
-        }
-      });
-    }
   },
   mounted () {
     this.$refs.formRegist.resetFields();
     document.querySelector('.sign-up').style.height = window.innerHeight + 'px';
-    // 显示注册关闭提示
-    this.showRegisterNotice();
+    // 移除注册关闭提示，允许正常注册
   }
 };
 </script>
@@ -263,6 +320,39 @@ export default {
   left: 140px;
   top: 80px;
   z-index: 10;
+}
+
+.invite-code-input {
+  &.invite-code-valid {
+    border-color: #19be6b;
+  }
+  
+  &.invite-code-error {
+    border-color: #ed4014;
+  }
+}
+
+.invite-code-error-msg {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #ed4014;
+}
+
+.invite-code-success-msg {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #19be6b;
+}
+
+.mobile-register-disabled {
+  position: relative;
+  
+  .disabled-hint {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #999;
+    font-style: italic;
+  }
 }
 
 .other-login {

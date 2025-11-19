@@ -33,6 +33,18 @@ export function sendSms (params) {
   });
 }
 
+/**
+ * 发送邮箱验证码
+ */
+export function sendEmail (params) {
+  return request({
+    url: `${commonUrl}/common/common/email/${params.verificationEnums}/${params.email}`,
+    method: Method.GET,
+    needToken: false,
+    params
+  });
+}
+
 // 地区数据，用于三级联动
 export function getRegion (id) {
   return request({
