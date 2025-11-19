@@ -103,7 +103,11 @@ export default {
   mounted() {
     // 初始化时设置tabWay
     const routeName = this.$route.name;
-    if (routeName === 'setting-manage' || routeName === 'setting') {
+    console.log('当前路由名称:', routeName);
+    console.log('可用配置:', Object.keys(this).filter(k => ['setting', 'authLogin', 'pay'].includes(k)));
+    
+    // 支持多种路由名称匹配
+    if (routeName === 'setting-manage' || routeName === 'setting' || routeName === 'settingManage') {
       this.tabWay = this.setting;
     } else if (routeName === 'authLogin' || routeName === 'auth-login') {
       this.tabWay = this.authLogin;
@@ -117,6 +121,14 @@ export default {
         }
       });
     }
+    
+    // 如果tabWay还是空，默认使用setting
+    if (!this.tabWay || this.tabWay.length === 0) {
+      console.warn('tabWay为空，使用默认setting配置');
+      this.tabWay = this.setting;
+    }
+    
+    console.log('初始化后的tabWay:', this.tabWay);
     this.clickTab(this.selected);
   },
   methods: {
