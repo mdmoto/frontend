@@ -3,7 +3,7 @@
   <Card v-if="show">
     <Tabs v-model="selected" @on-click="clickTab">
       <TabPane :label="tabItem.name" :name="tabItem.type" v-for="(tabItem, tabIndex) in tabWay" :key="tabIndex">
-        <component v-if="settingData" :res="settingData" :type="selected"
+        <component v-if="settingData || tabItem.type === selected" :res="settingData || '{}'" :type="selected"
                    :is="templateSetting[tabItem.type]"></component>
       </TabPane>
     </Tabs>
@@ -132,10 +132,14 @@ export default {
     this.tabWay = this.setting;
     console.log('初始化tabWay为setting，包含', this.tabWay.length, '个标签页');
     console.log('标签页列表:', this.tabWay.map(t => t.name));
+    console.log('是否包含邮箱配置:', this.tabWay.some(t => t.type === 'EMAIL_SETTING'));
     
     // 确保settingData有初始值，避免组件无法渲染
-    if (!this.settingData) {
-      this.settingData = JSON.stringify({});
+    this.settingData = JSON.stringify({});
+    
+    // 如果没有选中项，选择第一个
+    if (!this.selected && this.tabWay.length > 0) {
+      this.selected = this.tabWay[0].type;
     }
     
     this.clickTab(this.selected);
