@@ -94,6 +94,26 @@ export default {
     $route(to, from) {
       this.selected = "";
       this.show = false;
+      // 路由变化时重新初始化tabWay
+      const routeName = to.name;
+      console.log('路由变化，新路由名称:', routeName);
+      if (routeName === 'setting-manage' || routeName === 'setting' || routeName === 'settingManage') {
+        this.tabWay = this.setting;
+      } else if (routeName === 'authLogin' || routeName === 'auth-login') {
+        this.tabWay = this.authLogin;
+      } else if (routeName === 'pay' || routeName === 'payment') {
+        this.tabWay = this.pay;
+      } else {
+        Object.keys(this).forEach((item) => {
+          if (routeName == item) {
+            this.tabWay = this[item];
+          }
+        });
+      }
+      if (!this.tabWay || this.tabWay.length === 0) {
+        this.tabWay = this.setting;
+      }
+      console.log('路由变化后的tabWay:', this.tabWay);
       this.getSettingData(this.selected);
       this.$nextTick(() => {
         this.show = true;
