@@ -155,7 +155,14 @@ export default {
       getSetting(name).then((res) => {
         if (res.result) {
           this.settingData = JSON.stringify(res.result);
+        } else {
+          // 如果没有数据，也设置一个空对象，确保组件能渲染
+          this.settingData = JSON.stringify({});
         }
+      }).catch((err) => {
+        console.error('获取设置失败:', err);
+        // 即使API失败，也设置空对象，确保组件能渲染
+        this.settingData = JSON.stringify({});
       });
     },
   },
