@@ -4,8 +4,7 @@
       <div class="col">
         <Card :padding="0">
           <div class="icon-item">
-            <img class="icon" src="../../../../assets/setting/google.svg" alt="Google" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <div style="display:none; font-size: 48px; color: #4285F4;">G</div>
+            <div style="font-size: 48px; color: #4285F4; font-weight: bold;">G</div>
           </div>
           <div class='pay-title'>Google OAuth 2.0 登录</div>
           <Divider orientation="left">登录设置</Divider>
