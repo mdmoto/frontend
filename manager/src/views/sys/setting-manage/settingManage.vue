@@ -57,6 +57,11 @@ export default {
           type: "SMS_SETTING",
           name: "短信配置",
         },
+        //邮箱配置
+        {
+          type: "EMAIL_SETTING",
+          name: "邮箱配置",
+        },
         //阿里短信配置
         {
           type: "IM_SETTING",
@@ -70,6 +75,8 @@ export default {
         {type: "WECHAT_CONNECT", name: "微信设置"},
         // QQ设置
         {type: "QQ_CONNECT", name: "QQ设置"},
+        // Google OAuth 设置
+        {type: "GOOGLE_CONNECT", name: "Google登录设置"},
       ],
       pay: [
         //支付宝支付设置
@@ -107,11 +114,22 @@ export default {
      */
     getSettingData(name) {
       this.settingData = "";
-      Object.keys(this).forEach((item) => {
-        if (this.$route.name == item) {
-          this.tabWay = this[item];
-        }
-      });
+      // 支持多种路由名称匹配
+      const routeName = this.$route.name;
+      if (routeName === 'setting-manage' || routeName === 'setting') {
+        this.tabWay = this.setting;
+      } else if (routeName === 'authLogin' || routeName === 'auth-login') {
+        this.tabWay = this.authLogin;
+      } else if (routeName === 'pay' || routeName === 'payment') {
+        this.tabWay = this.pay;
+      } else {
+        // 原有的匹配逻辑
+        Object.keys(this).forEach((item) => {
+          if (routeName == item) {
+            this.tabWay = this[item];
+          }
+        });
+      }
       // 点击页面给每项第一个数据赋值
       if (!name) {
         name = this.tabWay[0].type;

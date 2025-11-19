@@ -5,6 +5,7 @@ import POINT_SETTING from "./setting/POINT_SETTING";
 import LOGISTICS_SETTING from "./setting/LOGISTICS_SETTING";
 import OSS_SETTING from "./setting/OSS_SETTING";
 import SMS_SETTING from "./setting/SMS_SETTING";
+import EMAIL_SETTING from "./setting/EMAIL_SETTING";
 import IM_SETTING from "./setting/IM_SETTING";
 import WITHDRAWAL_SETTING from "./setting/WITHDRAWAL_SETTING";
 import ALIPAY_PAYMENT from "./pay/ALIPAY_PAYMENT";
@@ -12,6 +13,7 @@ import WECHAT_PAYMENT from "./pay/WECHAT_PAYMENT";
 import PAYMENT_SUPPORT from "./pay/PAYMENT_SUPPORT";
 import WECHAT_CONNECT from "./authLogin/WECHAT_CONNECT";
 import QQ_CONNECT from "./authLogin/QQ_CONNECT";
+import GOOGLE_CONNECT from "./authLogin/GOOGLE_CONNECT";
 import CONNECT_SETTING from "./authLogin/CONNECT_SETTING";
 
 export default {
@@ -22,6 +24,7 @@ export default {
   LOGISTICS_SETTING,
   OSS_SETTING,
   SMS_SETTING,
+  EMAIL_SETTING,
   IM_SETTING,
   WITHDRAWAL_SETTING,
   PAYMENT_SUPPORT,
@@ -29,5 +32,6 @@ export default {
   ALIPAY_PAYMENT,
   WECHAT_CONNECT,
   CONNECT_SETTING,
-  QQ_CONNECT
+  QQ_CONNECT,
+  GOOGLE_CONNECT
 };

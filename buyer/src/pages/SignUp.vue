@@ -37,23 +37,6 @@
               <Icon type="md-lock" slot="prepend"> </Icon>
             </i-input>
           </FormItem>
-          <FormItem prop="inviteCode">
-            <i-input
-              type="text"
-              v-model="formRegist.inviteCode"
-              clearable
-              placeholder="请输入邀请码"
-              @on-change="checkInviteCode"
-            >
-              <Icon type="md-key" slot="prepend"></Icon>
-            </i-input>
-            <div class="invite-status" v-if="inviteCodeValid">
-              <Icon type="md-checkmark" color="#19be6b" /> 已验证
-            </div>
-            <div class="invite-status error" v-else-if="inviteCodeError">
-              <Icon type="md-close" color="#ed4014" /> {{ inviteCodeError }}
-            </div>
-          </FormItem>
           <FormItem prop="mobilePhone">
             <i-input
               type="text"
@@ -76,28 +59,16 @@
                 style="font-weight: bold"
                 slot="prepend"
               />
-              <Button
-                slot="append"
-                @click="sendCode"
-                :disabled="!inviteCodeValid || time !== 60"
-              >
-                {{ inviteCodeValid ? codeMsg : '请输入邀请码' }}
-              </Button>
+              <Button slot="append" @click="sendCode">{{ codeMsg }}</Button>
             </i-input>
           </FormItem>
           <FormItem>
             <Button @click="verifyBtnClick" long :type="verifyStatus?'success':'default'">{{verifyStatus?'验证通过':'点击完成安全验证'}}</Button>
           </FormItem>
           <FormItem>
-            <Button
-              type="error"
-              size="large"
-              :disabled="!inviteCodeValid"
-              @click="handleRegist"
-              long
+            <Button type="error" size="large" @click="handleRegist" long
+              >注册</Button
             >
-              {{ inviteCodeValid ? '注册' : '请输入邀请码后注册' }}
-            </Button>
           </FormItem>
           <FormItem><span class="color999 ml_20">点击注册，表示您同意《<router-link to="/article?id=1371992704333905920" target="_blank">商城用户协议</router-link>》</span></FormItem>
         </Form>
@@ -144,8 +115,7 @@ export default {
         mobilePhone: '',
         code: '',
         username: '',
-        password: '',
-        inviteCode: ''
+        password: ''
       },
       ruleInline: {
         // 验证规则
@@ -154,7 +124,6 @@ export default {
           { required: true, message: '请输入密码' },
           { type: 'string', min: 6, message: '密码不能少于6位' }
         ],
-        inviteCode: [{ required: true, message: '请输入邀请码' }],
         mobilePhone: [
           { required: true, message: '请输入手机号码' },
           {
@@ -169,32 +138,15 @@ export default {
       verifyType: 'REGISTER', // 验证状态
       codeMsg: '发送验证码', // 提示文字
       interval: '', // 定时器
-      time: 60, // 倒计时
-      correctInviteCode: 'OK4moto',
-      inviteCodeValid: false,
-      inviteCodeError: ''
+      time: 60 // 倒计时
     };
-  },
-  watch: {
-    'formRegist.inviteCode' () {
-      this.checkInviteCode();
-    }
   },
   methods: {
     // 注册
     handleRegist () {
-      if (!this.inviteCodeValid) {
-        this.$Message.warning('请先输入正确的邀请码');
-        return;
-      }
-      if (!this.verifyStatus) {
-        this.$Message.warning('请先完成安全验证');
-        return;
-      }
       this.$refs.formRegist.validate((valid) => {
         if (valid) {
           let data = JSON.parse(JSON.stringify(this.formRegist));
-          delete data.inviteCode;
           data.password = md5(data.password);
           apiLogin.regist(data).then((res) => {
             if (res.success) {
@@ -212,10 +164,6 @@ export default {
       if (this.time === 60) {
         if (this.formRegist.mobilePhone === '') {
           this.$Message.warning('请先填写手机号');
-          return;
-        }
-        if (!this.inviteCodeValid) {
-          this.$Message.warning('请输入正确的邀请码');
           return;
         }
         if (!this.verifyStatus) {
@@ -247,35 +195,6 @@ export default {
         });
       }
     },
-    // 重置验证码倒计时
-    resetCountdown () {
-      if (this.interval) {
-        clearInterval(this.interval);
-        this.interval = '';
-      }
-      this.time = 60;
-      this.codeMsg = '发送验证码';
-    },
-    // 邀请码校验
-    checkInviteCode () {
-      const code = (this.formRegist.inviteCode || '').trim();
-      if (!code) {
-        this.inviteCodeValid = false;
-        this.inviteCodeError = '';
-        this.verifyStatus = false;
-        this.resetCountdown();
-        return;
-      }
-      if (code.toUpperCase() === this.correctInviteCode.toUpperCase()) {
-        this.inviteCodeValid = true;
-        this.inviteCodeError = '';
-      } else {
-        this.inviteCodeValid = false;
-        this.inviteCodeError = '邀请码不正确';
-        this.verifyStatus = false;
-        this.resetCountdown();
-      }
-    },
     // 图片验证码成功回调
     verifyChange (con) {
       if (!con.status) return;
@@ -291,9 +210,12 @@ export default {
     // 显示注册关闭提示
     showRegisterNotice() {
       this.$Modal.info({
-        title: '注册须知',
-        content: '平台当前采用邀请制注册，请输入正确的邀请码后继续。<br/><br/>如需获取邀请码，请联系：<a href="mailto:ss@maollar.com" style="color:#2d8cf0;">ss@maollar.com</a>',
-        okText: '知道了'
+        title: '注册暂未开放',
+        content: '目前内测阶段，暂不支持注册，账户定向开放。<br/><br/>如有需求请联系：<a href="mailto:ss@maollar.com" style="color:#2d8cf0;">ss@maollar.com</a>',
+        okText: '知道了',
+        onOk: () => {
+          this.$router.push('/login');
+        }
       });
     }
   },
@@ -302,38 +224,10 @@ export default {
     document.querySelector('.sign-up').style.height = window.innerHeight + 'px';
     // 显示注册关闭提示
     this.showRegisterNotice();
-    this.checkInviteCode();
-  },
-  beforeDestroy () {
-    if (this.interval) {
-      clearInterval(this.interval);
-      this.interval = '';
-    }
   }
 };
 </script>
 <style scoped lang="scss">
-.invite-status {
-  font-size: 12px;
-  margin-top: 6px;
-  color: #19be6b;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  &.error {
-    color: #ed4014;
-  }
-}
-
-.sign-up :deep(.ivu-input[disabled]) {
-  cursor: not-allowed;
-}
-
-.sign-up :deep(.ivu-btn[disabled]) {
-  background: #f3f3f3;
-  color: #c5c8ce;
-}
-
 .logo-box {
   width: 600px;
   height: 80px;
