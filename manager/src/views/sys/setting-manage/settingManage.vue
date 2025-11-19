@@ -101,6 +101,22 @@ export default {
     },
   },
   mounted() {
+    // 初始化时设置tabWay
+    const routeName = this.$route.name;
+    if (routeName === 'setting-manage' || routeName === 'setting') {
+      this.tabWay = this.setting;
+    } else if (routeName === 'authLogin' || routeName === 'auth-login') {
+      this.tabWay = this.authLogin;
+    } else if (routeName === 'pay' || routeName === 'payment') {
+      this.tabWay = this.pay;
+    } else {
+      // 原有的匹配逻辑
+      Object.keys(this).forEach((item) => {
+        if (routeName == item) {
+          this.tabWay = this[item];
+        }
+      });
+    }
     this.clickTab(this.selected);
   },
   methods: {
