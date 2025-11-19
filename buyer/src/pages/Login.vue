@@ -19,21 +19,45 @@
       </Carousel>
       <!-- 登录模块 -->
       <div class="form-box" @click='$refs.verify.show = false'>
-        <div class="account-number">
-          <div class="tab-switch">
-            <span>{{ type ? '账号登录' : '验证码登录' }}</span>
-            <span @click="type = !type,scannerCodeLoginFLag=false">{{ type ? '验证码登录' : '账号登录' }}</span>
-          </div>
-          <!---->
-          <div @click="scannerCodeLoginFLag=!scannerCodeLoginFLag">{{!scannerCodeLoginFLag ? '扫码登录' : '返回'}}</div>
+        <!-- 统一邀请码输入（仅在需要时显示） -->
+        <div v-if="!type || showThirdParty" class="invite-code-wrapper">
+          <FormItem>
+            <i-input 
+              type="text" 
+              v-model="inviteCode" 
+              clearable 
+              placeholder="🔐 输入邀请码（第三方登录需要）"
+              maxlength="20"
+              @on-input="checkInviteCode"
+              :class="{'invite-code-input': true, 'invite-code-valid': inviteCodeValid, 'invite-code-error': inviteCodeError}">
+              <Icon type="md-key" slot="prepend"></Icon>
+            </i-input>
+            <div v-if="inviteCodeError" class="invite-code-error-msg">{{ inviteCodeError }}</div>
+            <div v-if="inviteCodeValid" class="invite-code-success-msg">✓ 验证成功</div>
+          </FormItem>
         </div>
-        <!--扫码登录-->
-        <div v-show="scannerCodeLoginFLag">
+
+        <!-- 登录方式切换 -->
+        <div class="login-tabs">
+          <div class="tab-item" :class="{active: type && !scannerCodeLoginFLag}" @click="switchToAccountLogin">
+            <Icon type="md-person" />
+            <span>账号登录</span>
+          </div>
+          <div class="tab-item" :class="{active: !type && !scannerCodeLoginFLag}" @click="switchToSmsLogin">
+            <Icon type="ios-text-outline" />
+            <span>验证码登录</span>
+          </div>
+          <div class="tab-item" :class="{active: scannerCodeLoginFLag}" @click="switchToQrLogin">
+            <Icon type="md-qr-scanner" />
+            <span>扫码登录</span>
+          </div>
+        </div>
+
+        <!-- 扫码登录 -->
+        <div v-show="scannerCodeLoginFLag" class="qr-login-section">
           <div class="qr-container">
             <div class='qr-shadow flex' v-show="qrCodeStatus == 'fail'">
-              <span>
-                二维码已失效
-              </span>
+              <span>二维码已失效</span>
               <Button size='small' @click="createPCLoginSession">刷新二维码</Button>
             </div>
             <vue-qr
@@ -44,147 +68,110 @@
               :size="150"
             ></vue-qr>
           </div>
-          <div class="drag-area">
-          <!--    等待扫码-->
-          <div v-if="scannerCodeLoginStatus === 0" class="pending-scan">
-            <p>打开手机App/小程序，扫码登录</p>
-          </div>
-          <!--    已经扫码-->
-          <div v-else-if="scannerCodeLoginStatus === 1" class="scanned">
-            <p>扫码成功，等待确认</p>
-          </div>
-
-          <!--    存在session，等待发送给客户端验证-->
-          <div v-if="scannerCodeLoginStatus === 2" class="scanned">
-            <p>登录成功，正在页面跳转</p>
-          </div>
-
-          <!--    已经发送登录请求-->
-          <div v-else-if="scannerCodeLoginStatus === 3" class="quick-logining">
-            <p>取消登录</p>
-          </div>
-        </div>
-        </div>
-
-        <div>
-          <div v-show="!scannerCodeLoginFLag">
-          <!-- 账号密码登录 -->
-          <Form ref="formInline" :model="formData" :rules="ruleInline" v-show="type === true"
-                @click.self='$refs.verify.show = false'>
-            <FormItem prop="username">
-              <i-input type="text" v-model="formData.username" clearable placeholder="用户名">
-                <Icon type="md-person" slot="prepend"></Icon>
-              </i-input>
-            </FormItem>
-            <FormItem prop="password">
-              <i-input type="password" v-model="formData.password" clearable placeholder="密码">
-                <Icon type="md-lock" slot="prepend"></Icon>
-              </i-input>
-            </FormItem>
-            <FormItem>
-              <Button type="error" @click.stop="handleSubmit('formInline')" long>登录</Button>
-            </FormItem>
-          </Form>
-          <!-- 验证码登录 -->
-          <Form ref="formSms" :model="formSms" :rules="ruleInline" v-show="type === false"
-                @click.self='$refs.verify.show = false'>
-            <!-- 邀请码输入（手机号登录时需要） -->
-            <FormItem>
-              <i-input 
-                type="text" 
-                v-model="inviteCode" 
-                clearable 
-                placeholder="🔐 输入邀请码"
-                maxlength="20"
-                @on-input="checkInviteCode"
-                :class="{'invite-code-input': true, 'invite-code-valid': inviteCodeValid, 'invite-code-error': inviteCodeError}">
-                <Icon type="md-key" slot="prepend"></Icon>
-              </i-input>
-              <div v-if="inviteCodeError" class="invite-code-error-msg">{{ inviteCodeError }}</div>
-              <div v-if="inviteCodeValid" class="invite-code-success-msg">✓ 验证成功</div>
-            </FormItem>
-            <FormItem prop="mobile">
-              <i-input type="text" v-model="formSms.mobile" clearable placeholder="手机号">
-                <Icon type="md-lock" slot="prepend"></Icon>
-              </i-input>
-            </FormItem>
-            <FormItem prop="code">
-              <i-input type="text" v-model="formSms.code" placeholder="手机验证码">
-                <Icon type="ios-text-outline" style="font-weight: bold" slot="prepend"/>
-                <Button slot="append" @click="sendCode" :disabled="!inviteCodeValid">{{ codeMsg }}</Button>
-              </i-input>
-            </FormItem>
-            <FormItem>
-              <Button @click.stop="verifyBtnClick" long
-                      :type="verifyStatus?'success':'default'">{{ verifyStatus ? '验证通过' : '点击完成安全验证' }}
-              </Button>
-            </FormItem>
-            <FormItem>
-              <Button type="error" @click="handleSubmit('formSms')" long :disabled="!inviteCodeValid">登录</Button>
-            </FormItem>
-          </Form>
-        </div>
-          <div class="other">
-            <!-- 第三方登录区域（需要邀请码） -->
-            <div class="third-party-section">
-              <div class="section-divider">
-                <div class="divider-line"></div>
-                <div class="divider-text">第三方账号登录</div>
-                <div class="divider-line"></div>
-              </div>
-              
-              <!-- 邀请码输入 -->
-              <div class="invite-code-section">
-                <FormItem>
-                  <i-input 
-                    type="text" 
-                    v-model="inviteCode" 
-                    clearable 
-                    placeholder="🔐 输入邀请码"
-                    maxlength="20"
-                    @on-input="checkInviteCode"
-                    :class="{'invite-code-input': true, 'invite-code-valid': inviteCodeValid, 'invite-code-error': inviteCodeError}">
-                    <Icon type="md-key" slot="prepend"></Icon>
-                  </i-input>
-                  <div v-if="inviteCodeError" class="invite-code-error-msg">{{ inviteCodeError }}</div>
-                  <div v-if="inviteCodeValid" class="invite-code-success-msg">✓ 验证成功</div>
-                </FormItem>
-              </div>
-
-              <!-- Google/Apple 登录按钮 -->
-              <div class="other-login">
-                <div 
-                  class="login-btn-google" 
-                  :class="{'disabled': !inviteCodeValid}"
-                  @click="handleGoogleLogin">
-                  <svg t="1631154766336" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                      xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-                    <path d="M881 442.4H519.7v148.5h206.4c-8.9 48-35.9 88.6-76.6 115.8-34.4 23-78.3 36.6-129.9 36.6-99.9 0-184.4-67.5-214.6-158.2-9.9-29.5-15.6-61.3-15.6-95.2 0-33.9 5.7-65.7 15.6-95.2C280.1 178.8 364.6 111.3 464.5 111.3c56.3 0 106.8 19.4 146.6 57.4l110-110.1C629.8 22 561.2 0 484.1 0 210.9 0 0 210.9 0 484.1s210.9 484.1 484.1 484.1c268 0 482.4-190.3 482.4-458.4 0-19.4-1.4-38.4-4.2-57.4z" fill="#4285F4"></path>
-                  </svg>
-                  <span>Google</span>
-                </div>
-                <div 
-                  class="login-btn-apple disabled" 
-                  @click="handleAppleLogin">
-                  <svg t="1631154766336" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                      xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-                    <path d="M747.4 535.7c1-85.6 73.7-126.6 77-128.5-41.9-61.3-107.1-69.7-130.3-70.7-55.4-5.6-108.2 32.6-136.2 32.6-28.5 0-70.3-31.7-115.8-30.8-59.6 0.9-114.7 34.7-145.5 88.1-62 107.6-15.9 267 44.7 354.4 29.4 42.2 64.5 89.5 110.6 87.8 44.3-1.8 61-28.7 114.6-28.7 53.7 0 68.7 28.7 115.5 27.8 47.8-0.9 78.3-42.5 107.6-84.7 33.9-49.5 47.8-97.4 48.6-99.8-1.1-0.5-93.5-35.9-94.5-142.7zM655.9 154.9c24.7-30 41.3-71.7 36.8-113.3-35.6 1.5-78.7 23.7-104.3 53.8-23 26.6-43.1 69.1-37.7 109.9 39.6 3.1 80.1-20.1 105.2-50.4z" fill="#000000"></path>
-                  </svg>
-                  <span>Apple</span>
-                </div>
-              </div>
-              <div class="invite-code-hint" v-if="!inviteCodeValid">
-                输入邀请码后可使用 Google/Apple 登录
-              </div>
+          <div class="qr-status">
+            <div v-if="scannerCodeLoginStatus === 0" class="status-text pending">
+              <Icon type="ios-information-circle-outline" />
+              <span>打开手机App/小程序，扫码登录</span>
             </div>
-            <div class="register">
-              <span style="color:red" @click="showRegisterNotice">还没有账号？点击立即注册</span>
-              <span @click="$router.push('forgetPassword')">忘记密码</span>
+            <div v-else-if="scannerCodeLoginStatus === 1" class="status-text scanned">
+              <Icon type="ios-checkmark-circle-outline" />
+              <span>扫码成功，等待确认</span>
+            </div>
+            <div v-else-if="scannerCodeLoginStatus === 2" class="status-text success">
+              <Icon type="ios-checkmark-circle" />
+              <span>登录成功，正在页面跳转</span>
+            </div>
+            <div v-else-if="scannerCodeLoginStatus === 3" class="status-text cancelled">
+              <Icon type="ios-close-circle-outline" />
+              <span>已取消登录</span>
             </div>
           </div>
+        </div>
+
+        <!-- 账号密码登录 -->
+        <Form ref="formInline" :model="formData" :rules="ruleInline" v-show="type === true && !scannerCodeLoginFLag"
+              @click.self='$refs.verify.show = false'>
+          <FormItem prop="username">
+            <i-input type="text" v-model="formData.username" clearable placeholder="用户名/邮箱/手机号">
+              <Icon type="md-person" slot="prepend"></Icon>
+            </i-input>
+          </FormItem>
+          <FormItem prop="password">
+            <i-input type="password" v-model="formData.password" clearable placeholder="密码">
+              <Icon type="md-lock" slot="prepend"></Icon>
+            </i-input>
+          </FormItem>
+          <FormItem>
+            <Button type="error" @click.stop="handleSubmit('formInline')" long size="large">登录</Button>
+          </FormItem>
+        </Form>
+
+        <!-- 验证码登录 -->
+        <Form ref="formSms" :model="formSms" :rules="ruleInline" v-show="type === false && !scannerCodeLoginFLag"
+              @click.self='$refs.verify.show = false'>
+          <FormItem prop="mobile">
+            <i-input type="text" v-model="formSms.mobile" clearable placeholder="手机号">
+              <Icon type="ios-phone-portrait" slot="prepend"></Icon>
+            </i-input>
+          </FormItem>
+          <FormItem prop="code">
+            <i-input type="text" v-model="formSms.code" placeholder="手机验证码">
+              <Icon type="ios-text-outline" slot="prepend"/>
+              <Button slot="append" @click="sendCode" :disabled="!inviteCodeValid || !verifyStatus">{{ codeMsg }}</Button>
+            </i-input>
+          </FormItem>
+          <FormItem>
+            <Button @click.stop="verifyBtnClick" long
+                    :type="verifyStatus?'success':'default'">
+              {{ verifyStatus ? '✓ 安全验证通过' : '点击完成安全验证' }}
+            </Button>
+          </FormItem>
+          <FormItem>
+            <Button type="error" @click="handleSubmit('formSms')" long :disabled="!inviteCodeValid" size="large">登录</Button>
+          </FormItem>
+        </Form>
+
+        <!-- 第三方登录 -->
+        <div v-if="showThirdParty" class="third-party-section">
+          <div class="section-divider">
+            <div class="divider-line"></div>
+            <div class="divider-text">或使用第三方账号</div>
+            <div class="divider-line"></div>
+          </div>
+          <div class="other-login">
+            <div 
+              class="login-btn-google" 
+              :class="{'disabled': !inviteCodeValid}"
+              @click="handleGoogleLogin">
+              <svg t="1631154766336" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                  xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+                <path d="M881 442.4H519.7v148.5h206.4c-8.9 48-35.9 88.6-76.6 115.8-34.4 23-78.3 36.6-129.9 36.6-99.9 0-184.4-67.5-214.6-158.2-9.9-29.5-15.6-61.3-15.6-95.2 0-33.9 5.7-65.7 15.6-95.2C280.1 178.8 364.6 111.3 464.5 111.3c56.3 0 106.8 19.4 146.6 57.4l110-110.1C629.8 22 561.2 0 484.1 0 210.9 0 0 210.9 0 484.1s210.9 484.1 484.1 484.1c268 0 482.4-190.3 482.4-458.4 0-19.4-1.4-38.4-4.2-57.4z" fill="#4285F4"></path>
+              </svg>
+              <span>Google</span>
+            </div>
+            <div 
+              class="login-btn-apple disabled" 
+              @click="handleAppleLogin">
+              <svg t="1631154766336" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                  xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+                <path d="M747.4 535.7c1-85.6 73.7-126.6 77-128.5-41.9-61.3-107.1-69.7-130.3-70.7-55.4-5.6-108.2 32.6-136.2 32.6-28.5 0-70.3-31.7-115.8-30.8-59.6 0.9-114.7 34.7-145.5 88.1-62 107.6-15.9 267 44.7 354.4 29.4 42.2 64.5 89.5 110.6 87.8 44.3-1.8 61-28.7 114.6-28.7 53.7 0 68.7 28.7 115.5 27.8 47.8-0.9 78.3-42.5 107.6-84.7 33.9-49.5 47.8-97.4 48.6-99.8-1.1-0.5-93.5-35.9-94.5-142.7zM655.9 154.9c24.7-30 41.3-71.7 36.8-113.3-35.6 1.5-78.7 23.7-104.3 53.8-23 26.6-43.1 69.1-37.7 109.9 39.6 3.1 80.1-20.1 105.2-50.4z" fill="#000000"></path>
+              </svg>
+              <span>Apple</span>
+            </div>
+          </div>
+          <div class="invite-code-hint" v-if="!inviteCodeValid">
+            <Icon type="ios-information-circle-outline" />
+            <span>输入邀请码后可使用第三方登录</span>
+          </div>
+        </div>
+
+        <!-- 底部链接 -->
+        <div class="footer-links">
+          <span class="register-link" @click="showRegisterNotice">还没有账号？立即注册</span>
+          <span class="divider">|</span>
+          <span class="forget-link" @click="$router.push('forgetPassword')">忘记密码</span>
         </div>
       </div>
-
 
       <!-- 拼图验证码 -->
       <verify ref="verify" class="verify-con" verifyType="LOGIN" @change="verifyChange"></verify>
@@ -223,28 +210,25 @@ export default {
   },
   data() {
     return {
-      qrCodeStatus:"success", //
+      qrCodeStatus:"success",
       qrCode: '',
       qrSessionToken:'',
-      //是否是二维码登录
       scannerCodeLoginFLag: false,
       scannerCodeLoginStatus: 0,
       qrCodeTimer:null,
       config: require('@/config'),
       type: true, // true 账号登录  false 验证码登录
+      showThirdParty: false, // 是否显示第三方登录
       formData: {
-        // 登录表单
         username: "",
         password: "",
       },
       formSms: {
-        // 手机号登录
         code: "",
         mobile: "",
       },
-      verifyStatus: false, // 是否图片验证通过
+      verifyStatus: false,
       ruleInline: {
-        // 验证规则
         username: [{required: true, message: "请输入用户名"}],
         password: [
           {required: true, message: "请输入密码"},
@@ -259,30 +243,47 @@ export default {
         ],
         code: [{required: true, message: "请输入手机验证码"}],
       },
-      codeMsg: "发送验证码", // 验证码文字
-      interval: null, // 定时器
-      time: 60, // 倒计时
+      codeMsg: "发送验证码",
+      interval: null,
+      time: 60,
       year: new Date().getFullYear(),
-      // 邀请码相关
       inviteCode: "",
       inviteCodeValid: false,
       inviteCodeError: "",
-      // 可用邀请码列表（包含之前的和新生成的，统一转换为大写存储）
       validInviteCodes: [
-        "OK4MOTO",  // 之前的邀请码
+        "OK4MOTO",
         "LJVLP9", "2Z2RWY", "L96HWH", "FGHVKE", "PKZTYN",
         "GV3AXJ", "6PBY6L", "BSA6ND", "B4E7YT", "FHWC3X"
       ],
     };
   },
-  watch:{
-
-    scannerCodeLoginFLag(val){
-      !val ? this.clearInterval() : ''
-    }
-  },
   methods: {
-
+    // 切换到账号登录
+    switchToAccountLogin() {
+      this.type = true;
+      this.scannerCodeLoginFLag = false;
+      this.showThirdParty = false;
+      this.$refs.formInline && this.$refs.formInline.resetFields();
+    },
+    // 切换到验证码登录
+    switchToSmsLogin() {
+      this.type = false;
+      this.scannerCodeLoginFLag = false;
+      this.showThirdParty = false;
+      this.$refs.formSms && this.$refs.formSms.resetFields();
+      this.verifyStatus = false;
+      clearInterval(this.interval);
+      this.codeMsg = "发送验证码";
+      this.time = 60;
+    },
+    // 切换到扫码登录
+    switchToQrLogin() {
+      this.scannerCodeLoginFLag = true;
+      this.showThirdParty = false;
+      if (!this.qrCode) {
+        this.createPCLoginSession();
+      }
+    },
     // 登录
     handleSubmit(name) {
       this.$refs[name].validate((valid) => {
@@ -326,18 +327,23 @@ export default {
       if (this.validInviteCodes.includes(code)) {
         this.inviteCodeValid = true;
         this.inviteCodeError = "";
+        // 验证成功后显示第三方登录
+        if (code.length > 0) {
+          this.showThirdParty = true;
+        }
       } else if (code.length > 0) {
         this.inviteCodeValid = false;
         this.inviteCodeError = "邀请码错误，请重新输入";
+        this.showThirdParty = false;
       } else {
         this.inviteCodeValid = false;
         this.inviteCodeError = "";
+        this.showThirdParty = false;
       }
     },
     // 发送手机验证码
     sendCode() {
       if (this.time === 60) {
-        // 检查邀请码
         if (!this.inviteCodeValid) {
           this.$Message.warning("请先输入正确的邀请码");
           return;
@@ -376,11 +382,9 @@ export default {
       }
     },
     verifyChange(con) {
-      // 拼图验证码回显
       if (!con.status) return;
 
       if (this.type === true) {
-        // 账号密码登录
         let data = JSON.parse(JSON.stringify(this.formData));
         data.password = md5(data.password);
         this.$refs.verify.show = false;
@@ -403,17 +407,14 @@ export default {
         this.$refs.verify.show = false;
       }
     },
-    // 开启滑块验证
     verifyBtnClick() {
       if (!this.verifyStatus) {
         this.$refs.verify.init();
       }
     },
     handleWebLogin(type) {
-      // 第三方登录
       webLogin(type);
     },
-    // Google登录
     handleGoogleLogin() {
       if (!this.inviteCodeValid) {
         this.$Message.warning("请先输入正确的邀请码");
@@ -421,7 +422,6 @@ export default {
       }
       this.handleWebLogin('GOOGLE');
     },
-    // Apple登录
     handleAppleLogin() {
       this.$Message.info("Apple 登录即将开放，敬请期待");
     },
@@ -445,7 +445,6 @@ export default {
         }
       });
     },
-
     async createPCLoginSession() {
       getSCLoginCode({}).then(response=>{
         this.clearQRLoginInfo();
@@ -458,20 +457,16 @@ export default {
             this.refreshQrCode();
           }
           this.qrLogin();
-
         }
       });
     },
-
     async refreshQrCode() {
       if (!this.qrCodeTimer) {
         this.qrCodeTimer = setInterval(() => {
-
-          this.qrCodeStatus = 'fail' // 如果过期将二维码转为失效状态
+          this.qrCodeStatus = 'fail'
         }, 10 * 1000);
       }
     },
-
     clearQRLoginInfo(){
       this.scannerCodeLoginStatus=0;
       this.qrSessionToken='';
@@ -480,7 +475,6 @@ export default {
       }
       this.qrCodeTimer= null;
     },
-
     async qrLogin() {
       if(!this.qrSessionToken) return;
       sCLogin(this.qrSessionToken,{beforeSessionStatus:this.scannerCodeLoginStatus}).then(response=>{
@@ -505,7 +499,6 @@ export default {
         }
       });
     },
-    // 显示注册关闭提示
     showRegisterNotice() {
       this.$Modal.info({
         title: '注册暂未开放',
@@ -532,17 +525,15 @@ export default {
     scannerCodeLoginFLag(v){
       if(v){
         this.createPCLoginSession();
-        console.log("二维码登录");
       }else{
-        console.log("取消二维码登录");
         this.clearQRLoginInfo();
       }
     },
     type(v) {
       if (v) {
-        this.$refs.formInline.resetFields();
+        this.$refs.formInline && this.$refs.formInline.resetFields();
       } else {
-        this.$refs.formSms.resetFields();
+        this.$refs.formSms && this.$refs.formSms.resetFields();
       }
       this.verifyStatus = false;
       this.$refs.verify.show = false;
@@ -554,49 +545,16 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.drag-area{
-  margin: 10px 0;
-}
 .login {
   height: 100%;
   background-color: #f0f2f5;
 }
-.other{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.qr-container{
-  text-align: center;
-  margin: 20px 0;
-  position: relative;
-  >.qr-shadow{
-    background: rgba(0, 0, 0, 0.45);
-    position: absolute;
-    left: 50%;
-    margin-left: -75px;
-    top: 0;
-    z-index: 99;
-    width: 150px;
-    height: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    color: #fff;
-    >span{
-      margin-bottom: 20px;
-      font-size: 13px;
-      letter-spacing: 2px;
-    }
-  }
-}
+
 .top-content {
   width: 100%;
   height: 80px;
   position: relative;
   z-index: 1;
-
   box-shadow: 0 1px 1px #ddd;
   background-color: #fff;
 
@@ -615,21 +573,16 @@ export default {
 
     div {
       font-size: 20px;
-      margin-top: 10px;
+      margin-left: 20px;
+      color: #333;
     }
   }
 }
-.pending-scan{
-  text-align: center;
-  color:black;
-}
-.scanned{
-  text-align: center;
-  color:green;
-}
-.quick-logining{
-  text-align: center;
-  color:red;
+
+.login-container {
+  position: relative;
+  width: 100%;
+  height: 550px;
 }
 
 .login-carousel {
@@ -644,49 +597,263 @@ export default {
   }
 }
 
-.login-container {
-  position: relative;
-  width: 100%;
-  height: 550px;
-}
-
 .form-box {
-  width: 350px;
+  width: 400px;
   box-sizing: border-box;
   position: absolute;
   top: 80px;
-  right: 15%;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.8);
+  right: 10%;
+  padding: 30px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
-  .account-number {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    font-weight: bold;
+  // 邀请码输入区域
+  .invite-code-wrapper {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
 
-    > div:nth-child(2) {
-      color: $theme_color;
-      cursor: pointer;
+    .invite-code-input {
+      &.invite-code-valid {
+        border-color: #19be6b;
+      }
+      
+      &.invite-code-error {
+        border-color: #ed4014;
+      }
     }
+    
+    .invite-code-error-msg {
+      margin-top: 5px;
+      font-size: 12px;
+      color: #ed4014;
+    }
+    
+    .invite-code-success-msg {
+      margin-top: 5px;
+      font-size: 12px;
+      color: #19be6b;
+    }
+  }
 
-    .tab-switch {
-      height: 40px;
+  // 登录方式切换标签
+  .login-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #f0f0f0;
+
+    .tab-item {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 12px 0;
+      cursor: pointer;
+      color: #666;
       font-size: 14px;
+      transition: all 0.3s;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
 
-      span:nth-child(1) {
-        font-size: 16px;
-        border-right: 1px solid #ddd;
-        padding-right: 10px;
+      i {
+        font-size: 18px;
       }
 
-      span:nth-child(2) {
-        cursor: pointer;
-        padding-left: 10px;
+      &:hover {
+        color: $theme_color;
+      }
 
-        &:hover {
-          color: $theme_color;
+      &.active {
+        color: $theme_color;
+        border-bottom-color: $theme_color;
+        font-weight: 500;
+      }
+    }
+  }
+
+  // 扫码登录区域
+  .qr-login-section {
+    text-align: center;
+    padding: 20px 0;
+
+    .qr-container {
+      margin: 20px 0;
+      position: relative;
+      display: inline-block;
+
+      >.qr-shadow {
+        background: rgba(0, 0, 0, 0.7);
+        position: absolute;
+        left: 50%;
+        margin-left: -75px;
+        top: 0;
+        z-index: 99;
+        width: 150px;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: #fff;
+        border-radius: 4px;
+
+        >span {
+          margin-bottom: 15px;
+          font-size: 13px;
         }
+      }
+    }
+
+    .qr-status {
+      margin-top: 15px;
+
+      .status-text {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 14px;
+
+        i {
+          font-size: 18px;
+        }
+
+        &.pending {
+          color: #666;
+        }
+
+        &.scanned {
+          color: #2d8cf0;
+        }
+
+        &.success {
+          color: #19be6b;
+        }
+
+        &.cancelled {
+          color: #ed4014;
+        }
+      }
+    }
+  }
+
+  // 第三方登录区域
+  .third-party-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+
+    .section-divider {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      
+      .divider-line {
+        flex: 1;
+        height: 1px;
+        background: #eee;
+      }
+      
+      .divider-text {
+        padding: 0 15px;
+        font-size: 12px;
+        color: #999;
+      }
+    }
+
+    .other-login {
+      display: flex;
+      gap: 12px;
+      
+      .login-btn-google,
+      .login-btn-apple {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: #fff;
+        
+        &:hover:not(.disabled) {
+          border-color: #2d8cf0;
+          background: #f0f9ff;
+          transform: translateY(-1px);
+          box-shadow: 0 2px 8px rgba(45, 140, 240, 0.2);
+        }
+        
+        &.disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          background: #f5f5f5;
+        }
+        
+        .icon {
+          width: 20px;
+          height: 20px;
+        }
+        
+        span {
+          font-size: 14px;
+          color: #333;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .invite-code-hint {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #999;
+
+      i {
+        font-size: 16px;
+      }
+    }
+  }
+
+  // 底部链接
+  .footer-links {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 13px;
+
+    .register-link {
+      color: $theme_color;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .divider {
+      color: #ddd;
+    }
+
+    .forget-link {
+      color: #666;
+      cursor: pointer;
+
+      &:hover {
+        color: $theme_color;
+        text-decoration: underline;
       }
     }
   }
@@ -694,123 +861,9 @@ export default {
 
 .verify-con {
   position: absolute;
-  right: 16%;
+  right: 11%;
   top: 90px;
   z-index: 10;
-}
-
-.other-login {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-  
-  .login-btn-google,
-  .login-btn-apple {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s;
-    background: #fff;
-    
-    &:hover:not(.disabled) {
-      border-color: #2d8cf0;
-      background: #f0f9ff;
-    }
-    
-    &.disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      background: #f5f5f5;
-    }
-    
-    .icon {
-      width: 24px;
-      height: 24px;
-    }
-    
-    span {
-      font-size: 14px;
-      color: #333;
-    }
-  }
-}
-
-.third-party-section {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
-}
-
-.section-divider {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-  
-  .divider-line {
-    flex: 1;
-    height: 1px;
-    background: #eee;
-  }
-  
-  .divider-text {
-    padding: 0 10px;
-    font-size: 12px;
-    color: #999;
-  }
-}
-
-.invite-code-section {
-  margin-bottom: 15px;
-  
-  .invite-code-input {
-    &.invite-code-valid {
-      border-color: #19be6b;
-    }
-    
-    &.invite-code-error {
-      border-color: #ed4014;
-    }
-  }
-  
-  .invite-code-error-msg {
-    margin-top: 5px;
-    font-size: 12px;
-    color: #ed4014;
-  }
-  
-  .invite-code-success-msg {
-    margin-top: 5px;
-    font-size: 12px;
-    color: #19be6b;
-  }
-}
-
-.invite-code-hint {
-  margin-top: 10px;
-  font-size: 12px;
-  color: #999;
-  text-align: center;
-}
-
-.register {
-  display: flex;
-
-  margin-top: -10px;
-
-  span {
-    margin-left: 10px;
-
-    &:hover {
-      cursor: pointer;
-      color: $theme_color;
-    }
-  }
 }
 
 .foot {
@@ -835,9 +888,5 @@ export default {
     }
   }
 }
-
-.icon-hover {
-  cursor: pointer;
-}
-
 </style>
+
