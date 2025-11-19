@@ -88,6 +88,21 @@
           <!-- 验证码登录 -->
           <Form ref="formSms" :model="formSms" :rules="ruleInline" v-show="type === false"
                 @click.self='$refs.verify.show = false'>
+            <!-- 邀请码输入（手机号登录时需要） -->
+            <FormItem>
+              <i-input 
+                type="text" 
+                v-model="inviteCode" 
+                clearable 
+                placeholder="🔐 输入邀请码"
+                maxlength="20"
+                @on-input="checkInviteCode"
+                :class="{'invite-code-input': true, 'invite-code-valid': inviteCodeValid, 'invite-code-error': inviteCodeError}">
+                <Icon type="md-key" slot="prepend"></Icon>
+              </i-input>
+              <div v-if="inviteCodeError" class="invite-code-error-msg">{{ inviteCodeError }}</div>
+              <div v-if="inviteCodeValid" class="invite-code-success-msg">✓ 验证成功</div>
+            </FormItem>
             <FormItem prop="mobile">
               <i-input type="text" v-model="formSms.mobile" clearable placeholder="手机号">
                 <Icon type="md-lock" slot="prepend"></Icon>
@@ -96,7 +111,7 @@
             <FormItem prop="code">
               <i-input type="text" v-model="formSms.code" placeholder="手机验证码">
                 <Icon type="ios-text-outline" style="font-weight: bold" slot="prepend"/>
-                <Button slot="append" @click="sendCode">{{ codeMsg }}</Button>
+                <Button slot="append" @click="sendCode" :disabled="!inviteCodeValid">{{ codeMsg }}</Button>
               </i-input>
             </FormItem>
             <FormItem>
@@ -105,25 +120,62 @@
               </Button>
             </FormItem>
             <FormItem>
-              <Button type="error" @click="handleSubmit('formSms')" long>登录</Button>
+              <Button type="error" @click="handleSubmit('formSms')" long :disabled="!inviteCodeValid">登录</Button>
             </FormItem>
           </Form>
         </div>
           <div class="other">
-            <div class="other-login">
-              <svg t="1631154795933" class="icon" @click="handleWebLogin('QQ')" viewBox="0 0 1024 1024" version="1.1"
-                  xmlns="http://www.w3.org/2000/svg" p-id="4969" width="32" height="32">
-                <path
-                  d="M824.8 613.2c-16-51.4-34.4-94.6-62.7-165.3C766.5 262.2 689.3 112 511.5 112 331.7 112 256.2 265.2 261 447.9c-28.4 70.8-46.7 113.7-62.7 165.3-34 109.5-23 154.8-14.6 155.8 18 2.2 70.1-82.4 70.1-82.4 0 49 25.2 112.9 79.8 159-26.4 8.1-85.7 29.9-71.6 53.8 11.4 19.3 196.2 12.3 249.5 6.3 53.3 6 238.1 13 249.5-6.3 14.1-23.8-45.3-45.7-71.6-53.8 54.6-46.2 79.8-110.1 79.8-159 0 0 52.1 84.6 70.1 82.4 8.5-1.1 19.5-46.4-14.5-155.8z"
-                  p-id="4970" fill="#1296db"></path>
-              </svg>
-              <svg t="1631154766336" class="icon" @click="handleWebLogin('WECHAT_PC')" viewBox="0 0 1024 1024"
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg" p-id="3844" width="32" height="32">
-                <path
-                  d="M683.058 364.695c11 0 22 1.016 32.943 1.976C686.564 230.064 538.896 128 370.681 128c-188.104 0.66-342.237 127.793-342.237 289.226 0 93.068 51.379 169.827 136.725 229.256L130.72 748.43l119.796-59.368c42.918 8.395 77.37 16.79 119.742 16.79 11 0 21.46-0.48 31.914-1.442a259.168 259.168 0 0 1-10.455-71.358c0.485-148.002 128.744-268.297 291.403-268.297l-0.06-0.06z m-184.113-91.992c25.99 0 42.913 16.79 42.913 42.575 0 25.188-16.923 42.579-42.913 42.579-25.45 0-51.38-16.85-51.38-42.58 0-25.784 25.93-42.574 51.38-42.574z m-239.544 85.154c-25.384 0-51.374-16.85-51.374-42.58 0-25.784 25.99-42.574 51.374-42.574 25.45 0 42.918 16.79 42.918 42.575 0 25.188-16.924 42.579-42.918 42.579z m736.155 271.655c0-135.647-136.725-246.527-290.983-246.527-162.655 0-290.918 110.88-290.918 246.527 0 136.128 128.263 246.587 290.918 246.587 33.972 0 68.423-8.395 102.818-16.85l93.809 50.973-25.93-84.677c68.907-51.93 120.286-119.815 120.286-196.033z m-385.275-42.58c-16.923 0-34.452-16.79-34.452-34.179 0-16.79 17.529-34.18 34.452-34.18 25.99 0 42.918 16.85 42.918 34.18 0 17.39-16.928 34.18-42.918 34.18z m188.165 0c-16.984 0-33.972-16.79-33.972-34.179 0-16.79 16.927-34.18 33.972-34.18 25.93 0 42.913 16.85 42.913 34.18 0 17.39-16.983 34.18-42.913 34.18z"
-                  fill="#09BB07" p-id="3845"></path>
-              </svg>
+            <!-- 第三方登录区域（需要邀请码） -->
+            <div class="third-party-section">
+              <div class="section-divider">
+                <div class="divider-line"></div>
+                <div class="divider-text">第三方账号登录</div>
+                <div class="divider-line"></div>
+              </div>
+              
+              <!-- 邀请码输入 -->
+              <div class="invite-code-section">
+                <FormItem>
+                  <i-input 
+                    type="text" 
+                    v-model="inviteCode" 
+                    clearable 
+                    placeholder="🔐 输入邀请码"
+                    maxlength="20"
+                    @on-input="checkInviteCode"
+                    :class="{'invite-code-input': true, 'invite-code-valid': inviteCodeValid, 'invite-code-error': inviteCodeError}">
+                    <Icon type="md-key" slot="prepend"></Icon>
+                  </i-input>
+                  <div v-if="inviteCodeError" class="invite-code-error-msg">{{ inviteCodeError }}</div>
+                  <div v-if="inviteCodeValid" class="invite-code-success-msg">✓ 验证成功</div>
+                </FormItem>
+              </div>
+
+              <!-- Google/Apple 登录按钮 -->
+              <div class="other-login">
+                <div 
+                  class="login-btn-google" 
+                  :class="{'disabled': !inviteCodeValid}"
+                  @click="handleGoogleLogin">
+                  <svg t="1631154766336" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                      xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+                    <path d="M881 442.4H519.7v148.5h206.4c-8.9 48-35.9 88.6-76.6 115.8-34.4 23-78.3 36.6-129.9 36.6-99.9 0-184.4-67.5-214.6-158.2-9.9-29.5-15.6-61.3-15.6-95.2 0-33.9 5.7-65.7 15.6-95.2C280.1 178.8 364.6 111.3 464.5 111.3c56.3 0 106.8 19.4 146.6 57.4l110-110.1C629.8 22 561.2 0 484.1 0 210.9 0 0 210.9 0 484.1s210.9 484.1 484.1 484.1c268 0 482.4-190.3 482.4-458.4 0-19.4-1.4-38.4-4.2-57.4z" fill="#4285F4"></path>
+                  </svg>
+                  <span>Google</span>
+                </div>
+                <div 
+                  class="login-btn-apple disabled" 
+                  @click="handleAppleLogin">
+                  <svg t="1631154766336" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                      xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+                    <path d="M747.4 535.7c1-85.6 73.7-126.6 77-128.5-41.9-61.3-107.1-69.7-130.3-70.7-55.4-5.6-108.2 32.6-136.2 32.6-28.5 0-70.3-31.7-115.8-30.8-59.6 0.9-114.7 34.7-145.5 88.1-62 107.6-15.9 267 44.7 354.4 29.4 42.2 64.5 89.5 110.6 87.8 44.3-1.8 61-28.7 114.6-28.7 53.7 0 68.7 28.7 115.5 27.8 47.8-0.9 78.3-42.5 107.6-84.7 33.9-49.5 47.8-97.4 48.6-99.8-1.1-0.5-93.5-35.9-94.5-142.7zM655.9 154.9c24.7-30 41.3-71.7 36.8-113.3-35.6 1.5-78.7 23.7-104.3 53.8-23 26.6-43.1 69.1-37.7 109.9 39.6 3.1 80.1-20.1 105.2-50.4z" fill="#000000"></path>
+                  </svg>
+                  <span>Apple</span>
+                </div>
+              </div>
+              <div class="invite-code-hint" v-if="!inviteCodeValid">
+                输入邀请码后可使用 Google/Apple 登录
+              </div>
             </div>
             <div class="register">
               <span style="color:red" @click="showRegisterNotice">还没有账号？点击立即注册</span>
@@ -211,6 +263,16 @@ export default {
       interval: null, // 定时器
       time: 60, // 倒计时
       year: new Date().getFullYear(),
+      // 邀请码相关
+      inviteCode: "",
+      inviteCodeValid: false,
+      inviteCodeError: "",
+      // 可用邀请码列表（包含之前的和新生成的，统一转换为大写存储）
+      validInviteCodes: [
+        "OK4MOTO",  // 之前的邀请码
+        "LJVLP9", "2Z2RWY", "L96HWH", "FGHVKE", "PKZTYN",
+        "GV3AXJ", "6PBY6L", "BSA6ND", "B4E7YT", "FHWC3X"
+      ],
     };
   },
   watch:{
@@ -258,9 +320,28 @@ export default {
         }
       });
     },
+    // 检查邀请码
+    checkInviteCode() {
+      const code = this.inviteCode.trim().toUpperCase();
+      if (this.validInviteCodes.includes(code)) {
+        this.inviteCodeValid = true;
+        this.inviteCodeError = "";
+      } else if (code.length > 0) {
+        this.inviteCodeValid = false;
+        this.inviteCodeError = "邀请码错误，请重新输入";
+      } else {
+        this.inviteCodeValid = false;
+        this.inviteCodeError = "";
+      }
+    },
     // 发送手机验证码
     sendCode() {
       if (this.time === 60) {
+        // 检查邀请码
+        if (!this.inviteCodeValid) {
+          this.$Message.warning("请先输入正确的邀请码");
+          return;
+        }
         if (this.formSms.mobile === "") {
           this.$Message.warning("请先填写手机号");
           return;
@@ -331,6 +412,18 @@ export default {
     handleWebLogin(type) {
       // 第三方登录
       webLogin(type);
+    },
+    // Google登录
+    handleGoogleLogin() {
+      if (!this.inviteCodeValid) {
+        this.$Message.warning("请先输入正确的邀请码");
+        return;
+      }
+      this.handleWebLogin('GOOGLE');
+    },
+    // Apple登录
+    handleAppleLogin() {
+      this.$Message.info("Apple 登录即将开放，敬请期待");
     },
     loginSuccess(accessToken,refreshToken){
       this.$Message.success("登录成功");
@@ -607,13 +700,102 @@ export default {
 }
 
 .other-login {
-
-  > svg {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  
+  .login-btn-google,
+  .login-btn-apple {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     cursor: pointer;
-    width: 24px;
-    margin-right: 10px;
-    height: 24px;
+    transition: all 0.3s;
+    background: #fff;
+    
+    &:hover:not(.disabled) {
+      border-color: #2d8cf0;
+      background: #f0f9ff;
+    }
+    
+    &.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: #f5f5f5;
+    }
+    
+    .icon {
+      width: 24px;
+      height: 24px;
+    }
+    
+    span {
+      font-size: 14px;
+      color: #333;
+    }
   }
+}
+
+.third-party-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.section-divider {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: #eee;
+  }
+  
+  .divider-text {
+    padding: 0 10px;
+    font-size: 12px;
+    color: #999;
+  }
+}
+
+.invite-code-section {
+  margin-bottom: 15px;
+  
+  .invite-code-input {
+    &.invite-code-valid {
+      border-color: #19be6b;
+    }
+    
+    &.invite-code-error {
+      border-color: #ed4014;
+    }
+  }
+  
+  .invite-code-error-msg {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #ed4014;
+  }
+  
+  .invite-code-success-msg {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #19be6b;
+  }
+}
+
+.invite-code-hint {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #999;
+  text-align: center;
 }
 
 .register {
