@@ -167,7 +167,7 @@
 
         <!-- 底部链接 -->
         <div class="footer-links">
-          <span class="register-link" @click="showRegisterNotice">还没有账号？立即注册</span>
+          <span class="register-link" @click="$router.push('/SignUp')">还没有账号？立即注册</span>
           <span class="divider">|</span>
           <span class="forget-link" @click="$router.push('forgetPassword')">忘记密码</span>
         </div>
@@ -497,13 +497,6 @@ export default {
         }  else{
           this.clearQRLoginInfo();
         }
-      });
-    },
-    showRegisterNotice() {
-      this.$Modal.info({
-        title: '注册暂未开放',
-        content: '目前内测阶段，暂不支持注册，账户定向开放。<br/><br/>如有需求请联系：<a href="mailto:ss@maollar.com" style="color:#2d8cf0;">ss@maollar.com</a>',
-        okText: '知道了'
       });
     },
   },
@@ -889,4 +882,8 @@ export default {
   }
 }
 </style>
+
+
+
+
 
