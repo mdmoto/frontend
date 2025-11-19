@@ -14,6 +14,7 @@ import {getSetting} from "@/api/index.js";
 import templateSetting from "./template";
 
 export default {
+  name: 'SettingManage',
   data() {
     return {
       templateSetting, // 设置模板
@@ -121,34 +122,22 @@ export default {
     },
   },
   mounted() {
-    // 初始化时设置tabWay
-    const routeName = this.$route.name;
-    console.log('当前路由名称:', routeName);
-    console.log('可用配置:', Object.keys(this).filter(k => ['setting', 'authLogin', 'pay'].includes(k)));
+    // 初始化时设置tabWay - 直接使用setting，因为这是系统设置页面
+    console.log('SettingManage组件已挂载');
+    console.log('当前路由:', this.$route);
+    console.log('当前路由名称:', this.$route.name);
+    console.log('当前路由路径:', this.$route.path);
     
-    // 支持多种路由名称匹配
-    if (routeName === 'setting-manage' || routeName === 'setting' || routeName === 'settingManage') {
-      this.tabWay = this.setting;
-    } else if (routeName === 'authLogin' || routeName === 'auth-login') {
-      this.tabWay = this.authLogin;
-    } else if (routeName === 'pay' || routeName === 'payment') {
-      this.tabWay = this.pay;
-    } else {
-      // 原有的匹配逻辑
-      Object.keys(this).forEach((item) => {
-        if (routeName == item) {
-          this.tabWay = this[item];
-        }
-      });
+    // 直接设置tabWay为setting，因为这是系统设置页面
+    this.tabWay = this.setting;
+    console.log('初始化tabWay为setting，包含', this.tabWay.length, '个标签页');
+    console.log('标签页列表:', this.tabWay.map(t => t.name));
+    
+    // 确保settingData有初始值，避免组件无法渲染
+    if (!this.settingData) {
+      this.settingData = JSON.stringify({});
     }
     
-    // 如果tabWay还是空，默认使用setting
-    if (!this.tabWay || this.tabWay.length === 0) {
-      console.warn('tabWay为空，使用默认setting配置');
-      this.tabWay = this.setting;
-    }
-    
-    console.log('初始化后的tabWay:', this.tabWay);
     this.clickTab(this.selected);
   },
   methods: {
