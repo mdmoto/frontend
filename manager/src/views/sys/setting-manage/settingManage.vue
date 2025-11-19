@@ -123,15 +123,15 @@ export default {
   },
   mounted() {
     // 初始化时设置tabWay - 直接使用setting，因为这是系统设置页面
-    console.log('SettingManage组件已挂载');
-    console.log('当前路由:', this.$route);
+    console.log('=== SettingManage组件已挂载 ===');
     console.log('当前路由名称:', this.$route.name);
     console.log('当前路由路径:', this.$route.path);
+    console.log('当前路由查询参数:', this.$route.query);
     
     // 直接设置tabWay为setting，因为这是系统设置页面
     this.tabWay = this.setting;
     console.log('初始化tabWay为setting，包含', this.tabWay.length, '个标签页');
-    console.log('标签页列表:', this.tabWay.map(t => t.name));
+    console.log('标签页列表:', this.tabWay.map(t => `${t.name}(${t.type})`));
     console.log('是否包含邮箱配置:', this.tabWay.some(t => t.type === 'EMAIL_SETTING'));
     
     // 确保settingData有初始值，避免组件无法渲染
@@ -141,6 +141,10 @@ export default {
     if (!this.selected && this.tabWay.length > 0) {
       this.selected = this.tabWay[0].type;
     }
+    
+    console.log('当前选中的标签:', this.selected);
+    console.log('templateSetting中是否有EMAIL_SETTING:', !!this.templateSetting.EMAIL_SETTING);
+    console.log('=== 初始化完成 ===');
     
     this.clickTab(this.selected);
   },
