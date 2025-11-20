@@ -49,14 +49,23 @@ export default {
     // 获取支付二维码
     handlePay () {
       const params = this.$route.query;
+      console.log('💳 请求支付二维码:', params);
+      
       pay(params).then(res => {
-        if (res.success) {
+        console.log('📥 支付API响应:', res);
+        
+        if (res.success && res.result) {
           this.qrcode = res.result;
           this.num = 0;
           this.interval = setInterval(this.callback, 5000);
+          console.log('✅ 二维码获取成功');
         } else {
-          this.$Message.error(res.message)
+          console.error('❌ 支付请求失败:', res);
+          this.$Message.error(res.message || '支付请求失败，请检查支付宝配置')
         }
+      }).catch(err => {
+        console.error('❌ 支付请求异常:', err);
+        this.$Message.error('支付服务异常，请稍后重试');
       });
     },
     callback () { // 支付回调接口
