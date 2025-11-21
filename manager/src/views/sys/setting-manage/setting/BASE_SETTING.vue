@@ -152,19 +152,25 @@ export default {
     /**添加必填项 */
     init() {
       try {
-        // 如果 res 是空字符串、null、undefined 或 '{}'，不进行解析
-        if (!this.res || this.res === '{}' || this.res.trim() === '' || this.res === 'null') {
-          console.warn('⚠️ BASE_SETTING: res 为空，跳过初始化，保持默认值');
+        console.log('🔍 BASE_SETTING init() - 接收到的 res:', this.res);
+        console.log('🔍 BASE_SETTING init() - res 类型:', typeof this.res);
+        
+        // 如果 res 是空字符串、null、undefined，不进行解析
+        if (!this.res || this.res.trim() === '' || this.res === 'null') {
+          console.warn('⚠️ BASE_SETTING: res 为空字符串或 null，跳过初始化，保持默认值');
           return;
         }
+        
         this.result = JSON.parse(this.res);
-        // 检查解析后的结果是否为空对象
-        if (!this.result || Object.keys(this.result).length === 0) {
-          console.warn('⚠️ BASE_SETTING: 解析后的数据为空对象，跳过初始化');
-          return;
-        }
+        console.log('🔍 BASE_SETTING init() - 解析后的 result:', this.result);
+        console.log('🔍 BASE_SETTING init() - result 的键:', Object.keys(this.result));
+        console.log('🔍 BASE_SETTING init() - result 的键数量:', Object.keys(this.result).length);
+        
+        // 即使 result 是空对象，也要合并（不会覆盖，因为空对象没有键）
         // 合并数据而不是完全覆盖，保留原有字段
         this.$set(this, "formValidate", { ...this.formValidate, ...this.result });
+        
+        // 只为 result 中存在的键设置验证规则
         Object.keys(this.result).forEach((item) => {
           this.ruleValidate[item] = [
             {
@@ -174,7 +180,10 @@ export default {
             },
           ];
         });
-        console.log('✅ BASE_SETTING: 数据初始化成功，formValidate:', this.formValidate);
+        
+        console.log('✅ BASE_SETTING: 数据初始化成功');
+        console.log('✅ BASE_SETTING: formValidate:', this.formValidate);
+        console.log('✅ BASE_SETTING: formValidate 的键:', Object.keys(this.formValidate));
       } catch (e) {
         console.error("❌ BASE_SETTING 解析设置失败:", e);
         console.error("❌ 失败的 res 值:", this.res);

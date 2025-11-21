@@ -3,7 +3,7 @@
   <Card v-if="show">
     <Tabs v-model="selected" @on-click="clickTab">
       <TabPane :label="tabItem.name" :name="tabItem.type" v-for="(tabItem, tabIndex) in tabWay" :key="tabIndex">
-        <component v-if="settingData !== null || tabItem.type === selected" :res="settingData || '{}'" :type="selected"
+        <component v-if="settingData !== undefined || tabItem.type === selected" :res="settingData || '{}'" :type="selected"
                    :is="templateSetting[tabItem.type]"></component>
       </TabPane>
     </Tabs>
@@ -134,9 +134,6 @@ export default {
     console.log('标签页列表:', this.tabWay.map(t => `${t.name}(${t.type})`));
     console.log('是否包含邮箱配置:', this.tabWay.some(t => t.type === 'EMAIL_SETTING'));
     
-    // 确保settingData有初始值，避免组件无法渲染
-    this.settingData = JSON.stringify({});
-    
     // 如果没有选中项，选择第一个
     if (!this.selected && this.tabWay.length > 0) {
       this.selected = this.tabWay[0].type;
@@ -186,18 +183,25 @@ export default {
         console.log('📥 获取设置响应:', res);
         console.log('📥 res.success:', res.success);
         console.log('📥 res.result:', res.result);
-        if (res.success && res.result && Object.keys(res.result).length > 0) {
+        console.log('📥 res.result 类型:', typeof res.result);
+        console.log('📥 res.result 是否为对象:', res.result && typeof res.result === 'object');
+        console.log('📥 res.result 的键:', res.result ? Object.keys(res.result) : 'N/A');
+        console.log('📥 res.result 的键数量:', res.result ? Object.keys(res.result).length : 0);
+        
+        if (res.success && res.result) {
+          // 即使 result 是空对象，也传递它，让子组件决定如何处理
           this.settingData = JSON.stringify(res.result);
           console.log('✅ 设置数据已更新，settingData:', this.settingData);
+          console.log('✅ settingData 长度:', this.settingData.length);
         } else {
-          // 如果没有数据，设置为 null，让组件知道没有数据
-          this.settingData = null;
-          console.log('⚠️ 没有数据或数据为空，settingData 设置为 null');
+          // 如果没有数据，设置为空字符串，让子组件知道没有数据
+          this.settingData = '';
+          console.log('⚠️ 没有数据或数据为空，settingData 设置为空字符串');
         }
       }).catch((err) => {
         console.error('❌ 获取设置失败:', err);
-        // API失败时，设置为 null
-        this.settingData = null;
+        // API失败时，设置为空字符串
+        this.settingData = '';
       });
     },
   },
