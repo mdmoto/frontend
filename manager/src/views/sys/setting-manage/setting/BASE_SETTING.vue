@@ -149,17 +149,22 @@ export default {
         }
       });
     },
-    // 实例化数据
+    /**添加必填项 */
     init() {
       try {
-        console.log('🔍 BASE_SETTING init() - 接收到的 res prop:', this.res);
-        console.log('🔍 BASE_SETTING init() - res 类型:', typeof this.res);
-        this.result = this.res ? JSON.parse(this.res) : {};
-        console.log('🔍 BASE_SETTING init() - 解析后的 result:', this.result);
-        console.log('🔍 BASE_SETTING init() - result 的键:', Object.keys(this.result));
-        console.log('🔍 BASE_SETTING init() - 合并前的 formValidate:', this.formValidate);
+        // 如果 res 是空字符串、null、undefined 或 '{}'，不进行解析
+        if (!this.res || this.res === '{}' || this.res.trim() === '' || this.res === 'null') {
+          console.warn('⚠️ BASE_SETTING: res 为空，跳过初始化，保持默认值');
+          return;
+        }
+        this.result = JSON.parse(this.res);
+        // 检查解析后的结果是否为空对象
+        if (!this.result || Object.keys(this.result).length === 0) {
+          console.warn('⚠️ BASE_SETTING: 解析后的数据为空对象，跳过初始化');
+          return;
+        }
+        // 合并数据而不是完全覆盖，保留原有字段
         this.$set(this, "formValidate", { ...this.formValidate, ...this.result });
-        console.log('🔍 BASE_SETTING init() - 合并后的 formValidate:', this.formValidate);
         Object.keys(this.result).forEach((item) => {
           this.ruleValidate[item] = [
             {
@@ -169,15 +174,18 @@ export default {
             },
           ];
         });
-        console.log('✅ BASE_SETTING init() - 初始化完成');
+        console.log('✅ BASE_SETTING: 数据初始化成功，formValidate:', this.formValidate);
       } catch (e) {
-        console.error("❌ 解析设置失败", e);
+        console.error("❌ BASE_SETTING 解析设置失败:", e);
         console.error("❌ 失败的 res 值:", this.res);
       }
     },
   },
   watch: {
-    res: "init",
+    res: {
+      handler: "init",
+      immediate: false,
+    },
   },
 };
 </script>

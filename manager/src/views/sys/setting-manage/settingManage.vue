@@ -3,7 +3,7 @@
   <Card v-if="show">
     <Tabs v-model="selected" @on-click="clickTab">
       <TabPane :label="tabItem.name" :name="tabItem.type" v-for="(tabItem, tabIndex) in tabWay" :key="tabIndex">
-        <component v-if="settingData || tabItem.type === selected" :res="settingData || '{}'" :type="selected"
+        <component v-if="settingData !== null || tabItem.type === selected" :res="settingData || '{}'" :type="selected"
                    :is="templateSetting[tabItem.type]"></component>
       </TabPane>
     </Tabs>
@@ -186,18 +186,18 @@ export default {
         console.log('📥 获取设置响应:', res);
         console.log('📥 res.success:', res.success);
         console.log('📥 res.result:', res.result);
-        if (res.result) {
+        if (res.success && res.result && Object.keys(res.result).length > 0) {
           this.settingData = JSON.stringify(res.result);
           console.log('✅ 设置数据已更新，settingData:', this.settingData);
         } else {
-          // 如果没有数据，也设置一个空对象，确保组件能渲染
-          this.settingData = JSON.stringify({});
-          console.log('⚠️ 没有数据，设置为空对象');
+          // 如果没有数据，设置为 null，让组件知道没有数据
+          this.settingData = null;
+          console.log('⚠️ 没有数据或数据为空，settingData 设置为 null');
         }
       }).catch((err) => {
         console.error('❌ 获取设置失败:', err);
-        // 即使API失败，也设置空对象，确保组件能渲染
-        this.settingData = JSON.stringify({});
+        // API失败时，设置为 null
+        this.settingData = null;
       });
     },
   },
