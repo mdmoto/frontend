@@ -1008,12 +1008,32 @@ export default {
     GET_GoodsUnit(type) {
       API_GOODS.getGoodsUnitList(this.params).then((res) => {
         if (res.success) {
-          this.goodsUnitList.push(...res.result.records.map((i) => i.name));
-          this.total = res.result.total;
+          // 清空现有列表，避免重复添加
+          if (type === 'localRefresh') {
+            this.goodsUnitList = [];
+          }
+          if (res.result && res.result.records && res.result.records.length > 0) {
+            this.goodsUnitList.push(...res.result.records.map((i) => i.name));
+            this.total = res.result.total;
+          } else {
+            // 如果没有数据，添加默认值
+            if (this.goodsUnitList.length === 0) {
+              this.goodsUnitList = ['件', '个', '台', '套', '盒', '包', '瓶', '张', '条', '只'];
+            }
+          }
         }
         if (type === 'localRefresh' && res.success) {
           this.$Message.success("刷新成功");
         } else if (type === 'localRefresh') {
+          this.$Message.error("刷新失败，请重试");
+        }
+      }).catch((error) => {
+        console.error('获取计量单位列表失败:', error);
+        // 如果API调用失败，使用默认值
+        if (this.goodsUnitList.length === 0) {
+          this.goodsUnitList = ['件', '个', '台', '套', '盒', '包', '瓶', '张', '条', '只'];
+        }
+        if (type === 'localRefresh') {
           this.$Message.error("刷新失败，请重试");
         }
       });
