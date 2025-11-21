@@ -149,20 +149,35 @@ export default {
         }
       });
     },
-    /**添加必填项 */
+    // 实例化数据
     init() {
-      this.result = JSON.parse(this.res);
-      this.$set(this, "formValidate", { ...this.result });
-      Object.keys(this.result).forEach((item) => {
-        this.ruleValidate[item] = [
-          {
-            required: true,
-            message: "请填写必填项",
-            trigger: "blur",
-          },
-        ];
-      });
+      try {
+        console.log('🔍 BASE_SETTING init() - 接收到的 res prop:', this.res);
+        console.log('🔍 BASE_SETTING init() - res 类型:', typeof this.res);
+        this.result = this.res ? JSON.parse(this.res) : {};
+        console.log('🔍 BASE_SETTING init() - 解析后的 result:', this.result);
+        console.log('🔍 BASE_SETTING init() - result 的键:', Object.keys(this.result));
+        console.log('🔍 BASE_SETTING init() - 合并前的 formValidate:', this.formValidate);
+        this.$set(this, "formValidate", { ...this.formValidate, ...this.result });
+        console.log('🔍 BASE_SETTING init() - 合并后的 formValidate:', this.formValidate);
+        Object.keys(this.result).forEach((item) => {
+          this.ruleValidate[item] = [
+            {
+              required: true,
+              message: "请填写必填项",
+              trigger: "blur",
+            },
+          ];
+        });
+        console.log('✅ BASE_SETTING init() - 初始化完成');
+      } catch (e) {
+        console.error("❌ 解析设置失败", e);
+        console.error("❌ 失败的 res 值:", this.res);
+      }
     },
+  },
+  watch: {
+    res: "init",
   },
 };
 </script>

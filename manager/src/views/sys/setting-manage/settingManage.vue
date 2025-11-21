@@ -181,15 +181,21 @@ export default {
         this.selected = name;
       }
 
+      console.log('📡 请求设置数据，类型:', name);
       getSetting(name).then((res) => {
+        console.log('📥 获取设置响应:', res);
+        console.log('📥 res.success:', res.success);
+        console.log('📥 res.result:', res.result);
         if (res.result) {
           this.settingData = JSON.stringify(res.result);
+          console.log('✅ 设置数据已更新，settingData:', this.settingData);
         } else {
           // 如果没有数据，也设置一个空对象，确保组件能渲染
           this.settingData = JSON.stringify({});
+          console.log('⚠️ 没有数据，设置为空对象');
         }
       }).catch((err) => {
-        console.error('获取设置失败:', err);
+        console.error('❌ 获取设置失败:', err);
         // 即使API失败，也设置空对象，确保组件能渲染
         this.settingData = JSON.stringify({});
       });
