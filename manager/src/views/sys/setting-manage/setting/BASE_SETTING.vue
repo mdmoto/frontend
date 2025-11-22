@@ -104,11 +104,14 @@ export default {
       formValidate: { // 表单数据
         buyerSideLogo: "",
         domainLogo: "",
+        domainIcon: "", // Added missing default
         icp: "",
         storeSideLogo: "",
+        storeSideIcon: "", // Added missing default
         siteName: "",
         staticPageAddress: "",
         staticPageWapAddress: "",
+        buyerSideIcon: "", // Added missing default
       },
       selected: "", // 已选数据
       ruleValidate: {}, // 验证规则
