@@ -15,7 +15,11 @@ import templateSetting from "./template";
 
 export default {
   name: 'SettingManage',
+  created() {
+    console.log('🔵 SettingManage created() - 组件已创建');
+  },
   data() {
+    console.log('🔵 SettingManage data() - 数据初始化');
     return {
       templateSetting, // 设置模板
       selected: "", // 已选
