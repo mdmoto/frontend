@@ -10,8 +10,14 @@
   </Card>
 </template>
 <script>
+// 文件加载时就输出日志
+console.log('🔴🔴🔴 SettingManage.vue 文件开始加载 🔴🔴🔴');
+console.log('🔴 当前时间:', new Date().toISOString());
+
 import {getSetting} from "@/api/index.js";
 import templateSetting from "./template";
+
+console.log('🔴 SettingManage 导入完成');
 
 export default {
   name: 'SettingManage',
