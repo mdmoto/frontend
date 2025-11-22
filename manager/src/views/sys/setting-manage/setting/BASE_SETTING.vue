@@ -116,7 +116,13 @@ export default {
     };
   },
   created() {
-    this.init();
+    console.log('🚀 BASE_SETTING created() - res prop:', this.res);
+    // 如果 res 已经有值，在 created 时初始化
+    if (this.res && this.res.trim() !== '') {
+      this.init();
+    } else {
+      console.log('⏳ BASE_SETTING created() - res 为空，等待 watch 触发');
+    }
   },
   methods: {
     // 点击图片
@@ -215,7 +221,10 @@ export default {
   },
   watch: {
     res: {
-      handler: "init",
+      handler(newVal, oldVal) {
+        console.log('🔔 BASE_SETTING watch res 触发:', { newVal, oldVal });
+        this.init();
+      },
       immediate: false,
     },
   },
