@@ -155,16 +155,10 @@ export default {
      * 进入页面请求第一个配置
      */
     getSettingData(name) {
-      console.log('🔍 getSettingData 被调用, name:', name);
-      console.log('🔍 当前 selected:', this.selected);
-      console.log('🔍 当前 tabWay:', this.tabWay);
-      
       this.settingData = "";
       // 支持多种路由名称匹配
       const routeName = this.$route.name;
-      console.log('🔍 当前路由名称:', routeName);
-      
-      if (routeName === 'setting-manage' || routeName === 'setting' || routeName === 'settingManage') {
+      if (routeName === 'setting-manage' || routeName === 'setting') {
         this.tabWay = this.setting;
       } else if (routeName === 'authLogin' || routeName === 'auth-login') {
         this.tabWay = this.authLogin;
@@ -178,65 +172,21 @@ export default {
           }
         });
       }
-      
-      console.log('🔍 设置后的 tabWay:', this.tabWay);
-      
       // 点击页面给每项第一个数据赋值
-      if (!name || name === '') {
-        if (this.tabWay && this.tabWay.length > 0) {
-          name = this.tabWay[0].type;
-          this.selected = name;
-          console.log('🔍 自动选择第一个标签:', name);
-        } else {
-          console.error('❌ tabWay 为空，无法获取设置数据');
-          return;
-        }
+      if (!name) {
+        name = this.tabWay[0].type;
+        this.selected = name;
       }
 
       console.log('📡 请求设置数据，类型:', name);
-      console.log('📡 API 端点: /manager/setting/setting/get/' + name);
       getSetting(name).then((res) => {
-        console.log('📥 获取设置响应 - 完整对象:', res);
-        console.log('📥 响应类型:', typeof res);
-        console.log('📥 res.success:', res.success);
-        console.log('📥 res.code:', res.code);
-        console.log('📥 res.result:', res.result);
-        console.log('📥 res.result 类型:', typeof res.result);
-        
-        // 检查响应是否是错误对象（从拦截器返回的错误）
-        if (res && res.response) {
-          console.warn('⚠️ 响应包含 response 对象（可能是错误对象）:', res.response.status);
-          this.settingData = '';
-          return;
-        }
-        
-        // 检查是否是正常的响应对象
-        if (res && typeof res === 'object') {
-          // 检查是否有 success 字段（正常响应格式）
-          if (res.success !== undefined) {
-            if (res.success && res.result) {
-              // 检查 result 是否为空对象
-              const resultKeys = Object.keys(res.result);
-              console.log('📥 res.result 的键:', resultKeys);
-              console.log('📥 res.result 的键数量:', resultKeys.length);
-              
-              // 即使 result 是空对象，也传递它（后端可能返回所有字段为 null 的对象）
-              this.settingData = JSON.stringify(res.result);
-              console.log('✅ 设置数据已更新，settingData:', this.settingData.substring(0, 200));
-              console.log('✅ settingData 长度:', this.settingData.length);
-            } else if (res.success && !res.result) {
-              console.warn('⚠️ success 为 true 但没有 result 数据');
-              this.settingData = '';
-            } else {
-              console.warn('⚠️ success 为 false，错误信息:', res.message || res.msg);
-              this.settingData = '';
-            }
-          } else {
-            console.warn('⚠️ 响应格式异常，没有 success 字段:', res);
-            this.settingData = '';
-          }
+        console.log('📥 获取设置响应:', res);
+        // 使用原始简单逻辑：如果 res.result 存在，就赋值
+        if (res && res.result) {
+          this.settingData = JSON.stringify(res.result);
+          console.log('✅ 设置数据已更新，settingData 长度:', this.settingData.length);
         } else {
-          console.warn('⚠️ 响应不是对象:', res);
+          console.warn('⚠️ 没有 result 数据:', res);
           this.settingData = '';
         }
       }).catch((err) => {
