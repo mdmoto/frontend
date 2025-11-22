@@ -156,7 +156,7 @@ export default {
         console.log('🔍 BASE_SETTING init() - res 类型:', typeof this.res);
         
         // 如果 res 是空字符串、null、undefined，不进行解析
-        if (!this.res || this.res.trim() === '' || this.res === 'null') {
+        if (!this.res || this.res.trim() === '' || this.res === 'null' || this.res === 'undefined') {
           console.warn('⚠️ BASE_SETTING: res 为空字符串或 null，跳过初始化，保持默认值');
           return;
         }
@@ -166,11 +166,33 @@ export default {
         console.log('🔍 BASE_SETTING init() - result 的键:', Object.keys(this.result));
         console.log('🔍 BASE_SETTING init() - result 的键数量:', Object.keys(this.result).length);
         
-        // 即使 result 是空对象，也要合并（不会覆盖，因为空对象没有键）
-        // 合并数据而不是完全覆盖，保留原有字段
-        this.$set(this, "formValidate", { ...this.formValidate, ...this.result });
+        // 检查是否有有效的字段值（非空值）
+        const hasValidValues = Object.keys(this.result).some(key => {
+          const value = this.result[key];
+          return value !== null && value !== undefined && value !== '';
+        });
         
-        // 只为 result 中存在的键设置验证规则
+        console.log('🔍 BASE_SETTING init() - 是否有有效值:', hasValidValues);
+        
+        // 过滤掉 null 值，只合并有效值
+        // 这样可以避免 null 值覆盖默认的空字符串
+        const validResult = {};
+        Object.keys(this.result).forEach(key => {
+          const value = this.result[key];
+          // 只保留非 null、非 undefined 的值
+          if (value !== null && value !== undefined) {
+            validResult[key] = value;
+          }
+        });
+        
+        console.log('🔍 BASE_SETTING init() - 过滤后的有效值:', validResult);
+        console.log('🔍 BASE_SETTING init() - 有效值的键:', Object.keys(validResult));
+        
+        // 合并数据而不是完全覆盖，保留原有字段
+        // 只合并有效值，避免 null 值覆盖默认值
+        this.$set(this, "formValidate", { ...this.formValidate, ...validResult });
+        
+        // 只为 result 中存在的键设置验证规则（包括 null 值的字段）
         Object.keys(this.result).forEach((item) => {
           this.ruleValidate[item] = [
             {
@@ -182,11 +204,12 @@ export default {
         });
         
         console.log('✅ BASE_SETTING: 数据初始化成功');
-        console.log('✅ BASE_SETTING: formValidate:', this.formValidate);
+        console.log('✅ BASE_SETTING: formValidate:', JSON.stringify(this.formValidate, null, 2));
         console.log('✅ BASE_SETTING: formValidate 的键:', Object.keys(this.formValidate));
       } catch (e) {
         console.error("❌ BASE_SETTING 解析设置失败:", e);
         console.error("❌ 失败的 res 值:", this.res);
+        // 解析失败时，至少保持默认值
       }
     },
   },
