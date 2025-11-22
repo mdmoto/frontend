@@ -17,6 +17,8 @@ export default {
   name: 'SettingManage',
   created() {
     console.log('🔵 SettingManage created() - 组件已创建');
+    console.log('🔵 当前路由:', window.location.href);
+    console.log('🔵 Vue Router:', this.$route);
   },
   data() {
     console.log('🔵 SettingManage data() - 数据初始化');
