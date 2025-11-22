@@ -91,20 +91,45 @@ export default {
     },
     // 实例化数据
     init() {
-      this.res = JSON.parse(this.res);
-
-      this.$set(this, "formValidate", { ...this.res });
-      Object.keys(this.formValidate).forEach((item) => {
-        if (item.indexOf("pId") < 0) {
-          this.ruleValidate[item] = [
-            {
-              required: true,
-              message: "请填写必填项",
-              trigger: "blur",
-            },
-          ];
+      try {
+        // 检查 res 是否为 undefined、null 或空字符串
+        if (this.res === undefined || this.res === null || this.res === '' || 
+            (typeof this.res === 'string' && (this.res.trim() === '' || this.res === 'null' || this.res === 'undefined'))) {
+          console.warn('⚠️ WECHAT_PAYMENT: res 为空、null 或 undefined，跳过初始化，保持默认值');
+          return;
         }
-      });
+        
+        // 确保 res 是字符串类型
+        if (typeof this.res !== 'string') {
+          console.warn('⚠️ WECHAT_PAYMENT: res 不是字符串类型，跳过初始化');
+          return;
+        }
+        
+        const parsedRes = JSON.parse(this.res);
+        // 过滤掉 null 值，只合并有效值
+        const validRes = {};
+        Object.keys(parsedRes).forEach(key => {
+          if (parsedRes[key] !== null && parsedRes[key] !== undefined) {
+            validRes[key] = parsedRes[key];
+          }
+        });
+        
+        this.$set(this, "formValidate", { ...this.formValidate, ...validRes });
+        Object.keys(this.formValidate).forEach((item) => {
+          if (item.indexOf("pId") < 0) {
+            this.ruleValidate[item] = [
+              {
+                required: true,
+                message: "请填写必填项",
+                trigger: "blur",
+              },
+            ];
+          }
+        });
+      } catch (e) {
+        console.error("❌ WECHAT_PAYMENT 解析设置失败:", e);
+        console.error("❌ 失败的 res 值:", this.res);
+      }
     }
   },
 };

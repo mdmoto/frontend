@@ -118,15 +118,37 @@ export default {
     },
     // 实例化数据
     async init() {
-      this.formValidate = JSON.parse(this.res).paymentSupportItems;
-      this.checkSupport =  JSON.parse(JSON.stringify(this.formValidate));
-      console.log(this.formValidate);
+      try {
+        // 检查 res 是否为 undefined、null 或空字符串
+        if (this.res === undefined || this.res === null || this.res === '' || 
+            (typeof this.res === 'string' && (this.res.trim() === '' || this.res === 'null' || this.res === 'undefined'))) {
+          console.warn('⚠️ PAYMENT_SUPPORT: res 为空、null 或 undefined，跳过初始化，保持默认值');
+          this.formValidate = [];
+          this.checkSupport = {};
+        } else {
+          // 确保 res 是字符串类型
+          if (typeof this.res !== 'string') {
+            console.warn('⚠️ PAYMENT_SUPPORT: res 不是字符串类型，跳过初始化');
+            this.formValidate = [];
+            this.checkSupport = {};
+          } else {
+            const parsedRes = JSON.parse(this.res);
+            this.formValidate = parsedRes.paymentSupportItems || [];
+            this.checkSupport = JSON.parse(JSON.stringify(this.formValidate));
+            console.log('✅ PAYMENT_SUPPORT 初始化成功，formValidate:', this.formValidate);
+          }
+        }
 
-      await getPaymentSupportForm().then((res) => {
-        // res.result.payments = ["H5", "PC"];
-        this.supportForm = res.result;
-
-      });
+        await getPaymentSupportForm().then((res) => {
+          // res.result.payments = ["H5", "PC"];
+          this.supportForm = res.result;
+        });
+      } catch (e) {
+        console.error("❌ PAYMENT_SUPPORT 解析设置失败:", e);
+        console.error("❌ 失败的 res 值:", this.res);
+        this.formValidate = [];
+        this.checkSupport = {};
+      }
     },
   },
 };
