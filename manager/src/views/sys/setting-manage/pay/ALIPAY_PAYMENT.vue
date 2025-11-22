@@ -45,7 +45,12 @@ export default {
   },
   props: ["res", "type"],
   created() {
-    this.init();
+    console.log('🚀 ALIPAY_PAYMENT created() - res prop:', this.res);
+    if (this.res && typeof this.res === 'string' && this.res.trim() !== '') {
+      this.init();
+    } else {
+      console.log('⏳ ALIPAY_PAYMENT created() - res 为空，等待 watch 触发');
+    }
   },
   methods: {
     submit(name) {
@@ -67,6 +72,7 @@ export default {
     // 实例化数据
     init() {
       try {
+        console.log('🔍 ALIPAY_PAYMENT init() - 接收到的 res:', this.res);
         // 检查 res 是否为 undefined、null 或空字符串
         if (this.res === undefined || this.res === null || this.res === '' || 
             (typeof this.res === 'string' && (this.res.trim() === '' || this.res === 'null' || this.res === 'undefined'))) {
@@ -81,6 +87,7 @@ export default {
         }
         
         const parsedRes = JSON.parse(this.res);
+        console.log('🔍 ALIPAY_PAYMENT init() - 解析后的 result:', parsedRes);
         // 过滤掉 null 值，只合并有效值
         const validRes = {};
         Object.keys(parsedRes).forEach(key => {
@@ -88,8 +95,10 @@ export default {
             validRes[key] = parsedRes[key];
           }
         });
+        console.log('🔍 ALIPAY_PAYMENT init() - 过滤后的有效值:', validRes);
         
         this.$set(this, "formValidate", { ...this.formValidate, ...validRes });
+        console.log('✅ ALIPAY_PAYMENT: 数据初始化成功，formValidate:', this.formValidate);
         Object.keys(this.formValidate).forEach((item) => {
           this.ruleValidate[item] = [
             {
@@ -103,6 +112,15 @@ export default {
         console.error("❌ ALIPAY_PAYMENT 解析设置失败:", e);
         console.error("❌ 失败的 res 值:", this.res);
       }
+    },
+  },
+  watch: {
+    res: {
+      handler(newVal, oldVal) {
+        console.log('🔔 ALIPAY_PAYMENT watch res 触发:', { newVal, oldVal });
+        this.init();
+      },
+      immediate: false,
     },
   },
 };
