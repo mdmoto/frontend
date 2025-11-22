@@ -34,12 +34,12 @@ export default {
     return {
       ruleValidate: {}, // 验证规则
       formValidate: { // 表单数据
-        accessKeyId: "",
-        accessKeySecret: "",
-        bucketName: "",
-        picLocation: "",
-        endPoint: "",
-        callbackUrl:"",
+        appId: "",
+        certPath: "",
+        alipayPublicCertPath: "",
+        privateKey: "",
+        rootCertPath: "",
+        callbackUrl: "",
       },
     };
   },

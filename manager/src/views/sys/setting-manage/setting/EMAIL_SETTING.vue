@@ -48,11 +48,34 @@ export default {
   methods: {
     init() {
       try {
-        if (!this.res) return;
+        // 检查 res 是否为 undefined、null 或空字符串
+        if (this.res === undefined || this.res === null || this.res === '' || 
+            (typeof this.res === 'string' && (this.res.trim() === '' || this.res === 'null' || this.res === 'undefined'))) {
+          console.warn('⚠️ EMAIL_SETTING: res 为空、null 或 undefined，跳过初始化，保持默认值');
+          return;
+        }
+        
+        // 确保 res 是字符串类型
+        if (typeof this.res !== 'string') {
+          console.warn('⚠️ EMAIL_SETTING: res 不是字符串类型，跳过初始化');
+          return;
+        }
+        
         const result = JSON.parse(this.res);
-        this.$set(this, "formValidate", { ...this.formValidate, ...result });
+        // 过滤掉 null 值，只合并有效值
+        const validResult = {};
+        Object.keys(result).forEach(key => {
+          const value = result[key];
+          if (value !== null && value !== undefined) {
+            validResult[key] = value;
+          }
+        });
+        
+        // 合并数据而不是完全覆盖，保留原有字段
+        this.$set(this, "formValidate", { ...this.formValidate, ...validResult });
       } catch (e) {
-        console.error("解析设置失败", e);
+        console.error("❌ EMAIL_SETTING 解析设置失败:", e);
+        console.error("❌ 失败的 res 值:", this.res);
       }
     },
     // 保存

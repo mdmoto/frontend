@@ -65,7 +65,21 @@ export default {
   data() {
     return {
       ruleValidate: {}, // 验证规则
-      formValidate: {}, // 表单数据
+      formValidate: { // 表单数据
+        jsapiAppId: "",
+        nativeAppId: "",
+        mpAppId: "",
+        h5AppId: "",
+        appAppId: "",
+        mchId: "",
+        apiKey3: "",
+        serialNumber: "",
+        apiclientKey: "",
+        publicType: "CERT", // Default to CERT
+        publicId: "",
+        publicKey: "",
+        callbackUrl: "",
+      },
     };
   },
   props: ["res", "type"],

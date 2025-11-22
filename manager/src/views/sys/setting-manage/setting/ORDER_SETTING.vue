@@ -83,30 +83,58 @@ export default {
     },
     // 实例化数据
     init() {
-      this.result = JSON.parse(this.res);
-      Object.keys(this.result).map((item) => {
-        this.result[item] += "";
-      });
-      this.$set(this, "formValidate", { ...this.result });
-      Object.keys(this.formValidate).forEach((item) => {
-        this.ruleValidate[item] = [
-          {
-            required: true,
-            message: "请填写必填项",
-            trigger: "blur",
-          },
-          {
-            validator: (rule, value, callback) => {
-              if (value < 0) {
-                callback(new Error("不能输入负数！"));
-              } else {
-                callback();
-              }
+      try {
+        // 检查 res 是否为 undefined、null 或空字符串
+        if (this.res === undefined || this.res === null || this.res === '' || 
+            (typeof this.res === 'string' && (this.res.trim() === '' || this.res === 'null' || this.res === 'undefined'))) {
+          console.warn('⚠️ ORDER_SETTING: res 为空、null 或 undefined，跳过初始化，保持默认值');
+          return;
+        }
+        
+        // 确保 res 是字符串类型
+        if (typeof this.res !== 'string') {
+          console.warn('⚠️ ORDER_SETTING: res 不是字符串类型，跳过初始化');
+          return;
+        }
+        
+        this.result = JSON.parse(this.res);
+        // 过滤掉 null 值，只合并有效值
+        const validResult = {};
+        Object.keys(this.result).forEach(key => {
+          const value = this.result[key];
+          if (value !== null && value !== undefined) {
+            // 将数字转换为字符串（保持原有逻辑）
+            validResult[key] = value + "";
+          }
+        });
+        
+        // 合并数据而不是完全覆盖，保留原有字段
+        this.$set(this, "formValidate", { ...this.formValidate, ...validResult });
+        
+        // 为所有字段设置验证规则
+        Object.keys(this.formValidate).forEach((item) => {
+          this.ruleValidate[item] = [
+            {
+              required: true,
+              message: "请填写必填项",
+              trigger: "blur",
             },
-            trigger: "change",
-          },
-        ];
-      });
+            {
+              validator: (rule, value, callback) => {
+                if (value < 0) {
+                  callback(new Error("不能输入负数！"));
+                } else {
+                  callback();
+                }
+              },
+              trigger: "change",
+            },
+          ];
+        });
+      } catch (e) {
+        console.error("❌ ORDER_SETTING 解析设置失败:", e);
+        console.error("❌ 失败的 res 值:", this.res);
+      }
     },
   },
 };
