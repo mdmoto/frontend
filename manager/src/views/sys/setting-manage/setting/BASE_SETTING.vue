@@ -160,10 +160,19 @@ export default {
       try {
         console.log('🔍 BASE_SETTING init() - 接收到的 res:', this.res);
         console.log('🔍 BASE_SETTING init() - res 类型:', typeof this.res);
+        console.log('🔍 BASE_SETTING init() - res 是否为 undefined:', this.res === undefined);
+        console.log('🔍 BASE_SETTING init() - res 是否为 null:', this.res === null);
         
-        // 如果 res 是空字符串、null、undefined，不进行解析
-        if (!this.res || this.res.trim() === '' || this.res === 'null' || this.res === 'undefined') {
-          console.warn('⚠️ BASE_SETTING: res 为空字符串或 null，跳过初始化，保持默认值');
+        // 如果 res 是 undefined、null、空字符串，不进行解析
+        if (this.res === undefined || this.res === null || this.res === '' || 
+            (typeof this.res === 'string' && (this.res.trim() === '' || this.res === 'null' || this.res === 'undefined'))) {
+          console.warn('⚠️ BASE_SETTING: res 为空、null 或 undefined，跳过初始化，保持默认值');
+          return;
+        }
+        
+        // 确保 res 是字符串类型
+        if (typeof this.res !== 'string') {
+          console.warn('⚠️ BASE_SETTING: res 不是字符串类型，跳过初始化');
           return;
         }
         
