@@ -61,12 +61,7 @@ export default {
   },
   props: ["res", "type"],
   created() {
-    console.log('🚀 ORDER_SETTING created() - res prop:', this.res);
-    if (this.res && this.res.trim() !== '') {
-      this.init();
-    } else {
-      console.log('⏳ ORDER_SETTING created() - res 为空，等待 watch 触发');
-    }
+    this.init();
   },
   methods: {
     // 保存
@@ -89,38 +84,15 @@ export default {
     // 实例化数据
     init() {
       try {
-        console.log('🔍 ORDER_SETTING init() - 接收到的 res:', this.res);
-        // 检查 res 是否为 undefined、null 或空字符串
-        if (this.res === undefined || this.res === null || this.res === '' || 
-            (typeof this.res === 'string' && (this.res.trim() === '' || this.res === 'null' || this.res === 'undefined'))) {
-          console.warn('⚠️ ORDER_SETTING: res 为空、null 或 undefined，跳过初始化，保持默认值');
-          return;
-        }
-        
-        // 确保 res 是字符串类型
-        if (typeof this.res !== 'string') {
-          console.warn('⚠️ ORDER_SETTING: res 不是字符串类型，跳过初始化');
-          return;
-        }
-        
+        if (!this.res) return;
         this.result = JSON.parse(this.res);
-        console.log('🔍 ORDER_SETTING init() - 解析后的 result:', this.result);
-        // 过滤掉 null 值，只合并有效值
-        const validResult = {};
-        Object.keys(this.result).forEach(key => {
-          const value = this.result[key];
-          if (value !== null && value !== undefined) {
-            // 将数字转换为字符串（保持原有逻辑）
-            validResult[key] = value + "";
+        Object.keys(this.result).map((item) => {
+          if (this.result[item] != null) {
+            this.result[item] += "";
           }
         });
-        console.log('🔍 ORDER_SETTING init() - 过滤后的有效值:', validResult);
+        this.$set(this, "formValidate", { ...this.formValidate, ...this.result });
         
-        // 合并数据而不是完全覆盖，保留原有字段
-        this.$set(this, "formValidate", { ...this.formValidate, ...validResult });
-        console.log('✅ ORDER_SETTING: 数据初始化成功，formValidate:', this.formValidate);
-        
-        // 为所有字段设置验证规则
         Object.keys(this.formValidate).forEach((item) => {
           this.ruleValidate[item] = [
             {
@@ -141,18 +113,16 @@ export default {
           ];
         });
       } catch (e) {
-        console.error("❌ ORDER_SETTING 解析设置失败:", e);
-        console.error("❌ 失败的 res 值:", this.res);
+        console.error("解析设置失败", e);
       }
     },
   },
   watch: {
     res: {
       handler(newVal, oldVal) {
-        console.log('🔔 ORDER_SETTING watch res 触发:', { newVal, oldVal });
         this.init();
       },
-      immediate: false,
+      immediate: true,
     },
   },
 };

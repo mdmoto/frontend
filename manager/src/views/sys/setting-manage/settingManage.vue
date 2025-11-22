@@ -208,7 +208,11 @@ export default {
         console.log('📥 获取设置响应:', res);
         // 使用原始简单逻辑：如果 res.result 存在，就赋值
         if (res && res.result) {
-          this.settingData = JSON.stringify(res.result);
+          if (typeof res.result === 'string') {
+            this.settingData = res.result;
+          } else {
+            this.settingData = JSON.stringify(res.result);
+          }
           console.log('✅ 设置数据已更新，settingData 长度:', this.settingData.length);
         } else {
           console.warn('⚠️ 没有 result 数据:', res);
