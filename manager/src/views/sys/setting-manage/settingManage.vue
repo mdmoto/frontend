@@ -180,45 +180,58 @@ export default {
 
       console.log('📡 请求设置数据，类型:', name);
       getSetting(name).then((res) => {
-        console.log('📥 获取设置响应:', res);
+        console.log('📥 获取设置响应 - 完整对象:', res);
+        console.log('📥 响应类型:', typeof res);
         console.log('📥 res.success:', res.success);
+        console.log('📥 res.code:', res.code);
         console.log('📥 res.result:', res.result);
         console.log('📥 res.result 类型:', typeof res.result);
-        console.log('📥 res.result 是否为对象:', res.result && typeof res.result === 'object');
-        console.log('📥 res.result 的键:', res.result ? Object.keys(res.result) : 'N/A');
-        console.log('📥 res.result 的键数量:', res.result ? Object.keys(res.result).length : 0);
         
-        // 检查响应是否是错误对象（403等错误会在这里）
-        if (res && res.response && res.response.status === 403) {
-          console.warn('⚠️ 返回403错误，可能需要重新登录或token已过期');
-          // 403错误时，不设置数据，让用户知道需要登录
+        // 检查响应是否是错误对象（从拦截器返回的错误）
+        if (res && res.response) {
+          console.warn('⚠️ 响应包含 response 对象（可能是错误对象）:', res.response.status);
           this.settingData = '';
           return;
         }
         
         // 检查是否是正常的响应对象
-        if (res && typeof res === 'object' && !res.response) {
-          if (res.success && res.result) {
-            // 即使 result 是空对象，也传递它，让子组件决定如何处理
-            this.settingData = JSON.stringify(res.result);
-            console.log('✅ 设置数据已更新，settingData:', this.settingData);
-            console.log('✅ settingData 长度:', this.settingData.length);
+        if (res && typeof res === 'object') {
+          // 检查是否有 success 字段（正常响应格式）
+          if (res.success !== undefined) {
+            if (res.success && res.result) {
+              // 检查 result 是否为空对象
+              const resultKeys = Object.keys(res.result);
+              console.log('📥 res.result 的键:', resultKeys);
+              console.log('📥 res.result 的键数量:', resultKeys.length);
+              
+              // 即使 result 是空对象，也传递它（后端可能返回所有字段为 null 的对象）
+              this.settingData = JSON.stringify(res.result);
+              console.log('✅ 设置数据已更新，settingData:', this.settingData.substring(0, 200));
+              console.log('✅ settingData 长度:', this.settingData.length);
+            } else if (res.success && !res.result) {
+              console.warn('⚠️ success 为 true 但没有 result 数据');
+              this.settingData = '';
+            } else {
+              console.warn('⚠️ success 为 false，错误信息:', res.message || res.msg);
+              this.settingData = '';
+            }
           } else {
-            // 如果没有数据，设置为空字符串，让子组件知道没有数据
+            console.warn('⚠️ 响应格式异常，没有 success 字段:', res);
             this.settingData = '';
-            console.log('⚠️ 没有数据或数据为空，settingData 设置为空字符串');
           }
         } else {
-          console.warn('⚠️ 响应格式异常:', res);
+          console.warn('⚠️ 响应不是对象:', res);
           this.settingData = '';
         }
       }).catch((err) => {
-        console.error('❌ 获取设置失败:', err);
+        console.error('❌ 获取设置失败 - catch 块:', err);
+        console.error('❌ 错误类型:', typeof err);
         console.error('❌ 错误详情:', {
           message: err.message,
           response: err.response,
           status: err.response?.status,
-          statusText: err.response?.statusText
+          statusText: err.response?.statusText,
+          data: err.response?.data
         });
         // API失败时，设置为空字符串
         this.settingData = '';
