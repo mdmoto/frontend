@@ -97,12 +97,24 @@ export default {
 
   watch: {
     $route(to, from) {
+      console.log('🔵 $route watch 触发 - 路由变化:', {
+        to: to.path,
+        toName: to.name,
+        from: from.path,
+        fromName: from.name
+      });
       this.selected = "";
       this.show = false;
       // 路由变化时重新初始化tabWay
       const routeName = to.name;
-      console.log('路由变化，新路由名称:', routeName);
-      if (routeName === 'setting-manage' || routeName === 'setting' || routeName === 'settingManage') {
+      const routePath = to.path;
+      console.log('🔵 路由信息 - name:', routeName, 'path:', routePath);
+      
+      // 支持多种路由匹配方式
+      if (routeName === 'setting-manage' || routeName === 'setting' || routeName === 'settingManage' ||
+          routePath === '/sys/setting' || routePath.includes('/sys/setting') ||
+          routePath === '/setting' || routePath.includes('setting')) {
+        console.log('🔵 匹配到系统设置路由，使用setting标签');
         this.tabWay = this.setting;
       } else if (routeName === 'authLogin' || routeName === 'auth-login') {
         this.tabWay = this.authLogin;
@@ -116,9 +128,10 @@ export default {
         });
       }
       if (!this.tabWay || this.tabWay.length === 0) {
+        console.log('🔵 tabWay为空，使用默认setting');
         this.tabWay = this.setting;
       }
-      console.log('路由变化后的tabWay:', this.tabWay);
+      console.log('🔵 路由变化后的tabWay:', this.tabWay);
       this.getSettingData(this.selected);
       this.$nextTick(() => {
         this.show = true;
