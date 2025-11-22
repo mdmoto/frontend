@@ -47,8 +47,12 @@ export default {
   },
   methods: {
     init() {
-      if (this.res) {
-        this.$set(this, "formValidate", {...JSON.parse(this.res)});
+      try {
+        if (!this.res) return;
+        const result = JSON.parse(this.res);
+        this.$set(this, "formValidate", { ...this.formValidate, ...result });
+      } catch (e) {
+        console.error("解析设置失败", e);
       }
     },
     // 保存

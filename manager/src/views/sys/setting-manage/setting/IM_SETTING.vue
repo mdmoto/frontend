@@ -50,19 +50,27 @@ export default {
     },
     // 实例化数据
     init() {
-      this.result = JSON.parse(this.res);
+      try {
+        if (!this.res) return;
+        this.result = JSON.parse(this.res);
 
-      this.$set(this, "formValidate", {...this.result});
-      Object.keys(this.formValidate).forEach((item) => {
-        this.ruleValidate[item] = [
-          {
-            required: true,
-            message: "请填写必填项",
-            trigger: "blur",
-          },
-        ];
-      });
+        this.$set(this, "formValidate", { ...this.formValidate, ...this.result });
+        Object.keys(this.formValidate).forEach((item) => {
+          this.ruleValidate[item] = [
+            {
+              required: true,
+              message: "请填写必填项",
+              trigger: "blur",
+            },
+          ];
+        });
+      } catch (e) {
+        console.error("解析设置失败", e);
+      }
     },
+  },
+  watch: {
+    res: "init",
   },
 };
 </script>

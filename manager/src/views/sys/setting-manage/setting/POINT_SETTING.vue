@@ -73,8 +73,13 @@ export default {
   data() {
     return {
       ruleValidate: {}, // 验证规则
-      formValidate: {}, // 表单数据
-      result: "",
+      formValidate: {
+        consumer: 0,
+        register: 0,
+        signIn: 0,
+        comment: 0,
+        pointSettingItems: []
+      }, // 表单数据
     };
   },
   props: ["res", "type"],
@@ -116,36 +121,44 @@ export default {
     },
     // 实例化数据
     init() {
-      this.result = JSON.parse(this.res);
-      Object.keys(this.result).map((item) => {
-        if (item == "pointSettingItems") {
-          return false;
-        }
-        this.result[item] += "";
-      });
+      try {
+        if (!this.res) return;
+        this.result = JSON.parse(this.res);
+        Object.keys(this.result).map((item) => {
+          if (item == "pointSettingItems") {
+            return false;
+          }
+          this.result[item] += "";
+        });
 
-      this.$set(this, "formValidate", {...this.result});
+        this.$set(this, "formValidate", { ...this.formValidate, ...this.result });
 
-      Object.keys(this.formValidate).forEach((item) => {
-        this.ruleValidate[item] = [
-          {
-            required: true,
-            message: "请填写必填项",
-            trigger: "blur",
-          },
-          {
-            validator: (rule, value, callback) => {
-              if (value < 0) {
-                callback(new Error("不能输入负数！"));
-              } else {
-                callback();
-              }
+        Object.keys(this.formValidate).forEach((item) => {
+          this.ruleValidate[item] = [
+            {
+              required: true,
+              message: "请填写必填项",
+              trigger: "blur",
             },
-            trigger: "change",
-          },
-        ];
-      });
+            {
+              validator: (rule, value, callback) => {
+                if (value < 0) {
+                  callback(new Error("不能输入负数！"));
+                } else {
+                  callback();
+                }
+              },
+              trigger: "change",
+            },
+          ];
+        });
+      } catch (e) {
+        console.error("解析设置失败", e);
+      }
     },
+  },
+  watch: {
+    res: "init",
   },
 };
 </script>
