@@ -155,10 +155,16 @@ export default {
      * 进入页面请求第一个配置
      */
     getSettingData(name) {
+      console.log('🔍 getSettingData 被调用, name:', name);
+      console.log('🔍 当前 selected:', this.selected);
+      console.log('🔍 当前 tabWay:', this.tabWay);
+      
       this.settingData = "";
       // 支持多种路由名称匹配
       const routeName = this.$route.name;
-      if (routeName === 'setting-manage' || routeName === 'setting') {
+      console.log('🔍 当前路由名称:', routeName);
+      
+      if (routeName === 'setting-manage' || routeName === 'setting' || routeName === 'settingManage') {
         this.tabWay = this.setting;
       } else if (routeName === 'authLogin' || routeName === 'auth-login') {
         this.tabWay = this.authLogin;
@@ -172,13 +178,23 @@ export default {
           }
         });
       }
+      
+      console.log('🔍 设置后的 tabWay:', this.tabWay);
+      
       // 点击页面给每项第一个数据赋值
-      if (!name) {
-        name = this.tabWay[0].type;
-        this.selected = name;
+      if (!name || name === '') {
+        if (this.tabWay && this.tabWay.length > 0) {
+          name = this.tabWay[0].type;
+          this.selected = name;
+          console.log('🔍 自动选择第一个标签:', name);
+        } else {
+          console.error('❌ tabWay 为空，无法获取设置数据');
+          return;
+        }
       }
 
       console.log('📡 请求设置数据，类型:', name);
+      console.log('📡 API 端点: /manager/setting/setting/get/' + name);
       getSetting(name).then((res) => {
         console.log('📥 获取设置响应 - 完整对象:', res);
         console.log('📥 响应类型:', typeof res);
