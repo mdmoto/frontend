@@ -188,18 +188,38 @@ export default {
         console.log('📥 res.result 的键:', res.result ? Object.keys(res.result) : 'N/A');
         console.log('📥 res.result 的键数量:', res.result ? Object.keys(res.result).length : 0);
         
-        if (res.success && res.result) {
-          // 即使 result 是空对象，也传递它，让子组件决定如何处理
-          this.settingData = JSON.stringify(res.result);
-          console.log('✅ 设置数据已更新，settingData:', this.settingData);
-          console.log('✅ settingData 长度:', this.settingData.length);
-        } else {
-          // 如果没有数据，设置为空字符串，让子组件知道没有数据
+        // 检查响应是否是错误对象（403等错误会在这里）
+        if (res && res.response && res.response.status === 403) {
+          console.warn('⚠️ 返回403错误，可能需要重新登录或token已过期');
+          // 403错误时，不设置数据，让用户知道需要登录
           this.settingData = '';
-          console.log('⚠️ 没有数据或数据为空，settingData 设置为空字符串');
+          return;
+        }
+        
+        // 检查是否是正常的响应对象
+        if (res && typeof res === 'object' && !res.response) {
+          if (res.success && res.result) {
+            // 即使 result 是空对象，也传递它，让子组件决定如何处理
+            this.settingData = JSON.stringify(res.result);
+            console.log('✅ 设置数据已更新，settingData:', this.settingData);
+            console.log('✅ settingData 长度:', this.settingData.length);
+          } else {
+            // 如果没有数据，设置为空字符串，让子组件知道没有数据
+            this.settingData = '';
+            console.log('⚠️ 没有数据或数据为空，settingData 设置为空字符串');
+          }
+        } else {
+          console.warn('⚠️ 响应格式异常:', res);
+          this.settingData = '';
         }
       }).catch((err) => {
         console.error('❌ 获取设置失败:', err);
+        console.error('❌ 错误详情:', {
+          message: err.message,
+          response: err.response,
+          status: err.response?.status,
+          statusText: err.response?.statusText
+        });
         // API失败时，设置为空字符串
         this.settingData = '';
       });
