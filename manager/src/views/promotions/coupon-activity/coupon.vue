@@ -11,6 +11,7 @@
         :data="data"
         ref="table"
         sortable="custom"
+        :no-data-text="data.length === 0 && !loading ? '暂无优惠券活动数据' : ''"
       >
         <template slot-scope="{ row }" slot="action">
           <Button type="info" size="small" style="margin-right: 10px" @click="info(row)">
@@ -218,11 +219,20 @@ export default {
       getCouponActivityList(this.searchForm).then((res) => {
         this.loading = false;
         if (res.success) {
-          this.data = res.result.records;
-          this.total = res.result.total;
+          this.data = res.result.records || [];
+          this.total = res.result.total || 0;
+        } else {
+          this.$Message.error(res.message || "获取活动列表失败");
+          this.data = [];
+          this.total = 0;
         }
+      }).catch((err) => {
+        this.loading = false;
+        this.$Message.error("获取活动列表失败，请稍后重试");
+        console.error("获取优惠券活动列表失败:", err);
+        this.data = [];
+        this.total = 0;
       });
-      this.loading = false;
     },
     //跳转编辑
     edit(v) {
