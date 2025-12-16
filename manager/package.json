@@ -1,9 +1,9 @@
 {
-  "name": "maollar",
+  "name": "lilishop",
   "version": "1.0.0",
   "private": true,
-  "description": "maollar-ui",
-  "author": "maollar-platform",
+  "description": "lilishop-ui",
+  "author": "lili-platform",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

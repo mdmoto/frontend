@@ -11,16 +11,16 @@
  * env文件修改的话需要重新编译项目。
  */
 export default {
-  // 网站名称
-  WEBSITE_NAME: process.env.VUE_APP_WEBSITE_NAME || "Maollar IM",
+   // 网站名称
+  WEBSITE_NAME: process.env.VUE_APP_WEBSITE_NAME || "LiLi IM",
   // 默认请求IM的API 
-  BASE_API_URL: process.env.VUE_APP_API_BASE_URL || "",
+  BASE_API_URL: process.env.VUE_APP_API_BASE_URL || "", 
   // 默认请求的WS
-  BASE_WS_URL: process.env.VUE_APP_WEB_SOCKET_URL || "",
+  BASE_WS_URL: process.env.VUE_APP_WEB_SOCKET_URL || "", 
   // 默认请求公有接口相关 API
-  BASE_COMMON: process.env.VUE_APP_COMMON || "",
+  BASE_COMMON: process.env.VUE_APP_COMMON || "", 
   // 默认请求用户相关API
-  BASE_BUYER: process.env.VUE_APP_BUYER || "",
+  BASE_BUYER: process.env.VUE_APP_BUYER || "", 
   // 默认请求卖家相关的API
   BASE_SELLER: process.env.VUE_APP_SELLER || "",
   // 点击商品跳转到的地址
