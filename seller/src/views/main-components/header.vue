@@ -56,6 +56,10 @@ export default {
           localStorage.setItem("sellersiteName", data.siteName);
           localStorage.setItem("sellerlogoImg", data.storeSideLogo);
           localStorage.setItem("sellerIconImg", data.storeSideIcon);
+          
+          // Fix: Update component state immediately
+          this.storeSideLogo = data.storeSideLogo;
+          
           console.log(data, "datadadada");
           window.document.title = data.siteName;
           //动态获取icon
