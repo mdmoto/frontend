@@ -32,7 +32,7 @@
               >
                 <ul class="nav-list">
                   <li class="nav-item " @click="handleClickSetting">
-                    <Tooltip content="设置">
+                    <Tooltip :content="$t('setting')">
                       <Icon size="16" type="md-settings" />
                     </Tooltip>
                   </li>
@@ -158,7 +158,7 @@ export default {
       link.href = localStorage.getItem("domainIcon");
       link.rel = "shortcut icon";
       document.getElementsByTagName("head")[0].appendChild(link);
-      window.document.title = localStorage.getItem("title") + " - 运营后台";
+      window.document.title = localStorage.getItem("title") + " - " + this.$t("rights");
       // 读取未读消息数
       getNoticePage({}).then((res) => {
         if (res.success) {

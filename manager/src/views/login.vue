@@ -16,7 +16,7 @@
                 prefix="ios-contact"
                 size="large"
                 clearable
-                placeholder="请输入用户名"
+                :placeholder="$t('usernamePlaceholder')"
                 autocomplete="off"
               />
             </FormItem>
@@ -27,7 +27,7 @@
                 prefix="ios-lock"
                 size="large"
                 password
-                placeholder="请输入密码"
+                :placeholder="$t('passwordPlaceholder')"
                 autocomplete="off"
               />
             </FormItem>
@@ -92,14 +92,14 @@ export default {
         username: [
           {
             required: true,
-            message: "账号不能为空",
+            message: this.$t("usernameEmpty"),
             trigger: "blur",
           },
         ],
         password: [
           {
             required: true,
-            message: "密码不能为空",
+            message: this.$t("passwordEmpty"),
             trigger: "blur",
           },
         ],

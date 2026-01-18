@@ -3,7 +3,7 @@
     <!-- 一级菜单 -->
     <Menu ref="sideMenu" width="80px" theme="dark"  :active-name="currNav" @on-select="selectNav">
       <MenuItem v-for="(item, i) in navList" :key="i" :name="item.name">
-        {{item.title}}
+        {{ $t(item.title) }}
       </MenuItem>
     </Menu>
     <!-- 二级菜单 -->
@@ -14,9 +14,9 @@
       @on-select="changeMenu"
     >
       <template v-for="item in menuList">
-        <MenuGroup :title="item.title" :key="item.id" style="padding-left:0;">
+        <MenuGroup :title="$t(item.title)" :key="item.id" style="padding-left:0;">
           <MenuItem :name="menu.name" v-for="menu in item.children" :key="menu.name">
-            {{menu.title}}
+            {{ $t(menu.title) }}
           </MenuItem>
         </MenuGroup>
 

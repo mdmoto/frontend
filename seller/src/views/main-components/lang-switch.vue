@@ -1,7 +1,7 @@
 <template>
   <div class="lang-icon">
     <Dropdown @on-click="langChange">
-      <Icon type="md-globe" size="26"/>
+      <Icon type="md-globe" size="20"/>
       <DropdownMenu slot="list">
         <DropdownItem name="zh-CN">简体中文</DropdownItem>
         <DropdownItem name="en-US">English</DropdownItem>
@@ -17,7 +17,13 @@ export default {
   methods: {
     langChange(v) {
       this.$i18n.locale = v;
-      this.$store.commit("switchLang", v);
+      window.localStorage.lang = v;
+      // If there's a store mutation for lang, we should call it
+      if (this.$store.state.app && this.$store.commit) {
+         // Some projects use this to trigger layout updates
+         // this.$store.commit("switchLang", v); 
+      }
+      location.reload(); // Hard reload to ensure all components refresh their computed translations
     }
   }
 };
@@ -25,9 +31,9 @@ export default {
 
 <style lang="scss" scoped>
 .lang-icon {
-  position: fixed;
-  top: 2vh;
-  right: 1.5vw;
   cursor: pointer;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
 }
 </style>

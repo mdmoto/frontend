@@ -7,8 +7,9 @@ import vueQr from "vue-qr";
 
 import liliDialog from '@/views/lili-dialog'
 import App from "./App";
-import {router} from "./router/index";
+import { router } from "./router/index";
 import store from "./store";
+import i18n from "./locale";
 import {
   getRequest,
   postRequest,
@@ -17,7 +18,7 @@ import {
   importRequest,
   uploadFileRequest
 } from "@/libs/axios";
-import {setStore, getStore, removeStore} from "@/libs/storage";
+import { setStore, getStore, removeStore } from "@/libs/storage";
 
 
 import util from "@/libs/util";
@@ -26,9 +27,9 @@ import VueLazyload from "vue-lazyload";
 
 import * as filters from "@/utils/filters"; // global filter
 
-import {md5} from "@/utils/md5.js";
+import { md5 } from "@/utils/md5.js";
 
-const {aMapSecurityJsCode, inputMaxLength,mainColor} = require("@/config");
+const { aMapSecurityJsCode, inputMaxLength, mainColor } = require("@/config");
 // 打印
 import Print from 'vue-print-nb';
 
@@ -50,11 +51,9 @@ Vue.use(VueLazyload, {
 import priceColorScheme from 'price-color'
 Vue.use(priceColorScheme);
 
-const copyViewUi = {...ViewUI}
+const copyViewUi = { ...ViewUI }
 copyViewUi.Input.props.maxlength.default = inputMaxLength // 挂载最大输入值
 Vue.use(copyViewUi);
-
-Vue.component('liliDialog', liliDialog)
 
 Vue.component('liliDialog', liliDialog)
 Vue.component("vue-qr", vueQr); //此处将vue-qr添加为全局组件
@@ -106,6 +105,7 @@ new Vue({
   el: "#app",
   router,
   store,
+  i18n,
   render: h => h(App),
   data: {
     currentPageName: ""

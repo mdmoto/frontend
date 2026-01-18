@@ -1,16 +1,17 @@
 import { getCurrentPermissionList } from "@/api/index";
 import lazyLoading from "./lazyLoading.js";
+import i18n from "@/locale/index";
 
 import Cookies from "js-cookie";
 
 let util = {};
 
-util.title = function(title) {
-  title = title || "运营后台";
+util.title = function (title) {
+  title = title || i18n.t("rights");
   window.document.title = title;
 };
 // 判断元素是否存在于数组中
-util.oneOf = function(ele, targetArr) {
+util.oneOf = function (ele, targetArr) {
   if (targetArr.indexOf(ele) >= 0) {
     return true;
   } else {
@@ -19,7 +20,7 @@ util.oneOf = function(ele, targetArr) {
 };
 
 // 打开新的页面
-util.openNewPage = function(vm, name, argu, query) {
+util.openNewPage = function (vm, name, argu, query) {
   if (!vm.$store) {
     return;
   }
@@ -62,7 +63,7 @@ util.openNewPage = function(vm, name, argu, query) {
   }
 };
 
-util.toDefaultPage = function(routers, name, route, next) {
+util.toDefaultPage = function (routers, name, route, next) {
   let len = routers.length;
   let i = 0;
   let notHandle = true;
@@ -86,7 +87,7 @@ util.toDefaultPage = function(routers, name, route, next) {
   }
 };
 
-util.initRouter = function(vm) {
+util.initRouter = function (vm) {
   // 初始化路由
   const constRoutes = [];
   const otherRoutes = [];
@@ -97,7 +98,7 @@ util.initRouter = function(vm) {
       path: "/*",
       name: "error-404",
       meta: {
-        title: "404-页面不存在"
+        title: "404"
       },
       frontRoute: "error-page/404"
     }
@@ -160,7 +161,7 @@ util.initRouter = function(vm) {
 };
 
 // 添加所有顶部导航栏下的菜单路由
-util.initAllMenuData = function(constRoutes, data) {
+util.initAllMenuData = function (constRoutes, data) {
   let allMenuData = [];
   data.forEach(e => {
     if (e.level == 0) {
@@ -173,7 +174,7 @@ util.initAllMenuData = function(constRoutes, data) {
 };
 
 // 生成菜单格式数据
-util.initMenuData = function(vm, data) {
+util.initMenuData = function (vm, data) {
   const menuRoutes = [];
   let menuData = data;
   // 顶部菜单
@@ -231,7 +232,7 @@ util.initMenuData = function(vm, data) {
 };
 
 // 生成路由节点
-util.initRouterNode = function(routers, data) {
+util.initRouterNode = function (routers, data) {
   // data为所有子菜单数据
 
   for (let item of data) {
@@ -246,7 +247,7 @@ util.initRouterNode = function(routers, data) {
 
     let meta = {};
     // 给页面添加标题、父级菜单name（方便左侧菜单选中）
-    meta.title = menu.title ? menu.title + " - 运营后台" : null;
+    meta.title = menu.title ? i18n.t(menu.title) + " - " + i18n.t("rights") : null;
     meta.firstRouterName = item.firstRouterName;
     menu.meta = meta;
 

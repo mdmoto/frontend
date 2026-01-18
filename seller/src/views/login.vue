@@ -1,36 +1,39 @@
 <template>
   <div class="login" @click="$refs.verify.show = false">
+    <div class="login-lang-switch">
+      <lang-switch></lang-switch>
+    </div>
     <Row type="flex" @keydown.enter.native="submitLogin">
       <Col style="width: 368px">
       <Header />
       <Row style="flex-direction: column">
         <Tabs v-model="loginType">
-          <Tab-pane label="账号密码登录" name="passwordLogin">
+          <Tab-pane :label="$t('usernameLogin')" name="passwordLogin">
             <!--账号密码登录-->
             <Form ref="usernameLoginForm" :model="form" :rules="rules" class="form">
               <FormItem prop="username">
-                <Input v-model="form.username" prefix="ios-contact" clearable placeholder="请输入用户名"
+                <Input v-model="form.username" prefix="ios-contact" clearable :placeholder="$t('usernamePlaceholder')"
                   autocomplete="off" />
               </FormItem>
               <FormItem prop="password">
                 <Input type="password" v-model="form.password" prefix="ios-lock" password
-                  placeholder="请输入密码" autocomplete="off" />
+                  :placeholder="$t('passwordPlaceholder')" autocomplete="off" />
               </FormItem>
             </Form>
             <div class="register">
-              <a @click="$router.push('forgetPassword')">忘记密码</a>
+              <a @click="$router.push('forgetPassword')">{{ $t('forgetPass') }}</a>
             </div>
           </Tab-pane>
-          <Tab-pane label="验证码登录" name="mobileLogin">
+          <Tab-pane :label="$t('mobileLogin')" name="mobileLogin">
             <!-- 验证码登录 -->
             <Form ref="formSms" :model="formSms" :rules="ruleInline" @click.self='$refs.verify.show = false'>
               <FormItem prop="mobile">
-                <i-input type="text" maxlength="11" v-model="formSms.mobile" clearable placeholder="手机号">
+                <i-input type="text" maxlength="11" v-model="formSms.mobile" clearable :placeholder="$t('mobilePlaceholder')">
                   <Icon type="md-lock" slot="prepend"></Icon>
                 </i-input>
               </FormItem>
               <FormItem prop="code">
-                <i-input type="text" v-model="formSms.code" placeholder="手机验证码">
+                <i-input type="text" v-model="formSms.code" :placeholder="$t('codePlaceholder')">
                   <Icon type="ios-text-outline" style="font-weight: bold" slot="prepend" />
                   <Button slot="append" @click="sendCode" :loading="sendCodeLoading">{{ codeMsg }}</Button>
                 </i-input>
@@ -46,8 +49,8 @@
         </Tabs>
         <Row>
           <div class="login-btn" type="primary" size="large" :loading="loading" @click="submitLogin" long>
-            <span v-if="!loading">登录</span>
-            <span v-else>登录中</span>
+            <span v-if="!loading">{{ $t('loginBtn') }}</span>
+            <span v-else>{{ $t('loginingBtn') }}</span>
           </div>
         </Row>
       </Row>
@@ -66,12 +69,14 @@ import util from "@/libs/util.js";
 import Footer from "@/views/main-components/footer";
 import Header from "@/views/main-components/header";
 import verify from "@/views/my-components/verify";
+import langSwitch from "@/views/main-components/lang-switch.vue";
 import Cookies from "js-cookie";
 export default {
   components: {
     Header,
     Footer,
     verify,
+    langSwitch
   },
   data() {
     return {
@@ -97,35 +102,35 @@ export default {
         username: [
           {
             required: true,
-            message: "账号不能为空",
+            message: this.$t('usernameEmpty'),
             trigger: "blur",
           },
         ],
         password: [
           {
             required: true,
-            message: "密码不能为空",
+            message: this.$t('passwordEmpty'),
             trigger: "blur",
           },
         ],
       },
       ruleInline: {
         // 验证规则
-        username: [{ required: true, message: "请输入用户名" }],
+        username: [{ required: true, message: this.$t('usernamePlaceholder') }],
         password: [
-          { required: true, message: "请输入密码" },
-          { type: "string", min: 6, message: "密码不能少于6位" },
+          { required: true, message: this.$t('passwordPlaceholder') },
+          { type: "string", min: 6, message: this.$t('passwordShort') },
         ],
         mobile: [
-          { required: true, message: "请输入手机号码" },
+          { required: true, message: this.$t('mobileEmpty') },
           {
             pattern: RegExp.mobile,
-            message: "请输入正确的手机号",
+            message: this.$t('mobileError'),
           },
         ],
-        code: [{ required: true, message: "请输入手机验证码" }],
+        code: [{ required: true, message: this.$t('codeEmpty') }],
       },
-      codeMsg: "发送验证码", // 验证码文字
+      codeMsg: this.$t('sendCode'), // 验证码文字
     };
   },
   created() {
@@ -172,7 +177,7 @@ export default {
     // 发送手机验证码
     sendCode() {
       if (this.formSms.mobile === "") {
-        this.$Message.warning("请先填写手机号");
+        this.$Message.warning(this.$t('fillMobileFirst'));
         return;
       }
       if (!this.verifyStatus) {
@@ -188,7 +193,7 @@ export default {
         sendSms(params).then((res) => {
 
           if (res.success) {
-            this.$Message.success("验证码发送成功");
+            this.$Message.success(this.$t('smsSuccess'));
             let that = this;
             this.interval = setInterval(() => {
               // this.sendCodeLoading = false
@@ -196,7 +201,7 @@ export default {
               if (that.time === 0) {
                 this.sendCodeLoading = false
                 that.time = 60;
-                that.codeMsg = "重新发送";
+                that.codeMsg = this.$t('reSendCode');
                 that.verifyStatus = false;
                 clearInterval(that.interval);
               } else {
@@ -284,6 +289,12 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  .login-lang-switch {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
 
   .verify-con {
     position: absolute;

@@ -30,9 +30,12 @@
             >
               <ul class="nav-list">
                 <li class="nav-item " @click="handleClickSetting">
-                  <Tooltip content="设置">
+                  <Tooltip :content="$t('setting')">
                     <Icon size="16" type="md-settings" />
                   </Tooltip>
+                </li>
+                <li class="nav-item">
+                  <lang-switch></lang-switch>
                 </li>
               </ul>
               <Dropdown
@@ -84,6 +87,7 @@ import shrinkableMenu from "./main-components/shrinkable-menu/shrinkable-menu.vu
 import tagsPageOpened from "./main-components/tags-page-opened.vue";
 import circleLoading from "@/views/my-components/lili/circle-loading.vue";
 import configDrawer from "@/views/main-components/config-drawer.vue";
+import langSwitch from "./main-components/lang-switch.vue";
 
 import Cookies from "js-cookie";
 import util from "@/libs/util.js";
@@ -94,7 +98,8 @@ export default {
     shrinkableMenu,
     tagsPageOpened,
     circleLoading,
-    configDrawer
+    configDrawer,
+    langSwitch
   },
   data() {
     return {
