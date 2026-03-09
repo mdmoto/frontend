@@ -27,7 +27,7 @@
         v-if="storeDisable === 'REFUSED' && currentIndex === 3">重新申请</Button>
     </div>
 
-    <Modal title="店铺入驻协议" v-model="showAgreement" width="1200" :closable="false" :mask-closable="false">
+    <Modal :title="$t('shop.agreement')" v-model="showAgreement" width="1200" :closable="false" :mask-closable="false">
       <Scroll :on-reach-bottom="handleReachBottom">
         <div class="agreeent-con" v-html="agreementCon"></div>
       </Scroll>

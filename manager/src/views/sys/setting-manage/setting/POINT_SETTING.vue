@@ -1,15 +1,15 @@
 <template>
   <div class="layout">
     <Form ref="formValidate" :label-width="150" label-position="right" :model="formValidate" :rules="ruleValidate">
-      <FormItem label="消费1元赠送喵币" prop="consumer">
+      <FormItem label="消费1元赠送猫币" prop="consumer">
         <Input type="number" v-model="formValidate.consumer">
-          <span slot="append">喵币</span>
+          <span slot="append">猫币</span>
         </Input>
 
       </FormItem>
-      <!-- <FormItem label="喵币抵扣付款" prop="money">
+      <!-- <FormItem label="猫币抵扣付款" prop="money">
         <Input type="number" v-model="formValidate.money">
-          <span slot="prepend">喵币</span>
+          <span slot="prepend">猫币</span>
           <span slot="append"> = 1 人民币</span>
         </Input>
 
@@ -17,26 +17,26 @@
 
       <FormItem label="注册账号" prop="register">
         <Input type="number" v-model="formValidate.register">
-          <span slot="append">喵币</span>
+          <span slot="append">猫币</span>
         </Input>
       </FormItem>
       <!-- <FormItem label="登录" class="label-item" prop="login">
         <Input type="number" v-model="formValidate.login">
 
-        <span slot="append">喵币</span>
+        <span slot="append">猫币</span>
         </Input>
 
       </FormItem> -->
 
-      <FormItem label="每日签到喵币" prop="signIn">
+      <FormItem label="每日签到猫币" prop="signIn">
         <Input type="number" v-model="formValidate.signIn">
-          <span slot="append">喵币</span>
+          <span slot="append">猫币</span>
         </Input>
 
       </FormItem>
-      <FormItem label="订单评价赠送喵币" prop="comment">
+      <FormItem label="订单评价赠送猫币" prop="comment">
         <Input type="number" v-model="formValidate.comment">
-          <span slot="append">喵币</span>
+          <span slot="append">猫币</span>
         </Input>
 
       </FormItem>
@@ -51,7 +51,7 @@
 
           <Button ghost type="error" @click="delSign(point,index)">删除</Button>
           <span class="ml_10">签到<span class="theme_color">{{ point.day }}</span>天，赠送<span
-            class="theme_color">{{ point.point }}</span>喵币</span>
+            class="theme_color">{{ point.point }}</span>猫币</span>
         </div>
 
       </FormItem>
@@ -122,8 +122,9 @@ export default {
     // 实例化数据
     init() {
       try {
-        if (!this.res) return;
+        if (!this.res || this.res === 'null') return;
         this.result = JSON.parse(this.res);
+        if (!this.result) return;
         Object.keys(this.result).map((item) => {
           if (item == "pointSettingItems") {
             return false;

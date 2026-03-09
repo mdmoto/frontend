@@ -212,7 +212,7 @@ export default {
         },
 
         {
-          title: "喵币数量",
+          title: "猫币数量",
           align: "left",
           width: 120,
           render: (h, params) => {

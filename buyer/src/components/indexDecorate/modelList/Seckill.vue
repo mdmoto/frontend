@@ -146,12 +146,12 @@ export default {
       //   {
       //     timeLine: 18,
       //     seckillGoodsList: [
-      //       {goodsImage: 'https://lilishop-oss.oss-cn-beijing.aliyuncs.com/a9593607de404546953055f279fd5d54.png', goodsName: 'dfsdgsdf', originalPrice: 39, price: 12},
-      //       {goodsImage: 'https://lilishop-oss.oss-cn-beijing.aliyuncs.com/a9593607de404546953055f279fd5d54.png', goodsName: 'dfsdgsdf', originalPrice: 39, price: 12},
-      //       {goodsImage: 'https://lilishop-oss.oss-cn-beijing.aliyuncs.com/a9593607de404546953055f279fd5d54.png', goodsName: 'dfsdgsdf', originalPrice: 39, price: 12},
-      //       {goodsImage: 'https://lilishop-oss.oss-cn-beijing.aliyuncs.com/a9593607de404546953055f279fd5d54.png', goodsName: 'dfsdgsdf', originalPrice: 39, price: 12},
-      //       {goodsImage: 'https://lilishop-oss.oss-cn-beijing.aliyuncs.com/a9593607de404546953055f279fd5d54.png', goodsName: 'dfsdgsdf', originalPrice: 39, price: 12},
-      //       {goodsImage: 'https://lilishop-oss.oss-cn-beijing.aliyuncs.com/a9593607de404546953055f279fd5d54.png', goodsName: 'dfsdgsdf', originalPrice: 39, price: 12}
+      //       {goodsImage: 'https://maollar-oss.oss-cn-beijing.aliyuncs.com/a9593607de404546953055f279fd5d54.png', goodsName: 'dfsdgsdf', originalPrice: 39, price: 12},
+      //       {goodsImage: 'https://maollar-oss.oss-cn-beijing.aliyuncs.com/a9593607de404546953055f279fd5d54.png', goodsName: 'dfsdgsdf', originalPrice: 39, price: 12},
+      //       {goodsImage: 'https://maollar-oss.oss-cn-beijing.aliyuncs.com/a9593607de404546953055f279fd5d54.png', goodsName: 'dfsdgsdf', originalPrice: 39, price: 12},
+      //       {goodsImage: 'https://maollar-oss.oss-cn-beijing.aliyuncs.com/a9593607de404546953055f279fd5d54.png', goodsName: 'dfsdgsdf', originalPrice: 39, price: 12},
+      //       {goodsImage: 'https://maollar-oss.oss-cn-beijing.aliyuncs.com/a9593607de404546953055f279fd5d54.png', goodsName: 'dfsdgsdf', originalPrice: 39, price: 12},
+      //       {goodsImage: 'https://maollar-oss.oss-cn-beijing.aliyuncs.com/a9593607de404546953055f279fd5d54.png', goodsName: 'dfsdgsdf', originalPrice: 39, price: 12}
       //     ]
       //   }
       // ]

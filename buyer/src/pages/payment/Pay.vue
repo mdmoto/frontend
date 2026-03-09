@@ -208,7 +208,7 @@
         </div>
 
         <div v-if="$route.query.way === 'POINTS'">
-          <span>应付喵币：</span><span class="actrual-price">{{ priceDetailDTO.payPoint }}</span>
+          <span>应付猫币：</span><span class="actrual-price">{{ priceDetailDTO.payPoint }}</span>
         </div>
         <div v-else>
           <span>应付金额：</span><span class="actrual-price">{{
@@ -251,6 +251,8 @@ import {
   setStoreAddressId,
   shippingMethodList,
   couponNum,
+  loadAiDraft,
+  addCartGoods
 } from "@/api/cart";
 import { getStoreAddress } from "@/api/shopentry.js"
 import { canUseCouponList } from "@/api/member.js";
@@ -309,11 +311,33 @@ export default {
   },
   methods: {
     // 初始化数据
-    init() {
+    async init() {
+      if (this.$route.query.draft_id) {
+        await this.handleAiDraft(this.$route.query.draft_id);
+      }
       this.getGoodsDetail();
       this.getDistribution();
     },
+    async handleAiDraft(draftId) {
+      this.$Spin.show();
+      try {
+        const res = await loadAiDraft(draftId);
+        if (res.success && res.result && res.result.length > 0) {
+          // 将 AI 推荐的商品序列化加入购物车
+          for (const skuId of res.result) {
+            await addCartGoods({ skuId, num: 1, cartType: 'CART' });
+          }
+          // 强制切换到 CART 模式以确保显示这些商品
+          this.$route.query.way = 'CART';
+        }
+      } catch (e) {
+        console.error('AI Draft Error:', e);
+      } finally {
+        this.$Spin.hide();
+      }
+    },
     goAddressManage() {
+
       // 跳转地址管理页面
       this.$router.push("/home/MyAddress");
     },
@@ -365,7 +389,8 @@ export default {
     getGoodsDetail() {
       // 订单商品详情
       this.$Spin.show();
-      cartGoodsPay({ way: this.$route.query.way })
+      let way = this.$route.query.way || 'CART';
+      cartGoodsPay({ way: way })
         .then((res) => {
           this.$Spin.hide();
           if (res.success) {
@@ -624,7 +649,7 @@ export default {
           this.$Spin.hide();
           if (res.success) {
             if (params.way === "POINTS") {
-              // 喵币支付不需要跳转支付页面
+              // 猫币支付不需要跳转支付页面
               this.$router.push("/payDone");
             } else {
               this.$router.push({

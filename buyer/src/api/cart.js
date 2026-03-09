@@ -5,7 +5,7 @@ import request, {
 /**
  * 清空购物车
  */
-export function clearCart () {
+export function clearCart() {
   return request({
     url: '/buyer/trade/carts',
     method: Method.DELETE,
@@ -16,7 +16,7 @@ export function clearCart () {
 /**
  * 获取购物车页面购物车详情
  */
-export function cartGoodsAll () {
+export function cartGoodsAll() {
   return request({
     url: '/buyer/trade/carts/all',
     method: Method.GET,
@@ -27,7 +27,7 @@ export function cartGoodsAll () {
 /**
  * 获取购物车商品数量
  */
-export function cartCount () {
+export function cartCount() {
   return request({
     url: '/buyer/trade/carts/count',
     method: Method.GET,
@@ -38,7 +38,7 @@ export function cartCount () {
 /**
  * 获取结算页面购物车详情
  */
-export function cartGoodsPay (params) {
+export function cartGoodsPay(params) {
   return request({
     url: '/buyer/trade/carts/checked',
     method: Method.GET,
@@ -52,7 +52,7 @@ export function cartGoodsPay (params) {
  * @param skuId skuId
  * @param  num  购买数量
  */
-export function addCartGoods (params) {
+export function addCartGoods(params) {
   return request({
     url: '/buyer/trade/carts',
     method: Method.POST,
@@ -64,15 +64,15 @@ export function addCartGoods (params) {
 /**
  * 创建交易
  * @param client 客户端：H5/移动端 PC/PC端,WECHAT_MP/小程序端,APP/移动应用端
- * @param way 购物车购买：CART/立即购买：BUY_NOW / 喵币购买：POINT
+ * @param way 购物车购买：CART/立即购买：BUY_NOW / 猫币购买：POINT
  * @param remark 备注  非必填
  */
-export function createTrade (data) {
+export function createTrade(data) {
   return request({
     url: '/buyer/trade/carts/create/trade',
     method: Method.POST,
     needToken: true,
-    headers: {'Content-Type': 'application/json'},
+    headers: { 'Content-Type': 'application/json' },
     data
   });
 }
@@ -80,10 +80,10 @@ export function createTrade (data) {
 /**
  * 选择优惠券
  * @param memberCouponId 优惠券id
- * @param way 购物车购买：CART/立即购买：BUY_NOW/ 喵币购买：POINT
+ * @param way 购物车购买：CART/立即购买：BUY_NOW/ 猫币购买：POINT
  * @param used 使用true 弃用 false
  */
-export function selectCoupon (params) {
+export function selectCoupon(params) {
   return request({
     url: '/buyer/trade/carts/select/coupon',
     method: Method.GET,
@@ -95,7 +95,7 @@ export function selectCoupon (params) {
 /**
  * 可用优惠券数量
  */
-export function couponNum (params) {
+export function couponNum(params) {
   return request({
     url: '/buyer/trade/carts/coupon/num',
     method: Method.GET,
@@ -108,7 +108,7 @@ export function couponNum (params) {
  * @param shippingAddressId 地址id
  * @param way 购物车类型
  */
-export function selectAddr (params) {
+export function selectAddr(params) {
   return request({
     url: `/buyer/trade/carts/shippingAddress`,
     method: Method.GET,
@@ -121,7 +121,7 @@ export function selectAddr (params) {
  * 选中购物车所有商品
  * @param checked 设置选中 0，1
  */
-export function setCheckedAll (params) {
+export function setCheckedAll(params) {
   return request({
     url: `/buyer/trade/carts/sku/checked`,
     method: Method.POST,
@@ -135,7 +135,7 @@ export function setCheckedAll (params) {
  * @param checked 是否选中
  * @param storeId   商家id
  */
-export function setCheckedSeller (params) {
+export function setCheckedSeller(params) {
   return request({
     url: `/buyer/trade/carts/store/${params.storeId}`,
     method: Method.POST,
@@ -149,7 +149,7 @@ export function setCheckedSeller (params) {
  * @param skuId 产品id
  * @param checked 设置选中0，1
  */
-export function setCheckedGoods (params) {
+export function setCheckedGoods(params) {
   return request({
     url: `/buyer/trade/carts/sku/checked/${params.skuId}`,
     method: Method.POST,
@@ -163,7 +163,7 @@ export function setCheckedGoods (params) {
  * @param skuId 产品id
  * @param num   产品数量
  */
-export function setCartGoodsNum (params) {
+export function setCartGoodsNum(params) {
   return request({
     url: `/buyer/trade/carts/sku/num/${params.skuId}`,
     method: Method.POST,
@@ -176,7 +176,7 @@ export function setCartGoodsNum (params) {
  * 删除购物车中一个或多个产品
  * @param skuIds 产品id数组
  */
-export function delCartGoods (params) {
+export function delCartGoods(params) {
   return request({
     url: `/buyer/trade/carts/sku/remove`,
     method: Method.DELETE,
@@ -190,7 +190,7 @@ export function delCartGoods (params) {
  * @param shippingMethod SELF_PICK_UP(自提),LOCAL_TOWN_DELIVERY(同城配送),LOGISTICS(物流)
  * @param way 购物方式
  */
-export function shippingMethod (params) {
+export function shippingMethod(params) {
   return request({
     url: `/buyer/trade/carts/shippingMethod`,
     method: Method.GET,
@@ -204,7 +204,7 @@ export function shippingMethod (params) {
  * @param receiptId 发票Id
  * @param way 购物方式
  */
-export function receiptSelect (params) {
+export function receiptSelect(params) {
   return request({
     url: `/buyer/trade/carts/select/receipt`,
     method: Method.GET,
@@ -216,7 +216,7 @@ export function receiptSelect (params) {
 /**
  * 获取全部配送方式
  */
- export function shippingMethodList(params) {
+export function shippingMethodList(params) {
   return request({
     url: `/buyer/trade/carts/shippingMethodList`,
     method: Method.GET,
@@ -228,7 +228,7 @@ export function receiptSelect (params) {
 /**
  * 获取全部配送方式
  */
- export function storeAddressList(params) {
+export function storeAddressList(params) {
   return request({
     url: `/buyer/store/address/shippingMethodList`,
     method: Method.GET,
@@ -241,7 +241,7 @@ export function receiptSelect (params) {
  * 设置自提地址ID
  * @param addressId
  */
- export function setStoreAddressId(storeAddressId,way) {
+export function setStoreAddressId(storeAddressId, way) {
   return request({
     url: `/buyer/trade/carts/storeAddress?storeAddressId=${storeAddressId}&way=${way}`,
     method: Method.GET,
@@ -253,7 +253,7 @@ export function receiptSelect (params) {
  * 提交配送方式
  * @param params
  */
- export function setShipMethod(params) {
+export function setShipMethod(params) {
   return request({
     url: "/buyer/trade/carts/shippingMethod",
     method: Method.PUT,
@@ -261,3 +261,16 @@ export function receiptSelect (params) {
     params,
   });
 }
+
+/**
+ * 加载 AI 推荐的草稿购物车
+ * @param draftId 草稿ID
+ */
+export function loadAiDraft(draftId) {
+  return request({
+    url: `/api/v1/ai/cart/load_draft/${draftId}`,
+    method: Method.GET,
+    needToken: true
+  });
+}
+

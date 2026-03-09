@@ -28,24 +28,24 @@
 
 ## 📁 修改的文件清单
 
-### PC端（lilishop-ui）
+### PC端（maollar-ui）
 
 #### 1️⃣ 登录页面
-- **文件路径**: `lilishop-ui/buyer/src/pages/Login.vue`
+- **文件路径**: `maollar-ui/buyer/src/pages/Login.vue`
 - **修改位置**: 第 129 行，第 415-422 行
 
 #### 2️⃣ 头部导航组件
-- **文件路径**: `lilishop-ui/buyer/src/components/header/Header.vue`
+- **文件路径**: `maollar-ui/buyer/src/components/header/Header.vue`
 - **修改位置**: 第 10-12 行，第 185-192 行
 
 #### 3️⃣ 注册页面
-- **文件路径**: `lilishop-ui/buyer/src/pages/SignUp.vue`
+- **文件路径**: `maollar-ui/buyer/src/pages/SignUp.vue`
 - **修改位置**: 第 210-220 行，第 226 行
 
-### 移动端（lilishop-uniapp）
+### 移动端（maollar-uniapp）
 
 #### 4️⃣ 移动端登录页面
-- **文件路径**: `lilishop-uniapp/pages/passport/login.vue`
+- **文件路径**: `maollar-uniapp/pages/passport/login.vue`
 - **修改位置**: 第 52-60 行
 
 ---
@@ -285,7 +285,7 @@
 **PC端**:
 ```bash
 # 1. 进入前端项目
-cd /Users/adam/0.9/lilishop-ui
+cd /Users/adam/0.9/maollar-ui
 
 # 2. 方式A - 直接回退提交
 git revert f640ba3d
@@ -303,7 +303,7 @@ git push origin master
 **移动端**:
 ```bash
 # 1. 进入移动端项目
-cd /Users/adam/0.9/lilishop-uniapp
+cd /Users/adam/0.9/maollar-uniapp
 
 # 2. 方式A - 直接回退提交
 git revert 34e24ed
@@ -322,7 +322,7 @@ git push origin master
 
 #### 步骤 1: 恢复 Login.vue
 
-**文件**: `lilishop-ui/buyer/src/pages/Login.vue`
+**文件**: `maollar-ui/buyer/src/pages/Login.vue`
 
 **位置 1** - 第 129 行，恢复路由跳转：
 ```vue
@@ -347,7 +347,7 @@ git push origin master
 
 #### 步骤 2: 恢复 Header.vue
 
-**文件**: `lilishop-ui/buyer/src/components/header/Header.vue`
+**文件**: `maollar-ui/buyer/src/components/header/Header.vue`
 
 **位置 1** - 第 10-12 行，恢复路由链接：
 ```vue
@@ -377,7 +377,7 @@ git push origin master
 
 #### 步骤 3: 恢复 SignUp.vue
 
-**文件**: `lilishop-ui/buyer/src/pages/SignUp.vue`
+**文件**: `maollar-ui/buyer/src/pages/SignUp.vue`
 
 **位置 1** - 第 210-220 行，删除新增的方法：
 ```javascript
@@ -417,7 +417,7 @@ git push origin master
 
 #### 步骤 4: 恢复移动端 login.vue
 
-**文件**: `lilishop-uniapp/pages/passport/login.vue`
+**文件**: `maollar-uniapp/pages/passport/login.vue`
 
 **位置** - 第 52-60 行，恢复原始提示文字：
 
@@ -452,7 +452,7 @@ git push origin master
 
 **PC端**:
 ```bash
-cd /Users/adam/0.9/lilishop-ui
+cd /Users/adam/0.9/maollar-ui
 git add buyer/src/pages/Login.vue buyer/src/components/header/Header.vue buyer/src/pages/SignUp.vue
 git commit -m "feat: 恢复PC端注册功能"
 git push origin master
@@ -460,7 +460,7 @@ git push origin master
 
 **移动端**:
 ```bash
-cd /Users/adam/0.9/lilishop-uniapp
+cd /Users/adam/0.9/maollar-uniapp
 git add pages/passport/login.vue
 git commit -m "feat: 恢复移动端自动注册功能"
 git push origin master
@@ -547,7 +547,7 @@ Message: fix: 更正买家端域名为 shop.maollar.com
 **移动端**:
 ```
 Commit: 1c5c538
-Message: feat: 积分改为喵币，修复Sass语法，更新App启动页和schemes
+Message: feat: 积分改为猫币，修复Sass语法，更新App启动页和schemes
 ```
 
 ---

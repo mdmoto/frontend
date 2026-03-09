@@ -88,7 +88,7 @@ export default {
       if (way === 'WALLET') {
         // 如果待支付金额大于余额，则报错
         if (this.payDetail.price > this.walletValue) {
-          Message.error('余额不足以支付当前订单，如需充值请前往会员中心');
+          Message.error(this.$t('payment.insufficient'));
           return;
         }
       }

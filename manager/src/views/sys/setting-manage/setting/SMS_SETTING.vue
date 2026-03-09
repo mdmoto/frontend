@@ -133,9 +133,9 @@ export default {
     // 实例化数据
     init() {
       try {
-        if (!this.res) return;
+        if (!this.res || this.res === 'null') return;
         this.result = JSON.parse(this.res);
-
+        if (!this.result) return;
         Object.keys(this.result).map((item) => {
           this.result[item] += "";
         });

@@ -17,10 +17,10 @@
            
           </div>
           <div class="item-price">
-            <span>20喵币</span>
+            <span>20猫币</span>
           </div>
           <div class="item-line-through">
-            <span>30喵币</span>
+            <span>30猫币</span>
           </div>
         </div>
       </div>

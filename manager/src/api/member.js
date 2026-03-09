@@ -113,7 +113,7 @@ export const historyMemberChartList = () => {
 export const getMemberNum = (params) => {
   return getRequest("/passport/member/num", params);
 };
-//查询会员历史喵币
+//查询会员历史猫币
 export const getHistoryPointData = (params) => {
   return getRequest(`/member/memberPointsHistory/getByPage`, params);
 };

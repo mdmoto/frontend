@@ -7,12 +7,33 @@
 <script>
 
 export default {
-
-
+  watch: {
+    "$i18n.locale": {
+      handler(val) {
+        if (val === "ar-SA") {
+          document.documentElement.setAttribute("dir", "rtl");
+          document.body.classList.add("rtl-layout");
+        } else {
+          document.documentElement.setAttribute("dir", "ltr");
+          document.body.classList.remove("rtl-layout");
+        }
+      },
+      immediate: true,
+    },
+  },
 };
 </script>
 
 <style>
+/* ... existing styles ... */
+.rtl-layout {
+  direction: rtl;
+  text-align: right;
+}
+.rtl-layout .ivu-icon {
+  transform: scaleX(-1);
+}
+</style>
 html,
 body {
   width: 100%;

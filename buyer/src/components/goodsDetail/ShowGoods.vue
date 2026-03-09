@@ -269,7 +269,7 @@
               :loading="loading"
               :disabled="skuDetail.quantity === 0"
               @click="pointPay"
-              >喵币购买</Button
+              >猫币购买</Button
             >
           </div>
           <div

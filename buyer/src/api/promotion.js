@@ -24,7 +24,7 @@ export function seckillByTimeline (timeline) {
 }
 
 /**
- * 获取喵币商品分类列表
+ * 获取猫币商品分类列表
  */
 export function pointGoodsCategory (params) {
   return request({
@@ -36,7 +36,7 @@ export function pointGoodsCategory (params) {
 }
 
 /**
- * 获取喵币商品列表
+ * 获取猫币商品列表
  */
 export function pointGoods (params) {
   return request({
@@ -47,7 +47,7 @@ export function pointGoods (params) {
   });
 }
 /**
- * 获取喵币商品详情
+ * 获取猫币商品详情
  */
 export function pointGoodsDetail (id) {
   return request({

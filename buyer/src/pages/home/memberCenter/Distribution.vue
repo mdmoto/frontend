@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <card _Title="我的分销" />
+    <card :_Title="$t('user.distribution')" />
     <!-- 分销申请 -->
 
     <div v-if="status === 0">
@@ -258,7 +258,7 @@
       </div>
     </Modal>
     <Modal v-model="qrcodeShow" title="分销商品" width="800">
-      <Alert type="warning"> 下载二维码或者复制链接分享商品 </Alert>
+      <Alert type="warning"> {{ $t('goods.shareTips') }} </Alert>
       <div class="qrcode">
         <div style="width: 150px; height: 150px; border: 1px solid #eee">
           <vue-qr

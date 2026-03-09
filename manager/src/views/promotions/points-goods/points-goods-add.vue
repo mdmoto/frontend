@@ -175,7 +175,7 @@ export default {
           minWidth: 40,
         },
         {
-          title: "兑换喵币",
+          title: "兑换猫币",
           slot: "points",
           minWidth: 40,
         },
@@ -220,7 +220,7 @@ export default {
       let res = await getPointsGoodsCategoryList();
       this.categoryList = res.result.records;
     },
-    /** 保存喵币商品 */
+    /** 保存猫币商品 */
     handleSubmit() {
       this.form.startTime=this.form.rangeTime[0]
       this.form.endTime=this.form.rangeTime[1]
@@ -244,7 +244,7 @@ export default {
           addPointsGoods(params).then((res) => {
             this.submitLoading = false;
             if (res.success) {
-              this.$Message.success("喵币商品创建成功");
+              this.$Message.success("猫币商品创建成功");
               this.closeCurrentPage();
             }
           });

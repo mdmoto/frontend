@@ -13,7 +13,7 @@
           v-model="searchData"
           size="large"
           class="search "
-          placeholder="输入你想查找的商品"
+          :placeholder="$t('search.placeholder')"
           @keyup.enter.native="search"
         >
 

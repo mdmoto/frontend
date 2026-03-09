@@ -8,11 +8,12 @@ import * as filters from "./plugins/filters";
 import store from "@/vuex/store";
 import storage from "@/plugins/storage";
 // 全局引入封装组件
-import {InstallAll} from "@/components/global.js";
+import { InstallAll } from "@/components/global.js";
+import i18n from './locale';
 
-const {aMapSecurityJsCode, title, inputMaxLength} = require("@/config");
+const { aMapSecurityJsCode, title, inputMaxLength } = require("@/config");
 
-const copyViewUi = {...ViewUI}
+const copyViewUi = { ...ViewUI }
 copyViewUi.Input.props.maxlength.default = inputMaxLength // 挂载最大输入值
 Vue.use(copyViewUi);
 
@@ -66,5 +67,6 @@ Vue.prototype.Cookies = storage;
 new Vue({
   router,
   store,
+  i18n,
   render: (h) => h(App),
 }).$mount("#app");

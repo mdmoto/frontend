@@ -56,11 +56,35 @@ export default {
         }
       });
     }
-  }
+  },
+  watch: {
+    "$i18n.locale": {
+      handler(val) {
+        if (val === "ar-SA") {
+          document.documentElement.setAttribute("dir", "rtl");
+          document.body.classList.add("rtl-layout");
+        } else {
+          document.documentElement.setAttribute("dir", "ltr");
+          document.body.classList.remove("rtl-layout");
+        }
+      },
+      immediate: true,
+    },
+  },
 };
 </script>
 <style lang="scss">
 #app {
   @include background_color($light_background_color);
+}
+// RTL 辅助样式
+.rtl-layout {
+  direction: rtl;
+  text-align: right;
+
+  // 这里的样式可以根据 iView 组件在 RTL 下的表现进一步微调
+  .ivu-icon {
+    transform: scaleX(-1); // 镜像图标
+  }
 }
 </style>

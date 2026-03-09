@@ -24,7 +24,7 @@
         <div class="servece-type">
           <div class="servece-type-info" v-for="(guide, index) in guideArr" :key="index">
             <ul>
-              <li v-for="(item, index) in guide" :key="index" @click="goArticle">{{item}}</li>
+              <li v-for="(item, index) in guide" :key="index" @click="goArticle(item)">{{item}}</li>
             </ul>
           </div>
         </div>
@@ -32,7 +32,7 @@
         <div class="friend-link flex">
           <div class="friend-link-item">
             <ul>
-              <li v-for="(link, index) in moreLink" :key="index" @click="goArticle">
+              <li v-for="(link, index) in moreLink" :key="index" @click="goArticle(link)">
                 <span class="link-item" :class="{'link-last-item': index === 4}">{{link}}</span>
               </li>
 
@@ -79,7 +79,7 @@ export default {
         // 导航链接
         ["购物指南", "购物流程", "会员介绍", "生活旅行", "常见问题"],
         ["配送方式", "上门自提", "配送查询", "收取标准", "物流规则"],
-        ["支付方式", "在线支付", "公司转账", "余额支付", "喵币支付"],
+        ["支付方式", "在线支付", "公司转账", "余额支付", "猫币支付"],
         ["售后服务", "售后政策", "退款说明", "返修/退货", "取消订单"],
       ],
       moreLink: ["关于我们", "联系我们", "联系客服", "商家帮助", "隐私政策"], // 更多链接
@@ -87,7 +87,11 @@ export default {
     };
   },
   methods: {
-    goArticle() {
+    goArticle(item) {
+      if (item === "关于我们") {
+        window.open("https://about.maollar.com", "_blank");
+        return;
+      }
       // 跳转文章页
       let routeUrl = this.$router.resolve({
         path: "/article",

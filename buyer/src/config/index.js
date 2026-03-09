@@ -1,11 +1,11 @@
 
 const Cookie = require('js-cookie')
 module.exports = {
-  title:Cookie.get('siteName') || 'Maollar', //配置显示在浏览器标签的title、底部信息、部分信息展示的值
+  title:Cookie.get('siteName') || 'MaoMall', //配置显示在浏览器标签的title、底部信息、部分信息展示的值
   icpCard: "", // icp证
   company: {
     href: "https://shop.maollar.com",
-    name: "Maollar",
+    name: "MaoMall",
   }, //公司信息
   icpMessage: "", //icp备案（海外服务器无需备案）
   /**

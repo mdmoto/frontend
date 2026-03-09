@@ -3,7 +3,7 @@
     <Card>
       <Form ref="form" :model="form" :label-width="120" :rules="formRule">
         <div class="base-info-item">
-          <h4>喵币商品信息</h4>
+          <h4>猫币商品信息</h4>
           <div class="form-item-view">
             <FormItem label="商品名称">
               <div>{{ form.goodsSku.goodsName }}</div>
@@ -51,11 +51,11 @@
                 style="width: 260px"
               />
             </FormItem>
-            <FormItem label="兑换喵币" prop="points">
+            <FormItem label="兑换猫币" prop="points">
               <Input
                 type="number"
                 v-model="form.points"
-                placeholder="请填写兑换喵币"
+                placeholder="请填写兑换猫币"
                 clearable
                 style="width: 260px"
               />
@@ -118,8 +118,8 @@ export default {
       submitLoading: false, // 添加或编辑提交状态
       formRule: {
         settlementPrice: [{ required: true, message: "请填写结算价格" }],
-        pointsGoodsCategoryId: [{ required: true, message: "请选择喵币商品分类" }],
-        points: [{ required: true, message: "请填写兑换喵币" }],
+        pointsGoodsCategoryId: [{ required: true, message: "请选择猫币商品分类" }],
+        points: [{ required: true, message: "请填写兑换猫币" }],
         activeStock: [{ required: true, message: "请填写库存" }],
       },
       options: {
@@ -184,7 +184,7 @@ export default {
           updatePointsGoods(params).then((res) => {
             this.submitLoading = false;
             if (res.success) {
-              this.$Message.success("喵币商品修改成功");
+              this.$Message.success("猫币商品修改成功");
               this.closeCurrentPage();
             }
           });

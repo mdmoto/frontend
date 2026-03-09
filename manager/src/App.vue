@@ -16,11 +16,24 @@ export default {
       })
     }
   },
-
+  watch: {
+    '$store.state.app.lang': {
+      handler(lang) {
+        if (lang === 'ar-SA' || lang === 'ar') {
+          document.documentElement.setAttribute('dir', 'rtl');
+          document.body.classList.add('rtl-layout');
+        } else {
+          document.documentElement.setAttribute('dir', 'ltr');
+          document.body.classList.remove('rtl-layout');
+        }
+      },
+      immediate: true
+    }
+  }
 };
 </script>
 
-<style>
+<style lang="scss">
 html,
 body {
   width: 100%;
@@ -32,6 +45,40 @@ body {
 .app-main {
   width: 100%;
   height: 100%;
+}
+
+// RTL Logic for iView Components
+.rtl-layout {
+  direction: rtl;
+  text-align: right;
+
+  .ivu-menu-item, .ivu-menu-submenu-title {
+    text-align: right;
+  }
+  
+  .ivu-icon-ios-arrow-forward, .ivu-icon-ios-arrow-back {
+    transform: scaleX(-1);
+  }
+
+  /* Reverse Float and Margins */
+  .ivu-btn {
+    margin-left: initial;
+    margin-right: -1px; // Fix for button groups
+  }
+
+  .operation button, .br button {
+    margin-right: 0 !important;
+    margin-left: 5px !important;
+  }
+
+  /* Flex Mirroring */
+  .ivu-row-flex {
+    flex-direction: row-reverse;
+  }
+
+  .ivu-modal-footer, .ivu-modal-header {
+    text-align: left; // Reversing from right-align
+  }
 }
 
 .br button {

@@ -19,8 +19,8 @@
       </Carousel>
       <!-- 登录模块 -->
       <div class="form-box" @click='$refs.verify.show = false'>
-        <!-- 统一邀请码输入（仅在需要时显示） -->
-        <div v-if="!type || showThirdParty" class="invite-code-wrapper">
+        <!-- 邀请码输入（已隐藏） -->
+        <div v-if="false" class="invite-code-wrapper">
           <FormItem>
             <i-input 
               type="text" 
@@ -117,7 +117,7 @@
           <FormItem prop="code">
             <i-input type="text" v-model="formSms.code" placeholder="手机验证码">
               <Icon type="ios-text-outline" slot="prepend"/>
-              <Button slot="append" @click="sendCode" :disabled="!inviteCodeValid || !verifyStatus">{{ codeMsg }}</Button>
+              <Button slot="append" @click="sendCode" :disabled="!verifyStatus">{{ codeMsg }}</Button>
             </i-input>
           </FormItem>
           <FormItem>
@@ -127,7 +127,7 @@
             </Button>
           </FormItem>
           <FormItem>
-            <Button type="error" @click="handleSubmit('formSms')" long :disabled="!inviteCodeValid" size="large">登录</Button>
+            <Button type="error" @click="handleSubmit('formSms')" long size="large">登录</Button>
           </FormItem>
         </Form>
 
@@ -141,7 +141,6 @@
           <div class="other-login">
             <div 
               class="login-btn-google" 
-              :class="{'disabled': !inviteCodeValid}"
               @click="handleGoogleLogin">
               <svg t="1631154766336" class="icon" viewBox="0 0 1024 1024" version="1.1"
                   xmlns="http://www.w3.org/2000/svg" width="20" height="20">
@@ -159,7 +158,7 @@
               <span>Apple</span>
             </div>
           </div>
-          <div class="invite-code-hint" v-if="!inviteCodeValid">
+          <div v-if="false" class="invite-code-hint">
             <Icon type="ios-information-circle-outline" />
             <span>输入邀请码后可使用第三方登录</span>
           </div>
@@ -184,7 +183,7 @@
       </Row>
       <Row type="flex" justify="center" class="copyright">
         Copyright © {{year}} - Present
-        <a href="https://pickmall.cn" target="_blank" style="margin: 0 5px">{{config.title}}</a>
+        <a href="https://maollar.com" target="_blank" style="margin: 0 5px">{{config.title}}</a>
         版权所有
       </Row>
     </div>
@@ -218,7 +217,7 @@ export default {
       qrCodeTimer:null,
       config: require('@/config'),
       type: true, // true 账号登录  false 验证码登录
-      showThirdParty: false, // 是否显示第三方登录
+      showThirdParty: true, // 是否显示第三方登录
       formData: {
         username: "",
         password: "",
@@ -248,7 +247,7 @@ export default {
       time: 60,
       year: new Date().getFullYear(),
       inviteCode: "",
-      inviteCodeValid: false,
+      inviteCodeValid: true,
       inviteCodeError: "",
       validInviteCodes: [
         "OK4MOTO",
@@ -262,14 +261,14 @@ export default {
     switchToAccountLogin() {
       this.type = true;
       this.scannerCodeLoginFLag = false;
-      this.showThirdParty = false;
+      this.showThirdParty = true;
       this.$refs.formInline && this.$refs.formInline.resetFields();
     },
     // 切换到验证码登录
     switchToSmsLogin() {
       this.type = false;
       this.scannerCodeLoginFLag = false;
-      this.showThirdParty = false;
+      this.showThirdParty = true;
       this.$refs.formSms && this.$refs.formSms.resetFields();
       this.verifyStatus = false;
       clearInterval(this.interval);
@@ -279,7 +278,7 @@ export default {
     // 切换到扫码登录
     switchToQrLogin() {
       this.scannerCodeLoginFLag = true;
-      this.showThirdParty = false;
+      this.showThirdParty = true;
       if (!this.qrCode) {
         this.createPCLoginSession();
       }
@@ -323,31 +322,16 @@ export default {
     },
     // 检查邀请码
     checkInviteCode() {
-      const code = this.inviteCode.trim().toUpperCase();
-      if (this.validInviteCodes.includes(code)) {
-        this.inviteCodeValid = true;
-        this.inviteCodeError = "";
-        // 验证成功后显示第三方登录
-        if (code.length > 0) {
-          this.showThirdParty = true;
-        }
-      } else if (code.length > 0) {
-        this.inviteCodeValid = false;
-        this.inviteCodeError = "邀请码错误，请重新输入";
-        this.showThirdParty = false;
-      } else {
-        this.inviteCodeValid = false;
-        this.inviteCodeError = "";
-        this.showThirdParty = false;
-      }
+      // 已取消验证要求
+      this.inviteCodeValid = true;
+      this.inviteCodeError = "";
+      this.showThirdParty = true;
     },
     // 发送手机验证码
     sendCode() {
       if (this.time === 60) {
-        if (!this.inviteCodeValid) {
-          this.$Message.warning("请先输入正确的邀请码");
-          return;
-        }
+        // 已取消验证要求
+        this.inviteCodeValid = true;
         if (this.formSms.mobile === "") {
           this.$Message.warning("请先填写手机号");
           return;
@@ -416,10 +400,8 @@ export default {
       webLogin(type);
     },
     handleGoogleLogin() {
-      if (!this.inviteCodeValid) {
-        this.$Message.warning("请先输入正确的邀请码");
-        return;
-      }
+      // 已取消验证要求
+      this.inviteCodeValid = true;
       this.handleWebLogin('GOOGLE');
     },
     handleAppleLogin() {

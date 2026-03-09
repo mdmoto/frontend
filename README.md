@@ -1,4 +1,4 @@
-## Lilishop B2B2C商城系统
+## MaoMall B2B2C商城系统
 
 #### 欢迎交流需求，交流业务，交流技术（基础问题自行解决，其他问题先看文档后提问）
 
@@ -14,15 +14,15 @@
 
 ##### 体验 公众号/小程序/APP 体验，扫描二维码
 
-![image-20210511171611793](https://static.pickmall.cn/images/h5-qrcode.png)
+![image-20210511171611793](https://static.maollar.com/images/h5-qrcode.png)
 
-[![star](https://gitee.com/beijing_hongye_huicheng/lilishop/badge/star.svg?theme=dark)](https://gitee.com/beijing_hongye_huicheng/lilishop/stargazers)
-&nbsp;&nbsp;![github](https://img.shields.io/github/stars/hongyehuicheng/lilishop.svg?style=social&logo=#181717)
+[![star](https://gitee.com/beijing_hongye_huicheng/maollar/badge/star.svg?theme=dark)](https://gitee.com/beijing_hongye_huicheng/maollar/stargazers)
+&nbsp;&nbsp;![github](https://img.shields.io/github/stars/hongyehuicheng/maollar.svg?style=social&logo=#181717)
 
-## 如何在本地环境运行lilishop-ui部署视频
+## 如何在本地环境运行maollar-ui部署视频
 https://www.bilibili.com/video/BV1B28EeJEnP/
 
-## 如何在服务器上部署lilishop-ui
+## 如何在服务器上部署maollar-ui
 https://www.bilibili.com/video/BV1WD87eoE9F/
 
 
@@ -86,25 +86,25 @@ yarn config set registry http://mirrors.cloud.tencent.com/npm/
 
 
 ### 商城介绍
-**官网**：https://pickmall.cn
+**官网**：https://maollar.com
 
-Lilishop商城系统支持商家入驻，后端基于SpringBoot 研发，前端使用 Vue、uniapp开发， **系统全端全部代码开源**
+MaoMall商城系统支持商家入驻，后端基于SpringBoot 研发，前端使用 Vue、uniapp开发， **系统全端全部代码开源**
 
 前后端分离，支持分布式部署，支持Docker，各个API独立，并且有独立的消费者。
 
 ### 商城 API/消费者 聚合版
 api不需要单独部署，只需启动一个jar包就可以正常运转 如有需要，可以点击跳转
-https://gitee.com/beijing_hongye_huicheng/lilishop-simplify
+https://gitee.com/beijing_hongye_huicheng/maollar-simplify
 
 ### 开发/使用/常见问题 帮助文档
 
-https://docs.pickmall.cn
+https://docs.maollar.com
 
 ### 项目地址
 
 gitee : https://gitee.com/beijing_hongye_huicheng
 
-github 镜像: https://github.com/lilishop?tab=repositories
+github 镜像: https://github.com/maollar?tab=repositories
 
 商城UI 项目下3个文件夹 
 buyer：买家PC端，seller：商家端，manager：后台管理端
@@ -113,19 +113,19 @@ buyer：买家PC端，seller：商家端，manager：后台管理端
 ### 演示地址
 PS：手机验证码为 ‘111111’
 
-**平台管理端**：https://admin-b2b2c.pickmall.cn 账号：admin/123456
+**平台管理端**：https://admin-b2b2c.maollar.com 账号：admin/123456
 
-**店铺管理端**：https://store-b2b2c.pickmall.cn 账号：13011111111/111111
+**店铺管理端**：https://store-b2b2c.maollar.com 账号：13011111111/111111
 
-**商城PC页面**：https://pc-b2b2c.pickmall.cn
+**商城PC页面**：https://pc-b2b2c.maollar.com
 
 **商城 小程序/公众号/APP**：扫描二维码
 
-![image-20210511171611793](https://static.pickmall.cn/images/h5-qrcode.png)
+![image-20210511171611793](https://static.maollar.com/images/h5-qrcode.png)
 
 ### 快速本地部署
 
-[点击跳转](https://docs.pickmall.cn/deploy/%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87.html)
+[点击跳转](https://docs.maollar.com/deploy/%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87.html)
 
 **商城数据库**
 使用docker-compose部署数据库，自动初始化数据库，不需要手动下载等操作
@@ -140,24 +140,24 @@ PS：手机验证码为 ‘111111’
 
 #### 平台管理端功能
 
-![平台管理端功能](https://static.pickmall.cn/images/other/managerList1.jpg)
+![平台管理端功能](https://static.maollar.com/images/other/managerList1.jpg)
 
 
 
 #### 卖家功能
 
-![商家端功能](https://static.pickmall.cn/images/other/storeList.jpg)
+![商家端功能](https://static.maollar.com/images/other/storeList.jpg)
 
 
 ### 商城前端功能展示
 
 #### 商城移动端
 
-<img src="https://static.pickmall.cn/images/other/app.gif" alt="移动端功能展示" style="zoom:50%;" />
+<img src="https://static.maollar.com/images/other/app.gif" alt="移动端功能展示" style="zoom:50%;" />
 
 #### 平台管理端
 
-![管理端功能展示](https://static.pickmall.cn/images/other/manager.gif)
+![管理端功能展示](https://static.maollar.com/images/other/manager.gif)
 
 
 ### 技术选型

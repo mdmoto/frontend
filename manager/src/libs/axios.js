@@ -4,7 +4,7 @@ import { router } from "../router/index";
 import { Message } from "view-design";
 import Cookies from "js-cookie";
 import { handleRefreshToken } from "../api/index";
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 // 统一请求路径前缀
 export const commonUrl =
@@ -39,6 +39,9 @@ service.interceptors.request.use(
       setStore('uuid', uuid);
     }
     config.headers["uuid"] = uuid;
+    // 添加多语言 header
+    const lang = localStorage.lang || "en-US";
+    config.headers["Accept-Language"] = lang.split('-')[0]; // 发送短代码如 zh, en, ar
     return config;
   },
   err => {
@@ -131,7 +134,7 @@ service.interceptors.response.use(
 function getTokenDebounce() {
   let lock = false;
   let success = false;
-  return function() {
+  return function () {
     if (!lock) {
       lock = true;
       let oldRefreshToken = getStore("refreshToken");
@@ -198,19 +201,19 @@ export const postRequest = (url, params, headers) => {
     transformRequest: headers
       ? undefined
       : [
-          function(data) {
-            let ret = "";
-            for (let it in data) {
-              ret +=
-                encodeURIComponent(it) +
-                "=" +
-                encodeURIComponent(data[it]) +
-                "&";
-            }
-            ret = ret.substring(0, ret.length - 1);
-            return ret;
+        function (data) {
+          let ret = "";
+          for (let it in data) {
+            ret +=
+              encodeURIComponent(it) +
+              "=" +
+              encodeURIComponent(data[it]) +
+              "&";
           }
-        ],
+          ret = ret.substring(0, ret.length - 1);
+          return ret;
+        }
+      ],
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       accessToken: accessToken,
@@ -256,19 +259,19 @@ export const putRequest = (url, params, headers) => {
     transformRequest: headers
       ? undefined
       : [
-          function(data) {
-            let ret = "";
-            for (let it in data) {
-              ret +=
-                encodeURIComponent(it) +
-                "=" +
-                encodeURIComponent(data[it]) +
-                "&";
-            }
-            ret = ret.substring(0, ret.length - 1);
-            return ret;
+        function (data) {
+          let ret = "";
+          for (let it in data) {
+            ret +=
+              encodeURIComponent(it) +
+              "=" +
+              encodeURIComponent(data[it]) +
+              "&";
           }
-        ],
+          ret = ret.substring(0, ret.length - 1);
+          return ret;
+        }
+      ],
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       accessToken: accessToken,

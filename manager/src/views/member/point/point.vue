@@ -57,7 +57,7 @@
   import ossManage from "@/views/sys/oss-manage/ossManage";
 
   export default {
-    // 喵币历史页面
+    // 猫币历史页面
     name: "point",
     components: {
 
@@ -85,13 +85,13 @@
           },
 
           {
-            title: "之前喵币",
+            title: "之前猫币",
             key: "beforePoint",
             width: 110,
           },
 
           {
-            title: "变动喵币",
+            title: "变动猫币",
             key: "variablePoint",
             width: 110,
             render: (h, params) => {
@@ -103,7 +103,7 @@
             }
           },
           {
-            title: "当前喵币",
+            title: "当前猫币",
             key: "point",
             width: 110,
           },
@@ -144,7 +144,7 @@
         this.searchForm.pageSize = 10;
         this.getData();
       },
-      //查新喵币列表
+      //查新猫币列表
       getData() {
         this.loading = true;
         API_Member.getHistoryPointData(this.searchForm).then((res) => {

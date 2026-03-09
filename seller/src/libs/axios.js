@@ -1,15 +1,15 @@
 import axios from "axios";
 import { getStore, setStore } from "./storage";
-import { router  } from "../router/index";
+import { router } from "../router/index";
 import { Message } from "view-design";
 import Cookies from "js-cookie";
 import { handleRefreshToken } from "@/api/index";
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 // 统一请求路径前缀
 export const baseUrl =
   (process.env.NODE_ENV === "development"
-    ?  BASE.API_DEV.seller
+    ? BASE.API_DEV.seller
     : BASE.API_PROD.seller) + BASE.PREFIX;
 export const commonUrl =
   process.env.NODE_ENV === "development"
@@ -25,11 +25,11 @@ const service = axios.create({
 });
 axios.defaults.timeout = 100000
 const recordCurrentPath = () => {
-   return router.history.current.fullPath
+  return router.history.current.fullPath
 }
 // 跳转登录页
 const redirectLogin = () => {
-  router.push({path:'/login',query:{redirect: recordCurrentPath()}});
+  router.push({ path: '/login', query: { redirect: recordCurrentPath() } });
 }
 
 service.interceptors.request.use(
@@ -47,6 +47,8 @@ service.interceptors.request.use(
     }
 
     config.headers["uuid"] = uuid;
+    const lang = localStorage.getItem("lang") || "en-US";
+    config.headers["Accept-Language"] = lang.split("-")[0];
     return config;
   },
   err => {
@@ -138,7 +140,7 @@ service.interceptors.response.use(
 function getTokenDebounce() {
   let lock = false;
   let success = false;
-  return function() {
+  return function () {
     if (!lock) {
       lock = true;
       let oldRefreshToken = getStore("refreshToken");
@@ -206,19 +208,19 @@ export const getRequestHasHeader = (url, params, headers) => {
     transformRequest: headers
       ? undefined
       : [
-          function(data) {
-            let ret = "";
-            for (let it in data) {
-              ret +=
-                encodeURIComponent(it) +
-                "=" +
-                encodeURIComponent(data[it]) +
-                "&";
-            }
-            ret = ret.substring(0, ret.length - 1);
-            return ret;
+        function (data) {
+          let ret = "";
+          for (let it in data) {
+            ret +=
+              encodeURIComponent(it) +
+              "=" +
+              encodeURIComponent(data[it]) +
+              "&";
           }
-        ],
+          ret = ret.substring(0, ret.length - 1);
+          return ret;
+        }
+      ],
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       accessToken: accessToken,
@@ -238,19 +240,19 @@ export const postRequest = (url, params, headers) => {
     transformRequest: headers
       ? undefined
       : [
-          function(data) {
-            let ret = "";
-            for (let it in data) {
-              ret +=
-                encodeURIComponent(it) +
-                "=" +
-                encodeURIComponent(data[it]) +
-                "&";
-            }
-            ret = ret.substring(0, ret.length - 1);
-            return ret;
+        function (data) {
+          let ret = "";
+          for (let it in data) {
+            ret +=
+              encodeURIComponent(it) +
+              "=" +
+              encodeURIComponent(data[it]) +
+              "&";
           }
-        ],
+          ret = ret.substring(0, ret.length - 1);
+          return ret;
+        }
+      ],
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       accessToken: accessToken,
@@ -296,19 +298,19 @@ export const putRequest = (url, params, headers) => {
     transformRequest: headers
       ? undefined
       : [
-          function(data) {
-            let ret = "";
-            for (let it in data) {
-              ret +=
-                encodeURIComponent(it) +
-                "=" +
-                encodeURIComponent(data[it]) +
-                "&";
-            }
-            ret = ret.substring(0, ret.length - 1);
-            return ret;
+        function (data) {
+          let ret = "";
+          for (let it in data) {
+            ret +=
+              encodeURIComponent(it) +
+              "=" +
+              encodeURIComponent(data[it]) +
+              "&";
           }
-        ],
+          ret = ret.substring(0, ret.length - 1);
+          return ret;
+        }
+      ],
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       accessToken: accessToken,
@@ -400,7 +402,7 @@ export const postRequestWithNoToken = (url, params) => {
  * @param {*} url
  * @param {*} params
  */
- export const postRequestWithNoTokenData = (url, params) => {
+export const postRequestWithNoTokenData = (url, params) => {
   return service({
     method: "post",
     url: `${url}`,

@@ -21,6 +21,7 @@ const article = (resolve) => require(["@/pages/article/index"], resolve);
 const articleDetail = (resolve) => require(["@/pages/article/detail"], resolve);
 const PointMall = (resolve) =>
   require(["@/pages/promotion/PointMall"], resolve);
+const AboutUs = (resolve) => require(["@/pages/AboutUs"], resolve);
 
 /*
  * 会员中心
@@ -100,10 +101,10 @@ Vue.use(Router);
 /**
  * 解决重复点击菜单会控制台报错bug
  */
- const routerPush = Router.prototype.push
- Router.prototype.push = function push(location) {
-   return routerPush.call(this, location).catch(error=> error)
- }
+const routerPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error => error)
+}
 
 export default new Router({
   mode: "history",
@@ -157,7 +158,7 @@ export default new Router({
       path: "/pointGoodsDetail", // 商品详情
       name: "PointGoodsDetail",
       component: PointGoodsDetail,
-      meta: { title: "喵币商品" },
+      meta: { title: "猫币商品" },
     },
     {
       path: "/shoppingCart", // 头部购物车
@@ -185,7 +186,7 @@ export default new Router({
       path: "/PointMall",
       name: "PointMall",
       component: PointMall,
-      meta: { title: "喵币商城" },
+      meta: { title: "猫币商城" },
     },
     {
       path: "/qrpay", // 三方支付
@@ -211,6 +212,14 @@ export default new Router({
       component: articleDetail,
       meta: {
         title: "帮助中心",
+      },
+    },
+    {
+      path: "/about", // 关于我们 2.0
+      name: "AboutUs",
+      component: AboutUs,
+      meta: {
+        title: "关于我们",
       },
     },
     {
@@ -324,7 +333,7 @@ export default new Router({
           path: "Point",
           name: "Point",
           component: Point,
-          meta: { title: "我的喵币" },
+          meta: { title: "我的猫币" },
         },
         {
           path: "Profile",

@@ -16,7 +16,7 @@ const assetsCDN = {
   },
   css: [],
   js: [
-    'https://cdn.pickmall.cn/cdn/vue.min.js',
+    'https://cdn.maollar.cn/cdn/vue.min.js',
   ],
 }
 

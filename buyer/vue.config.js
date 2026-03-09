@@ -25,15 +25,15 @@ let externals = {
 
 // 使用CDN的内容
 let cdn = {
-  css: ["https://cdn.pickmall.cn/cdn/iview.css"],
+  css: ["https://cdn.maollar.cn/cdn/iview.css"],
   js: [
     // vue must at first!
-    "https://cdn.pickmall.cn/cdn/vue.min.js",
-    "https://cdn.pickmall.cn/cdn/vuex.min.js",
-    "https://cdn.pickmall.cn/cdn/vue-router.min.js",
-    "https://cdn.pickmall.cn/cdn/axios0.19.2.js",
-    "https://cdn.pickmall.cn/cdn/iview.min.js",
-    "https://cdn.pickmall.cn/cdn/js.cookie.min.js",
+    "https://cdn.maollar.cn/cdn/vue.min.js",
+    "https://cdn.maollar.cn/cdn/vuex.min.js",
+    "https://cdn.maollar.cn/cdn/vue-router.min.js",
+    "https://cdn.maollar.cn/cdn/axios0.19.2.js",
+    "https://cdn.maollar.cn/cdn/iview.min.js",
+    "https://cdn.maollar.cn/cdn/js.cookie.min.js",
   ]
 };
 

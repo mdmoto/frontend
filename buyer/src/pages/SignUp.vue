@@ -17,8 +17,8 @@
           :rules="ruleInline"
           style="width:300px;"
         >
-          <!-- 邀请码输入（注册前必须验证） -->
-          <FormItem>
+          <!-- 邀请码输入（已隐藏） -->
+          <FormItem v-if="false">
             <i-input 
               type="text" 
               v-model="inviteCode" 
@@ -75,7 +75,7 @@
                 style="font-weight: bold"
                 slot="prepend"
               />
-              <Button slot="append" @click="sendCode" :disabled="!inviteCodeValid">{{ codeMsg }}</Button>
+              <Button slot="append" @click="sendCode">{{ codeMsg }}</Button>
             </i-input>
           </FormItem>
           <!-- 手机号注册（稍后开放） -->
@@ -95,7 +95,7 @@
             <Button @click="verifyBtnClick" long :type="verifyStatus?'success':'default'">{{verifyStatus?'验证通过':'点击完成安全验证'}}</Button>
           </FormItem>
           <FormItem>
-            <Button type="error" size="large" @click="handleRegist" long :disabled="!inviteCodeValid"
+            <Button type="error" size="large" @click="handleRegist" long
               >注册</Button
             >
           </FormItem>
@@ -118,7 +118,7 @@
       </Row>
       <Row type="flex" justify="center" class="copyright">
         Copyright © {{year}} - Present
-        <a href="https://pickmall.cn" target="_blank" style="margin: 0 5px">{{config.title}}</a>
+        <a href="https://maollar.com" target="_blank" style="margin: 0 5px">{{config.title}}</a>
         版权所有
       </Row>
     </div>
@@ -170,7 +170,7 @@ export default {
       time: 60, // 倒计时
       // 邀请码相关
       inviteCode: "",
-      inviteCodeValid: false,
+      inviteCodeValid: true,
       inviteCodeError: "",
       // 可用邀请码列表（与登录页面保持一致）
       validInviteCodes: [
@@ -183,11 +183,8 @@ export default {
   methods: {
     // 注册
     handleRegist () {
-      // 检查邀请码
-      if (!this.inviteCodeValid) {
-        this.$Message.warning('请先输入正确的邀请码');
-        return;
-      }
+      // 已取消验证要求
+      this.inviteCodeValid = true;
       this.$refs.formRegist.validate((valid) => {
         if (valid) {
           let data = JSON.parse(JSON.stringify(this.formRegist));
@@ -209,26 +206,15 @@ export default {
     },
     // 检查邀请码
     checkInviteCode() {
-      const code = this.inviteCode.trim().toUpperCase();
-      if (this.validInviteCodes.includes(code)) {
-        this.inviteCodeValid = true;
-        this.inviteCodeError = "";
-      } else if (code.length > 0) {
-        this.inviteCodeValid = false;
-        this.inviteCodeError = "邀请码错误，请重新输入";
-      } else {
-        this.inviteCodeValid = false;
-        this.inviteCodeError = "";
-      }
+      // 已取消验证要求
+      this.inviteCodeValid = true;
+      this.inviteCodeError = "";
     },
     // 发送邮箱验证码
     sendCode () {
       if (this.time === 60) {
-        // 检查邀请码
-        if (!this.inviteCodeValid) {
-          this.$Message.warning('请先输入正确的邀请码');
-          return;
-        }
+        // 已取消验证要求
+        this.inviteCodeValid = true;
         if (this.formRegist.email === '') {
           this.$Message.warning('请先填写邮箱地址');
           return;
