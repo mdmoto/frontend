@@ -18,3 +18,11 @@ export const SET_LOGOIMG = (state, data) => {
 export const SET_SITENAME = (state, data) => {
   state.siteName = data
 }
+export const SET_CURRENCY = (state, data) => {
+  state.currency = data
+  localStorage.setItem('currency', data)
+}
+export const SET_FXRATES = (state, data) => {
+  state.fxRates = data
+  localStorage.setItem('fxRates', JSON.stringify(data))
+}

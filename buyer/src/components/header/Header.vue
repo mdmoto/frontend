@@ -7,6 +7,19 @@
         </li>
         <ul class="flex">
           <li>Hi，欢迎来到{{ config.title }}</li>
+          <li>
+            <Dropdown @on-click="changeCurrency">
+              <span class="nav-item hover-pointer">
+                币种: {{ $store.state.currency }}
+                <Icon type="ios-arrow-down"></Icon>
+              </span>
+              <DropdownMenu slot="list">
+                <DropdownItem v-for="item in currencies" :key="item" :name="item">
+                  {{ item }}
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </li>
           <li class="first" v-show="!userInfo.username">
             <span class="nav-item hover-pointer" @click="showRegisterNotice">立即注册</span>
           </li>
@@ -92,6 +105,7 @@
 import storage from '@/plugins/storage.js';
 import {cartGoodsAll} from '@/api/cart.js';
 import {logout} from '@/api/account.js';
+import {getFxRates} from '@/api/fx.js';
 
 
 export default {
@@ -100,13 +114,15 @@ export default {
     if (storage.getItem('userInfo')) {
       this.userInfo = JSON.parse(storage.getItem('userInfo'));
     }
+    this.fetchRates();
   },
 
   data() {
     return {
       config: require('@/config'),
       userInfo: {}, // 用户信息
-      shoppingCart: [] // 购物车
+      shoppingCart: [], // 购物车
+      currencies: ['USD', 'CNY', 'JPY', 'EUR', 'HKD'] // 支持的展示币种
     };
   },
   computed: {
@@ -189,6 +205,20 @@ export default {
         content: '目前内测阶段，暂不支持注册，账户定向开放。<br/><br/>如有需求请联系：<a href="mailto:ss@maollar.com" style="color:#2d8cf0;">ss@maollar.com</a>',
         okText: '知道了'
       });
+    },
+    // 获取汇率
+    fetchRates() {
+      getFxRates().then(res => {
+        if (res.success && res.result) {
+          this.$store.commit('SET_FXRATES', res.result.rates);
+        }
+      }).catch(err => {
+        console.error('Failed to fetch fx rates', err);
+      });
+    },
+    // 切换币种
+    changeCurrency(name) {
+      this.$store.commit('SET_CURRENCY', name);
     }
   }
 };

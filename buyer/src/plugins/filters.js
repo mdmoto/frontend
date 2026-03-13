@@ -1,22 +1,45 @@
 import * as Foundation from './Foundation.js';
 
+import store from '@/vuex/store';
+
 /**
  * 金钱单位置换  2999 --> 2,999.00
- * @param val
- * @param unit
- * @param location
+ * 支持多币种转换：基于 priceUsd 进行换算
+ * @param val 原始金额 (通常是 priceUsd)
+ * @param unit 默认单位 (如果是 USD 模式则会被覆盖)
  * @returns {*}
  */
-export function unitPrice (val, unit, location) {
-  if (!val) val = 0;
-  let price = Foundation.formatPrice(val);
-  if (location === 'before') {
-    return price.substr(0, price.length - 3);
+export function unitPrice (val, unit) {
+  if (val === undefined || val === null) val = 0;
+  
+  // 获取当前币种和汇率表
+  const currency = store.state.currency || 'USD';
+  const fxRates = store.state.fxRates || { USD: 1.0 };
+  
+  let displayValue = val;
+  let displayUnit = unit || '￥';
+
+  // 汇率转换逻辑
+  if (currency !== 'USD') {
+    const rate = fxRates[currency];
+    if (rate) {
+      displayValue = val * rate;
+    }
   }
-  if (location === 'after') {
-    return price.substr(-2);
+
+  // 根据不同币种设置符号
+  switch (currency) {
+    case 'USD': displayUnit = '$'; break;
+    case 'CNY': displayUnit = '￥'; break;
+    case 'JPY': displayUnit = 'JP¥'; break;
+    case 'EUR': displayUnit = '€'; break;
+    case 'HKD': displayUnit = 'HK$'; break;
+    default: displayUnit = currency + ' ';
   }
-  return (unit || '') + price;
+
+  let price = Foundation.formatPrice(displayValue);
+  
+  return displayUnit + price;
 }
 
 /**

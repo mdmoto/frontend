@@ -14,7 +14,9 @@ export default new Vuex.Store({
     logoImg: storage.getItem('logoImg') || require('@/assets/images/logo2.png'),
     siteName:storage.getItem('siteName')|| 'maollar',
     hotWordsList: storage.getItem('hotWordsList'),
-    category: JSON.parse(localStorage.getItem('category'))
+    category: JSON.parse(localStorage.getItem('category')),
+    currency: storage.getItem('currency') || 'USD', // 当前币种
+    fxRates: storage.getItem('fxRates') || { USD: 1.0 } // 汇率表
   },
   getters,
   actions,
