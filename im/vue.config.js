@@ -11,12 +11,9 @@ function resolve(dir) {
 
 const assetsCDN = {
   externals: {
-    vue: 'Vue',
-
   },
   css: [],
   js: [
-    'https://cdn.maollar.cn/cdn/vue.min.js',
   ],
 }
 
