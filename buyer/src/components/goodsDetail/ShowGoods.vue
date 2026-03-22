@@ -579,15 +579,16 @@ export default {
       }
     },
     swiperGoodsImg() {
-      this.skuDetail.specList.forEach((e) => {
-        if (e.specName === "images") {
-          this.imgList = this.skuDetail.goodsGalleryList.filter(i => i.indexOf("\"url\":") === -1 && i.indexOf("\"status\":") === -1);
-        }
-      });
-      if (!this.imgList) {
+      if (this.skuDetail && this.skuDetail.goodsGalleryList && this.skuDetail.goodsGalleryList.length > 0) {
+        this.imgList = this.skuDetail.goodsGalleryList.map(item => {
+          if (item && item.original) return item.original;
+          if (item && item.url) return item.url;
+          return item;
+        });
+      }
+      if (!this.imgList || this.imgList.length === 0) {
         this.imgList = [this.skuDetail.original];
       }
-
     },
   },
   mounted() {

@@ -210,7 +210,8 @@ export default {
     fetchRates() {
       getFxRates().then(res => {
         if (res.success && res.result) {
-          this.$store.commit('SET_FXRATES', res.result.rates);
+          const rates = res.result.rates || res.result;
+          this.$store.commit('SET_FXRATES', rates);
         }
       }).catch(err => {
         console.error('Failed to fetch fx rates', err);
