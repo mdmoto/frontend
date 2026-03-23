@@ -1,13 +1,6 @@
 <template>
   <div class="navbar" :class="{'small-search-box':useClass == 'fixed-show'}">
     <div class="container width_1200_auto flex flex-a-c">
-      <img
-        :src="$store.state.logoImg"
-        v-if="showLogo"
-        class="logo-img"
-        alt=""
-        @click="$router.push('/')"
-      />
       <div :class="{'small-search-box':useClass == 'fixed-show'}" class="search-box">
         <i-input
           v-model="searchData"
@@ -213,11 +206,7 @@ export default {
   }
 }
 .search-box{
-  margin-left: 28px;
-}
-.logo-img {
-  max-width: 150px;
-  cursor: pointer;
+  margin-left: 0;
 }
 
 .store-search {
