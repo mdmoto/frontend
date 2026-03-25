@@ -11,6 +11,7 @@ export default {
   name: "App",
   mounted() {
     this.init();
+    this.getRates();
   },
   methods:{
     init(){
@@ -54,6 +55,18 @@ export default {
           link.rel = "shortcut icon";
           document.getElementsByTagName("head")[0].appendChild(link);
         }
+      });
+    },
+    getRates() {
+      // 获取展示用汇率列表
+      const { getFxRates } = require("@/api/fx.js");
+      getFxRates().then(res => {
+        if (res.success) {
+          this.$store.commit('SET_FXRATES', res.result.rates);
+          console.log('MaoMall PC rates updated:', res.result.rates);
+        }
+      }).catch(err => {
+        console.error('Failed to fetch exchange rates', err);
       });
     }
   },

@@ -69,7 +69,7 @@ export default {
       this.flag = false;
       let params = {
         verificationEnums: this.type,
-        xPos: this.distance
+        xPos: Math.round(this.distance)
       };
       postVerifyImg(params).then(res => {
         if (res.success) {

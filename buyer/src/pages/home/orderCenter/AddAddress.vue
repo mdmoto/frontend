@@ -6,10 +6,27 @@
         <FormItem label="收件人" prop="name">
           <i-input v-model="formData.name" placeholder="请输入收件人姓名" style="width: 600px"></i-input>
         </FormItem>
-        <FormItem label="收件地区" prop="address">
+        <FormItem label="国家/地区" prop="countryCode">
+          <Select v-model="formData.countryCode" style="width: 200px" @on-change="onCountryChange">
+            <Option value="CN">中国 (China)</Option>
+            <Option value="US">美国 (United States)</Option>
+            <Option value="JP">日本 (Japan)</Option>
+            <Option value="KR">韩国 (South Korea)</Option>
+            <Option value="GB">英国 (United Kingdom)</Option>
+            <Option value="FR">法国 (France)</Option>
+            <Option value="DE">德国 (Germany)</Option>
+            <Option value="AU">澳大利亚 (Australia)</Option>
+            <Option value="AE">阿联酋 (United Arab Emirates)</Option>
+            <Option value="CA">加拿大 (Canada)</Option>
+            <Option value="SA">沙特阿拉伯 (Saudi Arabia)</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="收件地区" prop="address" v-if="formData.countryCode === 'CN'">
           <span>{{ formData.address || '暂无地址' }}</span>
-
           <Button type="default" style="margin-left: 10px;" size="small" @click="$refs.map.open()">选择</Button>
+        </FormItem>
+        <FormItem label="邮政编码" prop="postalCode" v-if="formData.countryCode !== 'CN'">
+          <i-input v-model="formData.postalCode" placeholder="请输入邮政编码" style="width: 200px"></i-input>
         </FormItem>
         <FormItem label="详细地址" prop="detail">
           <i-input v-model="formData.detail" placeholder="请输入详细地址" style="width: 600px"></i-input>
@@ -52,6 +69,8 @@ export default {
       formData: {
         // 添加地址表单
         isDefault: false,
+        countryCode: 'CN',
+        postalCode: '',
       },
       ruleInline: {
         // 验证规则
@@ -139,6 +158,15 @@ export default {
 
 
     },
+    onCountryChange(val) {
+      if (val !== 'CN') {
+        this.formData.address = val; // 对于海外地址，地址路径暂时用国家码占位
+        this.formData.consigneeAddressIdPath = '0'; // 这里的ID路径设为0表示逻辑上的国际根路径
+      } else {
+        this.formData.address = '';
+        this.formData.consigneeAddressIdPath = '';
+      }
+    }
   },
   mounted() {
     const id = this.$route.query.id;

@@ -28,6 +28,16 @@
           <Radio :label="0">女</Radio>
         </RadioGroup>
       </FormItem>
+      <FormItem label="语言" prop="language">
+        <Select v-model="currentLang" style="width:187px" @on-change="changeLanguage">
+          <Option v-for="item in languageList" :value="item.code" :key="item.code">{{ item.name }}</Option>
+        </Select>
+      </FormItem>
+      <FormItem label="币种" prop="currency">
+        <Select v-model="currentCurrency" style="width:187px" @on-change="changeCurrency">
+          <Option v-for="item in currencyList" :value="item.code" :key="item.code">{{ item.name }}</Option>
+        </Select>
+      </FormItem>
       <FormItem>
         <Button type="primary" @click="save">确认修改</Button>
 
@@ -49,12 +59,28 @@ export default {
       },
       formItem: {}, // 表单数据
       action: commonUrl + '/common/common/upload/file', // 上传接口
-      accessToken: {} // 验证token
+      accessToken: {}, // 验证token
+      currentLang: '',
+      currentCurrency: '',
+      languageList: [
+        { name: '简体中文', code: 'zh-CN' },
+        { name: 'English', code: 'en-US' },
+        { name: '日本語', code: 'ja-JP' },
+        { name: '한국어', code: 'ko-KR' }
+      ],
+      currencyList: [
+        { name: '人民币 (CNY)', code: 'CNY' },
+        { name: '美元 (USD)', code: 'USD' },
+        { name: '日元 (JPY)', code: 'JPY' },
+        { name: '欧元 (EUR)', code: 'EUR' }
+      ]
     }
   },
   mounted () {
     this.formItem = JSON.parse(storage.getItem('userInfo'))
     this.accessToken.accessToken = storage.getItem('accessToken');
+    this.currentLang = localStorage.getItem('lang') || 'zh-CN';
+    this.currentCurrency = this.$store.state.currency || 'USD';
   },
   methods: {
     save () { // 保存
@@ -79,6 +105,18 @@ export default {
     handleSuccess (res, file) { // 上传成功
       this.$set(this.formItem, 'face', res.result)
     },
+    changeLanguage (lang) {
+      localStorage.setItem('lang', lang);
+      this.$i18n.locale = lang;
+      this.$Message.success('语言切换成功');
+      setTimeout(() => {
+        location.reload();
+      }, 500);
+    },
+    changeCurrency (currency) {
+      this.$store.commit('SET_CURRENCY', currency);
+      this.$Message.success('币种切换成功');
+    }
   }
 
 }

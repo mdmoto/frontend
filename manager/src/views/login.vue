@@ -109,6 +109,12 @@ export default {
   methods: {
     afterLogin(res) {
       // 登录成功后处理
+      if (!res.result) {
+        this.$Message.error("登录失败：返回数据异常 (result is null)");
+        console.error("Login Result is null:", res);
+        this.loading = false;
+        return;
+      }
       let accessToken = res.result.accessToken;
       let refreshToken = res.result.refreshToken;
       this.setStore("accessToken", accessToken);
@@ -151,6 +157,7 @@ export default {
             this.afterLogin(res);
           } else {
             this.loading = false;
+            console.error("Login Request Failed or success=false:", res);
           }
         })
         .catch(() => {
