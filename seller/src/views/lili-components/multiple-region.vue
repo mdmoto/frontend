@@ -65,7 +65,7 @@ export default {
           // 循环出已经选中的地址id
           check.areaId.split(",").forEach((ids) => {
             this.data.forEach((item) => {
-              // 如果当前省份下市区全部选中则选中该省份
+              // 如果当前国家/省份下市区全部选中则选中该
               if (check.selectedAll) {
                 check.area.split(",").forEach((area) => {
                   if (area == item.name) {
@@ -74,16 +74,26 @@ export default {
                 });
               }
 
-              // 将市区继续循环
-              item.children.forEach((child, childIndex) => {
-                // 判断当前市区是否是已选中状态
-                if (item.checked) {
-                  this.$set(child, "checked", true);
-                }
-                if (child.id == ids) {
-                  this.$set(child, "checked", true);
-                }
-              });
+              // 将下级继续循环
+              if (item.children) {
+                item.children.forEach((child, childIndex) => {
+                  // 判断当前下级是否是已选中状态
+                  if (item.checked) {
+                    this.$set(child, "checked", true);
+                  }
+                  if (child.id == ids) {
+                    this.$set(child, "checked", true);
+                  }
+                  // 如果有三级，继续循环 (国家->省->市)
+                  if (child.children) {
+                    child.children.forEach(grandChild => {
+                        if (child.checked || grandChild.id == ids) {
+                            this.$set(grandChild, "checked", true);
+                        }
+                    })
+                  }
+                });
+              }
             });
           });
         });
@@ -92,9 +102,9 @@ export default {
         disabledData.forEach((dis) => {
           // 循环出已经选中的地址id
           dis.areaId.split(",").forEach((ids) => {
-            // 循环出省份
+            // 循环出省份/国家
             this.data.forEach((item) => {
-              // 如果当前省份下市区全部选中则禁用该省份
+              // 如果当前省份/国家下级全部选中则禁用
               if (dis.selectedAll) {
                 dis.area.split(",").forEach((area) => {
                   if (area == item.name) {
@@ -102,17 +112,27 @@ export default {
                   }
                 });
               }
-              // 将市区继续循环
-              item.children.forEach((child, childIndex) => {
-                // 判断当前市区是否是已禁用状态
-                if (item.disabled) {
-                  this.$set(child, "disabled", true);
-                } else {
-                  if (child.id == ids) {
+              // 将下级继续循环
+              if (item.children) {
+                item.children.forEach((child, childIndex) => {
+                  // 判断当前下级是否是已禁用状态
+                  if (item.disabled) {
                     this.$set(child, "disabled", true);
+                  } else {
+                    if (child.id == ids) {
+                      this.$set(child, "disabled", true);
+                    }
                   }
-                }
-              });
+                  // 三级支持
+                  if (child.children) {
+                      child.children.forEach(grandChild => {
+                          if (child.disabled || grandChild.id == ids) {
+                              this.$set(grandChild, "disabled", true);
+                          }
+                      })
+                  }
+                });
+              }
             });
           });
         });
@@ -131,18 +151,18 @@ export default {
       list.forEach((item, i) => {
         item.selectedList = [];
         item.selectedAll = false;
-        // 筛选出当前的省份
-        if (item.level == "province" && !item.disabled) {
+        // 筛选出当前的顶级节点 (国家 或 中国的省)
+        if ((item.level == "country" || item.level == "province") && !item.parentId && !item.disabled) {
+           // 注意：这里为了兼容原有逻辑，我们将 country 也视为某种意义上的 "province" (顶级可选项)
           sort.push({
             ...item,
           });
         }
-
-        // 筛选出当前选中的市
+        // 如果国家下的省，或者省下的市
         sort.forEach((sortItem, sortIndex) => {
           if (
-            item.level != "province" &&
-            sortItem.id == item.parentId &&
+            item.id != sortItem.id &&
+            item.parentId == sortItem.id &&
             !item.disabled
           ) {
             sortItem.selectedList.push({
@@ -178,9 +198,16 @@ export default {
       getAllCity().then((res) => {
         if (res.result) {
           res.result.forEach((item) => {
-            item.children.forEach((child) => {
-              child.title = child.name;
-            });
+            if (item.children) {
+              item.children.forEach((child) => {
+                child.title = child.name;
+                if (child.children) {
+                  child.children.forEach(grand => {
+                    grand.title = grand.name;
+                  })
+                }
+              });
+            }
 
             let data = {
               title: item.name,

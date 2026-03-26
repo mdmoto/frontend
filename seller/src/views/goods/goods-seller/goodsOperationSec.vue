@@ -284,9 +284,27 @@
                             @on-change="updateSkuTable(row, 'sn')" />
                         </template>
                         <div v-if="baseInfoForm.goodsType !== 'VIRTUAL_GOODS'" slot="weight" slot-scope="{ row }">
-                          <Input v-model="row.weight" clearable placeholder="请输入重量"
+                          <Input v-model="row.weight" clearable placeholder="重量"
                             @on-change="updateSkuTable(row, 'weight')">
                           <span slot="append">kg</span>
+                          </Input>
+                        </div>
+                        <div v-if="baseInfoForm.goodsType !== 'VIRTUAL_GOODS'" slot="goodsLength" slot-scope="{ row }">
+                          <Input v-model="row.goodsLength" clearable placeholder="长"
+                            @on-change="updateSkuTable(row, 'goodsLength')">
+                          <span slot="append">cm</span>
+                          </Input>
+                        </div>
+                        <div v-if="baseInfoForm.goodsType !== 'VIRTUAL_GOODS'" slot="goodsWidth" slot-scope="{ row }">
+                          <Input v-model="row.goodsWidth" clearable placeholder="宽"
+                            @on-change="updateSkuTable(row, 'goodsWidth')">
+                          <span slot="append">cm</span>
+                          </Input>
+                        </div>
+                        <div v-if="baseInfoForm.goodsType !== 'VIRTUAL_GOODS'" slot="goodsHeight" slot-scope="{ row }">
+                          <Input v-model="row.goodsHeight" clearable placeholder="高"
+                            @on-change="updateSkuTable(row, 'goodsHeight')">
+                          <span slot="append">cm</span>
                           </Input>
                         </div>
                         <template slot="quantity" slot-scope="{ row }">
@@ -378,6 +396,11 @@
                 prop="weight">
                 <Input v-model="baseInfoForm.weight" placeholder="请输入商品重量">
                 <span slot="append">kg</span></Input>
+              </FormItem>
+              <FormItem v-if="baseInfoForm.salesModel == 'WHOLESALE'" class="form-item-view-el" label="商品尺寸">
+                <Input v-model="baseInfoForm.goodsLength" placeholder="长" style="width: 80px"><span slot="append">cm</span></Input>
+                <Input v-model="baseInfoForm.goodsWidth" placeholder="宽" style="width: 80px; margin-left: 5px"><span slot="append">cm</span></Input>
+                <Input v-model="baseInfoForm.goodsHeight" placeholder="高" style="width: 80px; margin-left: 5px"><span slot="append">cm</span></Input>
               </FormItem>
             </div>
             <h4>其他信息</h4>
@@ -608,6 +631,9 @@ export default {
         /** 商品分类中文名 */
         categoryName: [],
         goodsVideo: "",
+        goodsLength: null,
+        goodsWidth: null,
+        goodsHeight: null,
       },
       /** 表格头 */
       skuTableColumn: [],
@@ -1643,6 +1669,21 @@ export default {
           title: "重量",
           slot: "weight",
         });
+        pushData.push({
+          title: "长(cm)",
+          slot: "goodsLength",
+          width: 100
+        });
+        pushData.push({
+          title: "宽(cm)",
+          slot: "goodsWidth",
+          width: 100
+        });
+        pushData.push({
+          title: "高(cm)",
+          slot: "goodsHeight",
+          width: 100
+        });
       }
       pushData.push(
         {
@@ -1707,6 +1748,15 @@ export default {
             }
             if (skus[index].weight !== "") {
               obj.weight = skus[index].weight;
+            }
+            if (skus[index].goodsLength !== "") {
+              obj.goodsLength = skus[index].goodsLength;
+            }
+            if (skus[index].goodsWidth !== "") {
+              obj.goodsWidth = skus[index].goodsWidth;
+            }
+            if (skus[index].goodsHeight !== "") {
+              obj.goodsHeight = skus[index].goodsHeight;
             }
             table.push(obj);
           } else {
@@ -1931,8 +1981,27 @@ export default {
             if (sku.weight) {
               skuCopy.weight = sku.weight;
             }
+            if (sku.goodsLength) {
+              skuCopy.goodsLength = sku.goodsLength;
+            }
+            if (sku.goodsWidth) {
+              skuCopy.goodsWidth = sku.goodsWidth;
+            }
+            if (sku.goodsHeight) {
+              skuCopy.goodsHeight = sku.goodsHeight;
+            }
+
             if (this.baseInfoForm.weight) {
               skuCopy.weight = this.baseInfoForm.weight;
+            }
+            if (this.baseInfoForm.goodsLength) {
+              skuCopy.goodsLength = this.baseInfoForm.goodsLength;
+            }
+            if (this.baseInfoForm.goodsWidth) {
+              skuCopy.goodsWidth = this.baseInfoForm.goodsWidth;
+            }
+            if (this.baseInfoForm.goodsHeight) {
+              skuCopy.goodsHeight = this.baseInfoForm.goodsHeight;
             }
             if (sku.id) {
               skuCopy.id = sku.id;
