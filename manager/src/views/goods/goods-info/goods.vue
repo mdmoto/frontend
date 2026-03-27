@@ -102,6 +102,13 @@
         >
           批量审核
         </Button>
+        <Button 
+          v-if="currentStatus === 'TOBEAUDITED'"
+          type="info" 
+          @click="batchAuditAll"
+        >
+          全部审核
+        </Button>
       </div>
 
       <Table
@@ -220,7 +227,7 @@
 </template>
 
 <script>
-import { getGoodsListData,getGoodsNumerData, upGoods, lowGoods, authGoods } from "@/api/goods";
+import { getGoodsListData,getGoodsNumerData, upGoods, lowGoods, authGoods, authAllGoods } from "@/api/goods";
 import vueQr from "vue-qr";
 export default {
   components: {
@@ -853,7 +860,38 @@ export default {
           });
         }
       });
-    }
+    },
+
+    // 批量审核全部（当前筛选条件下）
+    batchAuditAll() {
+      this.$Modal.confirm({
+        title: "确认全部审核",
+        content: `您确认要审核当前筛选条件下的全部商品吗？(共 ${
+          this.goodsNumerData.auditGoodsNum || 0
+        } 个)`,
+        loading: true,
+        onOk: () => {
+          const { goodsStatus, ...searchParams } = this.searchForm;
+          const params = {
+            ...searchParams,
+            authFlag: "PASS", // 默认全部通过
+          };
+
+          authAllGoods(params)
+            .then((res) => {
+              this.$Modal.remove();
+              if (res.success) {
+                this.$Message.success("全部审核成功");
+                this.getDataList();
+                this.getNumberData();
+              }
+            })
+            .catch(() => {
+              this.$Modal.remove();
+            });
+        },
+      });
+    },
   },
   mounted() {
     this.init();

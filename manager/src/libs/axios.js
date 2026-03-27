@@ -204,11 +204,17 @@ export const postRequest = (url, params, headers) => {
         function (data) {
           let ret = "";
           for (let it in data) {
-            ret +=
-              encodeURIComponent(it) +
-              "=" +
-              encodeURIComponent(data[it]) +
-              "&";
+            if (data[it] instanceof Array) {
+              data[it].forEach(val => {
+                ret += encodeURIComponent(it) + "=" + encodeURIComponent(val) + "&";
+              });
+            } else {
+              ret +=
+                encodeURIComponent(it) +
+                "=" +
+                encodeURIComponent(data[it]) +
+                "&";
+            }
           }
           ret = ret.substring(0, ret.length - 1);
           return ret;
@@ -262,11 +268,17 @@ export const putRequest = (url, params, headers) => {
         function (data) {
           let ret = "";
           for (let it in data) {
-            ret +=
-              encodeURIComponent(it) +
-              "=" +
-              encodeURIComponent(data[it]) +
-              "&";
+            if (data[it] instanceof Array) {
+              data[it].forEach(val => {
+                ret += encodeURIComponent(it) + "=" + encodeURIComponent(val) + "&";
+              });
+            } else {
+              ret +=
+                encodeURIComponent(it) +
+                "=" +
+                encodeURIComponent(data[it]) +
+                "&";
+            }
           }
           ret = ret.substring(0, ret.length - 1);
           return ret;

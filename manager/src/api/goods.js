@@ -131,6 +131,11 @@ export const authGoods = (params) => {
     return putRequest(`/goods/goods/auth`, params)
 }
 
+//  审核所有符合条件的商品
+export const authAllGoods = (params) => {
+    return putRequest(`/goods/goods/auth/all`, params)
+}
+
 //查询分类绑定参数信息
 export const getCategoryParamsListData = (id, params) => {
     return getRequest(`/goods/categoryParameters/${id}`, params)
