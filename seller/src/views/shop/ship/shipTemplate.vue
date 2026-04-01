@@ -16,6 +16,7 @@
                 <th colspan="20">
                   <span class="temp-name">{{item.name}}</span>
                   <Tag v-if="item.pricingMethod==='FREE'" class="baoyou" color="warning">包邮</Tag>
+                  <Tag v-if="item.fourPxSwitch" class="baoyou" color="blue">4PX 国际计费</Tag>
                   <span class="fr m-r-5">
                     <time style="margin-right: 20px" title="最后编辑时间">
                       <i class="icon-time"></i>{{item.updateTime}}
@@ -65,6 +66,13 @@
                 <Radio label="NUM">按件数</Radio>
                 <Radio label="FREE">包邮</Radio>
               </RadioGroup>
+            </FormItem>
+            <FormItem label="4PX 国际计费" prop="fourPxSwitch">
+              <i-switch v-model="form.fourPxSwitch" size="large">
+                <span slot="open">开启</span>
+                <span slot="close">关闭</span>
+              </i-switch>
+              <span class="m-l-10" style="color: #999;">开启后，非中国大陆地址将调用 4PX API 实时计费，忽略下方地区设置。</span>
             </FormItem>
 
             <FormItem label="详细设置" v-if="form.pricingMethod !== 'FREE'">
@@ -185,6 +193,7 @@ export default {
         // 添加或编辑表单对象初始化数据
         name: "",
         pricingMethod: "WEIGHT",
+        fourPxSwitch: false,
       },
       formValidate: {
         name: [
@@ -233,6 +242,7 @@ export default {
       this.form = {
         pricingMethod: "WEIGHT",
         name: "",
+        fourPxSwitch: false,
         freightTemplateChildList: [
           {
             area: "",
