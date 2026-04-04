@@ -1,5 +1,5 @@
 <template>
-  <div class="login" @click="$refs.verify.show = false">
+  <div class="login">
     <div class="login-lang-switch">
       <lang-switch></lang-switch>
     </div>
@@ -55,8 +55,6 @@
         </Row>
       </Row>
       <Footer />
-      <!-- 拼图验证码 -->
-      <verify ref="verify" class="verify-con" verifyType="LOGIN" @change="verifyChange"></verify>
       </Col>
     </Row>
   </div>
@@ -68,14 +66,12 @@ import { login, storeSmsLogin, userMsg } from "@/api/index";
 import util from "@/libs/util.js";
 import Footer from "@/views/main-components/footer";
 import Header from "@/views/main-components/header";
-import verify from "@/views/my-components/verify";
 import langSwitch from "@/views/main-components/lang-switch.vue";
 import Cookies from "js-cookie";
 export default {
   components: {
     Header,
     Footer,
-    verify,
     langSwitch
   },
   data() {
@@ -83,7 +79,6 @@ export default {
       saveLogin: true, // 保存登录状态
       sendCodeLoading:false,
       loading: false, // 加载状态
-      verifyStatus: false, // 是否图片验证通过
       time: 60, // 倒计时
       loginType: 'passwordLogin', //登陆类型
       form: {
@@ -180,10 +175,6 @@ export default {
         this.$Message.warning(this.$t('fillMobileFirst'));
         return;
       }
-      if (!this.verifyStatus) {
-        this.$refs.verify.init();
-        return
-      }
       if (this.time === 60) {
         this.sendCodeLoading = true
         let params = {
@@ -198,15 +189,14 @@ export default {
             this.interval = setInterval(() => {
               // this.sendCodeLoading = false
               that.time--;
-              if (that.time === 0) {
-                this.sendCodeLoading = false
-                that.time = 60;
-                that.codeMsg = this.$t('reSendCode');
-                that.verifyStatus = false;
-                clearInterval(that.interval);
-              } else {
-                that.codeMsg = that.time;
-              }
+                if (that.time === 0) {
+                  this.sendCodeLoading = false
+                  that.time = 60;
+                  that.codeMsg = this.$t('reSendCode');
+                  clearInterval(that.interval);
+                } else {
+                  that.codeMsg = that.time;
+                }
             }, 1000);
           } else {
             this.$Message.warning(res.message);
@@ -221,7 +211,20 @@ export default {
       if (this.loginType == 'passwordLogin') {
         this.$refs.usernameLoginForm.validate((valid) => {
           if (valid) {
-            this.$refs.verify.init();
+            this.loading = true;
+            let fd = new FormData();
+            fd.append("username", this.form.username);
+            fd.append("password", this.md5(this.form.password));
+            login(fd)
+              .then((res) => {
+                this.loading = false;
+                if (res && res.success) {
+                  this.afterLogin(res);
+                }
+              })
+              .catch(() => {
+                this.loading = false;
+              });
           }
         });
       } else if (this.loginType == 'mobileLogin') {
@@ -242,40 +245,6 @@ export default {
         })
       }
     },
-    verifyChange(con) {
-      // 拼图验证码回显
-      if (!con.status) return;
-
-      if (this.loginType == 'passwordLogin') {
-        this.loading = true;
-        let fd = new FormData();
-        fd.append("username", this.form.username);
-        fd.append("password", this.md5(this.form.password));
-        login(fd)
-          .then((res) => {
-            this.loading = false;
-            if (res && res.success) {
-              this.afterLogin(res);
-            }
-          })
-          .catch(() => {
-            this.loading = false;
-          });
-      } else {
-        this.verifyStatus = true;
-
-        this.sendCode()
-      }
-
-      this.$refs.verify.show = false;
-    },
-
-    // 开启滑块验证
-    verifyBtnClick() {
-      if (!this.verifyStatus) {
-        this.$refs.verify.init();
-      }
-    },
   },
 };
 </script>
@@ -294,13 +263,6 @@ export default {
     position: absolute;
     top: 20px;
     right: 20px;
-  }
-
-  .verify-con {
-    position: absolute;
-    top: 126px;
-    z-index: 10;
-    left: 20px;
   }
 
   .form {

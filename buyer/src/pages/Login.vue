@@ -117,15 +117,10 @@
           <FormItem prop="code">
             <i-input type="text" v-model="formSms.code" placeholder="手机验证码">
               <Icon type="ios-text-outline" slot="prepend"/>
-              <Button slot="append" @click="sendCode" :disabled="!verifyStatus">{{ codeMsg }}</Button>
+              <Button slot="append" @click="sendCode">{{ codeMsg }}</Button>
             </i-input>
           </FormItem>
-          <FormItem>
-            <Button @click.stop="verifyBtnClick" long
-                    :type="verifyStatus?'success':'default'">
-              {{ verifyStatus ? '✓ 安全验证通过' : '点击完成安全验证' }}
-            </Button>
-          </FormItem>
+          <FormItem v-if="false"></FormItem>
           <FormItem>
             <Button type="error" @click="handleSubmit('formSms')" long size="large">登录</Button>
           </FormItem>
@@ -172,8 +167,7 @@
         </div>
       </div>
 
-      <!-- 拼图验证码 -->
-      <verify ref="verify" class="verify-con" verifyType="LOGIN" @change="verifyChange"></verify>
+      <!-- AI-friendly: no slider captcha -->
     </div>
     <div class="foot">
       <Row type="flex" justify="space-around" class="help">
@@ -198,13 +192,11 @@ import * as apiLogin from "@/api/login.js";
 import { sendSms } from "@/api/common.js";
 import { webLogin, loginCallback,sCLogin,getSCLoginCode} from "@/api/login.js";
 import storage from "@/plugins/storage.js";
-import verify from "@/components/verify";
 import vueQr from "vue-qr";
 
 export default {
   name: "Login",
   components: {
-    verify,
     vueQr
   },
   data() {
@@ -226,7 +218,7 @@ export default {
         code: "",
         mobile: "",
       },
-      verifyStatus: false,
+      verifyStatus: true,
       ruleInline: {
         username: [{required: true, message: "请输入用户名"}],
         password: [
@@ -270,7 +262,7 @@ export default {
       this.scannerCodeLoginFLag = false;
       this.showThirdParty = true;
       this.$refs.formSms && this.$refs.formSms.resetFields();
-      this.verifyStatus = false;
+      this.verifyStatus = true;
       clearInterval(this.interval);
       this.codeMsg = "发送验证码";
       this.time = 60;
@@ -288,11 +280,25 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           if (this.type) {
-            this.$refs.verify.init();
+            let data = JSON.parse(JSON.stringify(this.formData));
+            data.password = md5(data.password);
+            this.$Spin.show();
+            apiLogin
+              .login(data)
+              .then((res) => {
+                if (res.success) {
+                  this.loginSuccess(res.result.accessToken,res.result.refreshToken);
+                } else {
+                  this.$Spin.hide();
+                  this.$Message.error(res.message);
+                }
+              })
+              .catch(() => {
+                this.$Spin.hide();
+              });
           } else {
             let data = JSON.parse(JSON.stringify(this.formSms));
             apiLogin.smsLogin(data).then((res) => {
-              this.$refs.verify.show = false;
               if (res.success) {
                 this.$Message.success("登录成功");
                 storage.setItem("accessToken", res.result.accessToken);
@@ -336,10 +342,6 @@ export default {
           this.$Message.warning("请先填写手机号");
           return;
         }
-        if (!this.verifyStatus) {
-          this.$Message.warning("请先完成安全验证");
-          return;
-        }
         let params = {
           mobile: this.formSms.mobile,
           verificationEnums: "LOGIN",
@@ -353,7 +355,6 @@ export default {
               if (that.time === 0) {
                 that.time = 60;
                 that.codeMsg = "重新发送";
-                that.verifyStatus = false;
                 clearInterval(that.interval);
               } else {
                 that.codeMsg = that.time;
@@ -365,37 +366,7 @@ export default {
         });
       }
     },
-    verifyChange(con) {
-      if (!con.status) return;
-
-      if (this.type === true) {
-        let data = JSON.parse(JSON.stringify(this.formData));
-        data.password = md5(data.password);
-        this.$refs.verify.show = false;
-        this.$Spin.show();
-        apiLogin
-          .login(data)
-          .then((res) => {
-            if (res.success) {
-              this.loginSuccess(res.result.accessToken,res.result.refreshToken);
-            } else {
-              this.$Spin.hide();
-              this.$Message.error(res.message);
-            }
-          })
-          .catch(() => {
-            this.$Spin.hide();
-          });
-      } else {
-        this.verifyStatus = true;
-        this.$refs.verify.show = false;
-      }
-    },
-    verifyBtnClick() {
-      if (!this.verifyStatus) {
-        this.$refs.verify.init();
-      }
-    },
+    verifyBtnClick() {},
     handleWebLogin(type) {
       webLogin(type);
     },
@@ -864,8 +835,5 @@ export default {
   }
 }
 </style>
-
-
-
 
 
