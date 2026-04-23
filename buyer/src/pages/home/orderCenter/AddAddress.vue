@@ -8,22 +8,12 @@
         </FormItem>
         <FormItem label="国家/地区" prop="countryCode">
           <Select v-model="formData.countryCode" style="width: 200px" @on-change="onCountryChange">
-            <Option value="CN">中国 (China)</Option>
-            <Option value="US">美国 (United States)</Option>
-            <Option value="JP">日本 (Japan)</Option>
-            <Option value="KR">韩国 (South Korea)</Option>
-            <Option value="GB">英国 (United Kingdom)</Option>
-            <Option value="FR">法国 (France)</Option>
-            <Option value="DE">德国 (Germany)</Option>
-            <Option value="AU">澳大利亚 (Australia)</Option>
-            <Option value="AE">阿联酋 (United Arab Emirates)</Option>
-            <Option value="CA">加拿大 (Canada)</Option>
-            <Option value="SA">沙特阿拉伯 (Saudi Arabia)</Option>
+            <Option v-for="item in countryList" :value="item.code" :key="item.code">{{ item.name }}</Option>
           </Select>
         </FormItem>
-        <FormItem label="收件地区" prop="address" v-if="formData.countryCode === 'CN'">
+        <FormItem label="收件地区" prop="address">
           <span>{{ formData.address || '暂无地址' }}</span>
-          <Button type="default" style="margin-left: 10px;" size="small" @click="$refs.map.open()">选择</Button>
+          <Button type="default" style="margin-left: 10px;" size="small" @click="handleOpenMap">选择</Button>
         </FormItem>
         <FormItem label="邮政编码" prop="postalCode" v-if="formData.countryCode !== 'CN'">
           <i-input v-model="formData.postalCode" placeholder="请输入邮政编码" style="width: 200px"></i-input>
@@ -71,7 +61,27 @@ export default {
         isDefault: false,
         countryCode: 'CN',
         postalCode: '',
+        address: '',
       },
+      countryList: [
+        { name: '中国', code: 'CN', id: 0 },
+        { name: '日本', code: 'JP', id: 2000000001 },
+        { name: '美国', code: 'US', id: 2000000002 },
+        { name: '中国香港', code: 'HK', id: 2000000003 },
+        { name: '中国台湾', code: 'TW', id: 2000000004 },
+        { name: '新加坡', code: 'SG', id: 2000000005 },
+        { name: '西班牙', code: 'ES', id: 2000000006 },
+        { name: '澳大利亚', code: 'AU', id: 2000000007 },
+        { name: '英国', code: 'GB', id: 2000000008 },
+        { name: '加拿大', code: 'CA', id: 2000000009 },
+        { name: '泰国', code: 'TH', id: 2000000010 },
+        { name: '越南', code: 'VN', id: 2000000011 },
+        { name: '印尼', code: 'ID', id: 2000000012 },
+        { name: '马来西亚', code: 'MY', id: 2000000013 },
+        { name: '韩国', code: 'KR', id: 2000000014 },
+        { name: '沙特阿拉伯', code: 'SA', id: 2000000015 },
+        { name: '阿联酋', code: 'AE', id: 2000000016 }
+      ],
       ruleInline: {
         // 验证规则
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
@@ -159,13 +169,13 @@ export default {
 
     },
     onCountryChange(val) {
-      if (val !== 'CN') {
-        this.formData.address = val; // 对于海外地址，地址路径暂时用国家码占位
-        this.formData.consigneeAddressIdPath = '0'; // 这里的ID路径设为0表示逻辑上的国际根路径
-      } else {
-        this.formData.address = '';
-        this.formData.consigneeAddressIdPath = '';
-      }
+      this.formData.address = '';
+      this.formData.consigneeAddressIdPath = '';
+    },
+    handleOpenMap() {
+      const country = this.countryList.find(c => c.code === this.formData.countryCode);
+      const rootId = country ? country.id : 0;
+      this.$refs.map.open(rootId);
     }
   },
   mounted() {

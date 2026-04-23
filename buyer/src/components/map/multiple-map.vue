@@ -56,9 +56,9 @@ export default {
 
   },
   methods: {
-    open() {
+    open(rootId = 0) {
       this.enableMap = true
-      this.init({ id: 0 }, 'province');
+      this.init({ id: rootId }, 'province');
     },
     changeMap(val) {
       this.mapDefault = val
