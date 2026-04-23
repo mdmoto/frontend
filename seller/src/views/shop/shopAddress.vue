@@ -37,10 +37,15 @@
         </FormItem>
         <FormItem label="详细地址" prop="address">
           <span>{{ form.address || '暂无地址' }}</span>
-          <Button type="default" style="margin-left: 10px;" @click="$refs.map.open()">选择地址</Button>
+          <Button type="default" style="margin-left: 10px;" @click="handleOpenMap">选择地址</Button>
+        </FormItem>
+        <FormItem label="国家/地区" prop="countryCode">
+          <Select v-model="form.countryCode" style="width: 90%" @on-change="onCountryChange">
+            <Option v-for="item in countryList" :value="item.code" :key="item.code">{{ item.name }}</Option>
+          </Select>
         </FormItem>
         <FormItem label="联系电话" prop="mobile">
-          <Input v-model="form.mobile" clearable style="width: 90%" maxlength="11"/>
+          <Input v-model="form.mobile" clearable style="width: 90%" maxlength="20"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -84,7 +89,27 @@
           center: "",
           address:"",//详细地址
           mobile:"",//手机号码
+          countryCode: "CN"
         },
+        countryList: [
+          { name: '中国', code: 'CN', id: 0 },
+          { name: '日本', code: 'JP', id: 2000000001 },
+          { name: '美国', code: 'US', id: 2000000002 },
+          { name: '中国香港', code: 'HK', id: 2000000003 },
+          { name: '中国台湾', code: 'TW', id: 2000000004 },
+          { name: '新加坡', code: 'SG', id: 2000000005 },
+          { name: '西班牙', code: 'ES', id: 2000000006 },
+          { name: '澳大利亚', code: 'AU', id: 2000000007 },
+          { name: '英国', code: 'GB', id: 2000000008 },
+          { name: '加拿大', code: 'CA', id: 2000000009 },
+          { name: '泰国', code: 'TH', id: 2000000010 },
+          { name: '越南', code: 'VN', id: 2000000011 },
+          { name: '印尼', code: 'ID', id: 2000000012 },
+          { name: '马来西亚', code: 'MY', id: 2000000013 },
+          { name: '韩国', code: 'KR', id: 2000000014 },
+          { name: '沙特阿拉伯', code: 'SA', id: 2000000015 },
+          { name: '阿联酋', code: 'AE', id: 2000000016 }
+        ],
 
         // 表单验证规则
         formValidate: {
@@ -115,7 +140,23 @@
               message: "请输入联系电话号",
               trigger: "blur",
             },
-            { validator: validateMobile,
+            { 
+              validator: (rule, value, callback) => {
+                if (this.form.countryCode === 'CN') {
+                  const reg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+                  if (!reg.test(value)) {
+                    callback(new Error('请输入正确的手机号'));
+                  } else {
+                    callback();
+                  }
+                } else {
+                  if (!value || value.length < 6 || value.length > 20) {
+                    callback(new Error('请输入正确的联系电话'));
+                  } else {
+                    callback();
+                  }
+                }
+              },
               trigger: "blur"
             }
           ],
@@ -269,8 +310,20 @@
         this.form.addressName = v.addressName
         this.form.mobile = v.mobile
         this.form.center = v.center
-        this.form.longitude = v.center.split(',')[0]
-        this.form.latitude = v.center.split(',')[1]
+        if (v.countryCode) this.form.countryCode = v.countryCode;
+        else this.form.countryCode = "CN";
+        if (v.center) {
+          this.form.longitude = v.center.split(',')[0]
+          this.form.latitude = v.center.split(',')[1]
+        }
+      },
+      onCountryChange(val) {
+        this.form.address = '';
+      },
+      handleOpenMap() {
+        const country = this.countryList.find(c => c.code === this.form.countryCode);
+        const rootId = country ? country.id : 0;
+        this.$refs.map.open(rootId);
       },
 
       //保存或者编辑
