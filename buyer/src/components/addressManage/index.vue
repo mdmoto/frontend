@@ -8,12 +8,14 @@
         :label-width="100"
         :rules="ruleInline"
       >
-        <FormItem label="收件人" prop="name">
-          <i-input v-model="formData.name" style="width: 600px"></i-input>
+        <FormItem label="国家/地区" prop="countryCode">
+          <Select v-model="formData.countryCode" style="width: 600px" @on-change="changeCountry">
+            <Option v-for="item in countryList" :value="item.code" :key="item.code">{{ item.name }}</Option>
+          </Select>
         </FormItem>
         <FormItem label="收件地区" prop="address">
           {{ formData.address || '暂无地址' }}
-          <Button type="primary" style="margin-left: 10px;" size="small" @click="$refs.map.open()">选择</Button>
+          <Button type="primary" style="margin-left: 10px;" size="small" @click="openMap">选择</Button>
         </FormItem>
         <FormItem label="详细地址" prop="detail">
           <i-input v-model="formData.detail" style="width: 600px"></i-input>
@@ -62,8 +64,26 @@ export default {
     return {
       showAddr: false, // 控制模态框显隐
       formData: { // 表单数据
-        isDefault: false
+        isDefault: false,
+        countryCode: 'CN',
+        countryName: '中国'
       },
+      countryList: [
+        { name: '中国', code: 'CN', id: 0 },
+        { name: '西班牙', code: 'ES', id: 1001 },
+        { name: '澳大利亚', code: 'AU', id: 1002 },
+        { name: '英国', code: 'GB', id: 1003 },
+        { name: '加拿大', code: 'CA', id: 1004 },
+        { name: '泰国', code: 'TH', id: 1005 },
+        { name: '越南', code: 'VN', id: 1006 },
+        { name: '印尼', code: 'ID', id: 1007 },
+        { name: '马来西亚', code: 'MY', id: 1008 },
+        { name: '韩国', code: 'KR', id: 1009 },
+        { name: '沙特阿拉伯', code: 'SA', id: 1010 },
+        { name: '阿联酋', code: 'AE', id: 1011 },
+        { name: '美国', code: 'US', id: 1012 },
+        { name: '日本', code: 'JP', id: 1013 }
+      ],
       ruleInline: { // 验证规则
         name: [{ required: true, message: '请输入收件人姓名', trigger: 'blur' }],
         address: [{ required: true, message: '请输入地址', trigger: 'change' }],
@@ -143,6 +163,18 @@ export default {
         this.formData.lon = val.data.position.lng;
       }
 
+    },
+    changeCountry (code) {
+      const country = this.countryList.find(c => c.code === code);
+      if (country) {
+        this.formData.countryName = country.name;
+      }
+      this.formData.address = "";
+      this.formData.consigneeAddressIdPath = "";
+    },
+    openMap () {
+      const country = this.countryList.find(c => c.code === this.formData.countryCode);
+      this.$refs.map.open(country ? country.id : 0);
     },
     show () { // 地址模态框显示
       this.showAddr = true;
