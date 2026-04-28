@@ -203,11 +203,10 @@ export default {
     },
     goGoodsDetail(skuId, goodsId) {
       // 跳转商品详情
-      let routeUrl = this.$router.resolve({
+      this.$router.push({
         path: "/goodsDetail",
         query: { skuId, goodsId },
       });
-      window.open(routeUrl.href, "_blank");
     },
     // 分页 修改页码
     changePageNum(val) {
@@ -229,7 +228,7 @@ export default {
         .then((res) => {
           this.loading = false;
           if (res.success) {
-            this.goodsList = res.result.records;
+            this.goodsList = res.result.records.filter(item => item.marketEnable === 'UPPER' && item.authFlag === 'PASS' && !item.deleteFlag);
             this.total = res.result.total;
           }
         })

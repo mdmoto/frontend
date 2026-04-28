@@ -281,19 +281,17 @@ export default {
   methods: {
     // 跳转商品详情
     goGoodsDetail(skuId, goodsId) {
-      let routeUrl = this.$router.resolve({
+      this.$router.push({
         path: "/goodsDetail",
         query: { skuId, goodsId },
       });
-      window.open(routeUrl.href, "_blank");
     },
     // 跳转店铺首页
     goShopPage(id) {
-      let routeUrl = this.$router.resolve({
+      this.$router.push({
         path: "/Merchant",
         query: { id },
       });
-      window.open(routeUrl.href, "_blank");
     },
     // 收藏商品
     collectGoods(id) {

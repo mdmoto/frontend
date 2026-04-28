@@ -42,10 +42,7 @@ export default {
   methods: {
     goCartList() {
       // 跳转购物车页面
-      let routerUrl = this.$router.resolve({
-        path: "/cart",
-      });
-      window.open(routerUrl.href, "_blank");
+      this.$router.push("/cart");
     },
     getCartList() {
       // 获取购物车列表

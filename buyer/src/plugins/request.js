@@ -196,6 +196,11 @@ function getTokenDebounce () {
     if (!lock) {
       lock = true;
       let oldRefreshToken = Storage.getItem('refreshToken');
+      if (!oldRefreshToken || oldRefreshToken === 'undefined' || oldRefreshToken === 'null') {
+        success = false;
+        lock = false;
+        return;
+      }
       handleRefreshToken(oldRefreshToken)
         .then(res => {
           if (res.success) {

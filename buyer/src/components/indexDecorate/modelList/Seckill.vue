@@ -113,10 +113,7 @@ export default {
   },
   methods: {
     goToSeckill () { // 跳转秒杀页面
-      let routeUrl = this.$router.resolve({
-        path: '/seckill'
-      });
-      window.open(routeUrl.href, '_blank');
+      this.$router.push('/seckill');
     },
     countDown (currIndex) { // 倒计时
       // 0点时间戳

@@ -45,10 +45,16 @@ router.afterEach((route) => {
 Vue.prototype.linkTo = function (url) {
   if (url.substr(0, 1) === "/") {
     // 非外部链接，没有origin，只有路由地址
-    if (router.mode === "hash") {
-      window.open(location.origin + "/#" + url, "_blank");
+    // 使用 $router.push 而不是 window.open 以保持在同一个标签页中
+    if (this.$router) {
+      this.$router.push(url);
     } else {
-      window.open(location.origin + url, "_blank");
+      // 兜底方案
+      if (router.mode === "hash") {
+        location.href = location.origin + "/#" + url;
+      } else {
+        location.href = location.origin + url;
+      }
     }
   } else {
     // 外部链接，完整的url地址

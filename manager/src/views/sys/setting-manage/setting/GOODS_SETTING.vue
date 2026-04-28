@@ -105,38 +105,30 @@ export default {
         if (res.success) {
           this.$Message.success("开始生成!");
           this.showProgress = true;
+          this.progressVal = 0;
+          // 等待 5 秒再开始轮询（给后端时间开始处理）
           setTimeout(() => {
             this.intervalProgress = setInterval(() => {
               getProgress().then((resp) => {
                 let progressResult = resp.result;
-                if (progressResult != null && progressResult.flag === 0) {
+                if (!progressResult) return;
+                let current = progressResult.current || 0;
+                let total = progressResult.total || 0;
+                if (total > 0) {
+                  this.progressVal = Math.min(100, Math.floor((current / total) * 100));
+                }
+                // 完成条件：current 等于 total 且 total > 0
+                if (total > 0 && current >= total) {
                   clearInterval(this.intervalProgress);
-                  this.showProgress = false;
-                  this.$Message.success("生成成功!");
-                } else {
-                  this.progressVal = Math.floor(
-                    (progressResult.processed / progressResult.total) * 100
-                  );
+                  this.progressVal = 100;
+                  setTimeout(() => {
+                    this.showProgress = false;
+                    this.$Message.success("索引生成成功！共 " + total + " 条");
+                  }, 800);
                 }
               });
-            }, 1000);
-          }, 10000);
-        } else if (res.code === 100000) {
-          this.showProgress = true;
-          this.intervalProgress = setInterval(() => {
-            getProgress().then((resp) => {
-              let progressResult = resp.result;
-              if (progressResult != null && progressResult.flag === 0) {
-                clearInterval(this.intervalProgress);
-                this.showProgress = false;
-                this.$Message.success("生成成功!");
-              } else {
-                this.progressVal = Math.floor(
-                  (progressResult.processed / progressResult.total) * 100
-                );
-              }
-            });
-          }, 1000);
+            }, 1500);
+          }, 5000);
         }
       });
     },

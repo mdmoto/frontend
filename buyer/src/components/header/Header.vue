@@ -133,16 +133,14 @@ export default {
   },
   methods: {
     goToPay() { // 跳转购物车
-      let url = this.$router.resolve({
+      this.$router.push({
         path: '/cart'
       });
-      window.open(url.href, '_blank');
     },
     myInfo() { // 跳转会员中心
-      let url = this.$router.resolve({
+      this.$router.push({
         path: '/home'
       });
-      window.open(url.href, '_blank');
     },
     signOutFun() { // 退出登录
       logout().then(res => {

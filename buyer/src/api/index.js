@@ -60,9 +60,10 @@ export function pageData(params) {
  */
 export function handleRefreshToken(token) {
   return request({
-    url: `/buyer/passport/member/refresh/${token}`,
-    method: Method.GET,
+    url: `/buyer/passport/member/refresh`,
+    method: Method.POST,
     needToken: false,
+    params: { refreshToken: token }
   });
 }
 

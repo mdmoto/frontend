@@ -103,9 +103,9 @@ export function getSCLoginCode(params) {
 }
 export function sCLogin(token,params) {
   return request({
-    url: `/buyer/passport/member/session_login/`+token,
+    url: `/buyer/passport/member/session_login`,
     method: Method.POST,
     needToken: false,
-    params
+    params: { ...params, token }
   });
 }

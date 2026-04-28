@@ -344,20 +344,16 @@ export default {
       }
     },
     goodsDetail(skuId, goodsId) {
-      // 跳转商品详情
-      let routeUrl = this.$router.resolve({
+      this.$router.push({
         path: "/goodsDetail",
         query: { skuId, goodsId },
       });
-      window.open(routeUrl.href, "_blank");
     },
-    // 跳转店铺首页
     shopPage(id) {
-      let routeUrl = this.$router.resolve({
+      this.$router.push({
         path: "/Merchant",
         query: { id: id },
       });
-      window.open(routeUrl.href, "_blank");
     },
     getDetail() {
       // 获取订单详情
