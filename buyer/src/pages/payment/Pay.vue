@@ -197,8 +197,8 @@
         <div>
           <span>{{ totalNum }}件商品，总商品金额：</span><span>{{ priceDetailDTO.goodsPrice | unitPrice("￥") }}</span>
         </div>
-        <div v-if="priceDetailDTO.freightPrice > 0">
-          <span>运费：</span><span>{{ priceDetailDTO.freightPrice | unitPrice("￥") }}</span>
+        <div v-if="priceDetailDTO.freightPrice !== undefined && priceDetailDTO.freightPrice !== null">
+          <span>运费：</span><span>{{ priceDetailDTO.freightPrice > 0 ? (priceDetailDTO.freightPrice | unitPrice("￥")) : '包邮' }}</span>
         </div>
         <div v-if="priceDetailDTO.discountPrice > 0">
           <span>优惠金额：</span><span>-{{ priceDetailDTO.discountPrice | unitPrice("￥") }}</span>

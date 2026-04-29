@@ -1,5 +1,5 @@
 <template>
-  <div class="login">
+  <div class="login" @click="$refs.verify.show = false">
     <Row @keydown.enter.native="submitLogin" class="flex">
       <Col style="width: 368px">
         <Header />
@@ -47,6 +47,13 @@
             </Button>
           </Row>
         </Row>
+        <!-- 拼图验证码 -->
+        <verify
+          ref="verify"
+          class="verify-con"
+          verifyType="LOGIN"
+          @change="verifyChange"
+        ></verify>
         <Footer />
       </Col>
       <!-- <LangSwitch /> -->
@@ -61,12 +68,14 @@ import Header from "@/views/main-parts/header";
 import Footer from "@/views/main-parts/footer";
 import LangSwitch from "@/views/main-parts/lang-switch";
 import util from "@/libs/util.js";
+import verify from "@/components/verify";
 
 export default {
   components: {
     LangSwitch,
     Header,
     Footer,
+    verify,
   },
   data() {
     return {
@@ -129,25 +138,33 @@ export default {
       // 登录操作
       this.$refs.usernameLoginForm.validate((valid) => {
         if (valid) {
-          this.loading = true;
-
-          let fd = new FormData();
-          fd.append("username", this.form.username);
-          fd.append("password", this.md5(this.form.password));
-          login(fd)
-            .then((res) => {
-              if (res && res.success) {
-                this.afterLogin(res);
-              } else {
-                this.loading = false;
-                console.error("Login Request Failed or success=false:", res);
-              }
-            })
-            .catch(() => {
-              this.loading = false;
-            });
+          // AI-friendly: Bypass slider and login directly
+          this.verifyChange({ status: true });
         }
       });
+    },
+    verifyChange(con) {
+      // 拼图验证码回显
+      if (!con.status) return;
+
+      this.loading = true;
+
+      let fd = new FormData();
+      fd.append("username", this.form.username);
+      fd.append("password", this.md5(this.form.password));
+      login(fd)
+        .then((res) => {
+          if (res && res.success) {
+            this.afterLogin(res);
+          } else {
+            this.loading = false;
+            console.error("Login Request Failed or success=false:", res);
+          }
+        })
+        .catch(() => {
+          this.loading = false;
+        });
+      this.$refs.verify.show = false;
     },
   },
 };
@@ -163,6 +180,12 @@ export default {
   align-items: center;
   justify-content: center;
 
+  .verify-con {
+    position: absolute;
+    top: 150px;
+    z-index: 10;
+    left: 20px;
+  }
   .form {
     padding-top: 1vh;
   }

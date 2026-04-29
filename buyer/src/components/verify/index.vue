@@ -102,6 +102,12 @@ export default {
       this.verifyText = '拖动滑块解锁';
       getVerifyImg(this.type).then(res => {
         if (res.result) {
+          if (res.result.disabled) {
+            // 后端关闭滑块时，直接放行（AI 友好模式）
+            this.show = false;
+            this.$emit('change', { status: true, distance: 0, disabled: true });
+            return;
+          }
           this.data = res.result;
           this.show = true;
         } else {
