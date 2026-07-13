@@ -34,6 +34,11 @@
           alt="">
         <span>微信</span>
       </div>
+      <div v-if="support.includes('STRIPE')" class="-box-item" @click="handlePay('STRIPE')">
+        <Icon type="md-card" size="60" color="#635bff"/>
+        <span>银行卡 / PromptPay</span>
+        <span class="provider-label">由 Stripe 安全处理</span>
+      </div>
       <div v-if="support.includes('WALLET') && $route.query.orderType !== 'RECHARGE'" class="-box-item" @click="handlePay('WALLET')">
         <Icon custom="icomoon icon-wallet" size="60"/>
         <span>余额支付</span>
@@ -92,10 +97,12 @@ export default {
           return;
         }
       }
-      const params = this.$route.query;
-      params.paymentMethod = way;
-      params.paymentClient = 'NATIVE';
-      params.price = this.payDetail.price;
+      const params = {
+        ...this.$route.query,
+        paymentMethod: way,
+        paymentClient: 'NATIVE',
+        price: this.payDetail.price
+      };
       if (way === 'WALLET') {
         this.$Modal.confirm({
           title: '支付确认',
@@ -111,8 +118,29 @@ export default {
             })
           }
         });
+      } else if (way === 'STRIPE') {
+        pay(params).then(res => {
+          const paymentUrl = res && res.success && res.result && res.result.paymentUrl;
+          if (!this.isTrustedStripeCheckoutUrl(paymentUrl)) {
+            this.$Message.error((res && res.message) || 'Stripe 支付地址无效，请稍后重试');
+            return;
+          }
+          window.location.assign(paymentUrl);
+        }).catch(() => {
+          this.$Message.error('Stripe 支付服务暂时不可用，请稍后重试');
+        });
       } else {
         this.$router.push({path: '/qrpay', query: params});
+      }
+    },
+    isTrustedStripeCheckoutUrl (value) {
+      if (typeof value !== 'string') return false;
+      try {
+        const url = new URL(value);
+        return url.protocol === 'https:' &&
+          (url.hostname === 'checkout.stripe.com' || url.hostname.endsWith('.checkout.stripe.com'));
+      } catch (e) {
+        return false;
       }
     }
   },
@@ -152,6 +180,12 @@ export default {
     width: 60px;
     height: 60px;
   }
+}
+
+.provider-label {
+  color: #999;
+  font-size: 13px;
+  font-weight: normal;
 }
 
 .left-tips-time {
