@@ -43,6 +43,11 @@ const member = [{
   },
   {
     icon: '',
+    title: 'Open API 设置',
+    path: 'OpenApi'
+  },
+  {
+    icon: '',
     title: '我的消息',
     path: 'MsgList'
   },

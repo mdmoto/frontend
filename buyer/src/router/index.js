@@ -73,6 +73,8 @@ const MsgList = (resolve) =>
   require(["@/pages/home/memberCenter/memberMsg/MsgList"], resolve);
 const MsgDetail = (resolve) =>
   require(["@/pages/home/memberCenter/memberMsg/MsgDetail"], resolve);
+const OpenApi = (resolve) =>
+  require(["@/pages/home/memberCenter/OpenApi"], resolve);
 
 /*
  * 会员中心
@@ -257,6 +259,12 @@ export default new Router({
           meta: {
             title: "会员中心",
           },
+        },
+        {
+          path: "OpenApi",
+          name: "OpenApi",
+          component: OpenApi,
+          meta: { title: "Open API 设置" },
         },
         {
           path: "MyTracks",
