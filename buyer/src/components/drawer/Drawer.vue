@@ -154,7 +154,15 @@ export default {
   },
   methods: {
     requireLogin () {
-      if (storage.getItem('accessToken')) return true
+      const accessToken = storage.getItem('accessToken')
+      const rawUserInfo = storage.getItem('userInfo')
+      if (accessToken && rawUserInfo) {
+        try {
+          if (JSON.parse(rawUserInfo).username) return true
+        } catch (e) {
+          // Invalid or stale user data must not be treated as an authenticated session.
+        }
+      }
       this.$Message.info('请先登录后继续操作')
       this.$router.push({
         path: '/login',
