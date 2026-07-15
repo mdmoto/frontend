@@ -316,6 +316,7 @@ import {
   cancelCollect,
 } from "@/api/member.js";
 import { addCartGoods } from "@/api/cart.js";
+import storage from "@/plugins/storage.js";
 
 export default {
   name: "ShowGoods",
@@ -389,6 +390,20 @@ export default {
     },
   },
   methods: {
+    requireLogin() {
+      if (storage.getItem("accessToken")) {
+        return true;
+      }
+      this.$Message.info("请先登录后继续操作");
+      this.$router.push({
+        path: "/login",
+        query: {
+          rePath: this.$route.path,
+          query: JSON.stringify(this.$route.query),
+        },
+      });
+      return false;
+    },
     // 初始化video
     initVideo(){
       if(!this.goodsVideo ){
@@ -439,6 +454,7 @@ export default {
 
     addShoppingCartBtn() {
       // 添加购物车
+      if (!this.requireLogin()) return;
       const params = {
         num: this.count,
         skuId: this.skuDetail.id,
@@ -462,6 +478,7 @@ export default {
     },
     buyNow() {
       // 立即购买
+      if (!this.requireLogin()) return;
       const params = {
         num: this.count,
         skuId: this.skuDetail.id,
@@ -490,6 +507,7 @@ export default {
     },
     async collect() {
       // 收藏商品
+      if (!this.requireLogin()) return;
       if (this.isCollected) {
         let cancel = await cancelCollect("GOODS", this.skuDetail.id);
         if (cancel.success) {
