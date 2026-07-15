@@ -82,6 +82,7 @@
 import {cartGoodsAll, delCartGoods, addCartGoods, cartCount} from '@/api/cart.js'
 import { getOrderList } from '@/api/order';
 import {couponList, receiveCoupon, tracksList, collectList, cancelCollect} from '@/api/member.js'
+import storage from '@/plugins/storage.js'
 export default {
   name: 'Drawer',
   props: {
@@ -152,6 +153,18 @@ export default {
     };
   },
   methods: {
+    requireLogin () {
+      if (storage.getItem('accessToken')) return true
+      this.$Message.info('请先登录后继续操作')
+      this.$router.push({
+        path: '/login',
+        query: {
+          rePath: this.$route.path,
+          query: JSON.stringify(this.$route.query)
+        }
+      })
+      return false
+    },
     getCartList () { // 获取购物车列表
       this.loading = true
       cartGoodsAll().then(res => {
@@ -222,6 +235,7 @@ export default {
       return `${shop}${goods}可用`
     },
     addToCart (id) { // 添加商品到购物车
+      if (!this.requireLogin()) return
       const params = {
         num: 1,
         skuId: id
